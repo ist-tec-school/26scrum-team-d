@@ -3,16 +3,16 @@
 ### GithubからローカルPCへ
 1. GitHubで、リポジトリのメインページにアクセスする。
 
-   URL：[https://github.com/ist-tec-school/26scrum-base](https://github.com/ist-tec-school/25scrum-base)
+   URL：[https://github.com/ist-tec-school/26scrum-team-d](https://github.com/ist-tec-school/26scrum-team-d)
 
 1. ファイルの一覧の上に「<>Code」ボタンがあるので、これをクリックし、クローンのコマンドをコピーする。
 
-   例：```git@github.com:ist-tec-school/26scrum-base.git```
+   例：```git@github.com:ist-tec-school/26scrum-team-d.git```
 
 2. PCでターミナルを起動する。このときホームディレクトリにいること。（コマンド入力の横に「~ %」と表示されていればOK）
 1. ターミナルでクローンのコマンドを入力する。
 
-   ```git clone git@github.com:ist-tec-school/26scrum-base.git ```
+   ```git clone git@github.com:ist-tec-school/26scrum-team-d.git ```
 
 ### IntelliJの設定
 1. IntelliJを起動する。
