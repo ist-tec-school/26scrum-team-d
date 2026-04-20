@@ -58,6 +58,7 @@
                             <span th:case="2">レビュー中</span>
                             <span th:case="3">完了</span>
                         </td>
+
                         <td width="50px">
                             <button type="submit" id="update_button" onclick="
                                 let row = this.parentElement.parentElement;
@@ -71,8 +72,17 @@
                                 dialog.style.left = ((window.innerWidth - 500) / 2) + 'px';
                                 dialog.style.display = 'block';
                             ">更新</button>
+<<<<<<< HEAD
                         </td>
                         <td width="50px">
+=======
+
+<!--                        <td>-->
+<!--                            <button type="button" id="update_button" onclick="openUpdateDialog(this)">更新</button>-->
+
+<!--                        </td>-->
+                        <td>
+>>>>>>> 4c8559f (html分割)
                             <form action="/delete">
                                 <button type="submit" id="delete_button">削除</button>
                                 <input type="hidden" name="id" th:value="${task.id}" />
