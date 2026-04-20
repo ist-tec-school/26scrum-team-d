@@ -24,12 +24,20 @@ input {
     width: 150px;
 }
 
-/* タスク一覧 */
+
+.tasklist table th,
+.tasklist table td {
+    border: 1px solid #ccc; /* これで中の仕切り線が入ります */
+    padding: 10px;
+    text-align: left;
+}
+
 .tasklist table {
     width: 100%;
-    border: 1px solid;
     border-collapse: collapse;
+    border: 1px solid #ccc; /* 外枠 */
 }
+
 
 /* タスク更新ダイアログ (第18章のサンプルで使用) */
 #updateDialog {
@@ -60,3 +68,4 @@ input {
     align-items: center;
     gap: 10px; /* 要素間の隙間 */
 }
+

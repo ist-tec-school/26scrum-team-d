@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <title>タスク管理アプリケーション</title>
         <link th:href="@{/home.css}" rel="stylesheet">
+        <script th:src="@{/home.js}" defer></script>
     </head>
 
     <body>
@@ -22,6 +23,7 @@
         </div>
 
         <div class="tasklist">
+
             <div class="list_header"> <h2>現在のタスク一覧</h2>
 
                 <div class="filter_area"> <form action="/list" method="get">
@@ -46,18 +48,20 @@
                         <th></th>
                         <th></th>
                     </tr>
+
                 </thead>
-                <tbody>
+                    <tbody>
                     <tr th:each="task : ${taskList}">
                         <td class="hidden" th:text="${task.id}"></td>
                         <td th:text="${task.task}"></td>
-                        <td width="100px" th:text="${task.deadline}"></td>
-                        <td width="100px" th:switch="${task.done}">
+                        <td th:text="${task.deadline}"></td>
+                        <td th:switch="${task.done}">
                             <span th:case="0">未着手</span>
                             <span th:case="1">対応中</span>
                             <span th:case="2">レビュー中</span>
                             <span th:case="3">完了</span>
                         </td>
+<<<<<<< HEAD
                         <td width="50px">
                             <button type="submit" id="update_button" onclick="
                                 let row = this.parentElement.parentElement;
@@ -71,15 +75,52 @@
                                 dialog.style.left = ((window.innerWidth - 500) / 2) + 'px';
                                 dialog.style.display = 'block';
                             ">更新</button>
+=======
+                        <td>
+                            <button type="button" id="update_button" onclick="openUpdateDialog(this)">更新</button>
+>>>>>>> feature/seno
                         </td>
-                        <td width="50px">
+                        <td>
                             <form action="/delete">
                                 <button type="submit" id="delete_button">削除</button>
                                 <input type="hidden" name="id" th:value="${task.id}" />
                             </form>
                         </td>
                     </tr>
-                </tbody>
+                    </tbody>
+<!--            <table border="1">-->
+<!--                <thead>-->
+<!--                    <tr>-->
+<!--                        <th class="hidden">ID</th>-->
+<!--                        <th>タスク</th>-->
+<!--                        <th width="150px">期限</th>-->
+<!--                        <th width="100px">状態</th>-->
+<!--                        <th></th>-->
+<!--                        <th></th>-->
+<!--                    </tr>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                    <tr th:each="task : ${taskList}">-->
+<!--                        <td class="hidden" th:text="${task.id}"></td>-->
+<!--                        <td th:text="${task.task}"></td>-->
+<!--                        <td width="100px" th:text="${task.deadline}"></td>-->
+<!--                        <td width="100px" th:switch="${task.done}">-->
+<!--                            <span th:case="0">未着手</span>-->
+<!--                            <span th:case="1">着手中</span>-->
+<!--                            <span th:case="2">レビュー中</span>-->
+<!--                            <span th:case="3">完了</span>-->
+<!--                        </td>-->
+<!--                        <td width="50px">-->
+<!--                            <button type="button" id="update_button" onclick="openUpdateDialog(this)">更新</button>-->
+<!--                        </td>-->
+<!--                        <td width="50px">-->
+<!--                            <form action="/delete">-->
+<!--                                <button type="submit" id="delete_button">削除</button>-->
+<!--                                <input type="hidden" name="id" th:value="${task.id}" />-->
+<!--                            </form>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                </tbody>-->
             </table>
         </div>
 
@@ -101,9 +142,7 @@
                     </select>
                     <div>
                         <button type="submit">更新</button>
-                        <button type="reset"
-                                onclick="getElementById('updateDialog').style.display='none';">
-                            キャンセル</button>
+                        <button type="reset" onclick="closeUpdateDialog()">キャンセル</button>
                     </div>
                 </form>
             </div>
