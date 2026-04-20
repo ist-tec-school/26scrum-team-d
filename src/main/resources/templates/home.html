@@ -57,7 +57,7 @@
                         <td th:text="${task.deadline}"></td>
                         <td th:switch="${task.done}">
                             <span th:case="0">未着手</span>
-                            <span th:case="1">着手中</span>
+                            <span th:case="1">対応中</span>
                             <span th:case="2">レビュー中</span>
                             <span th:case="3">完了</span>
                         </td>
