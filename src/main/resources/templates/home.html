@@ -15,6 +15,8 @@
             <form action="/add">
                 <label>タスク</label>
                 <input name="task" type="text"/>
+                <label>説明</label>
+                <input name="description" type="text"/>
                 <label>期限</label>
                 <input name="deadline" type="date" />
                 <input type="submit" vaule="登録" />
@@ -30,6 +32,7 @@
                         <th>タスク</th>
                         <th width="150px">期限</th>
                         <th width="100px">状態</th>
+                        <th width="100px">説明</th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -40,6 +43,7 @@
                         <td th:text="${task.task}"></td>
                         <td width="100px" th:text="${task.deadline}"></td>
                         <td width="50px" th:text="${task.done} ? '完了': '未完了'"></td>
+                        <td width="100px" th:text="${task.description}">
                         <td width="50px">
                             <button type="submit" id="update_button" onclick="
                                 let row = this.parentElement.parentElement;

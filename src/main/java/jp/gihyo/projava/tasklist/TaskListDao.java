@@ -34,13 +34,15 @@ public class TaskListDao {
     }
     public List<TaskItem> findAll() {
         String query = "SELECT * FROM tasklist";
-        List<Map<String,Object>> result = jdbcTemplate.queryForList(query);
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(query);
         List<TaskItem> taskItems = result.stream()
                 .map((Map<String, Object> row) -> new TaskItem(
                         row.get("id").toString(),
                         row.get("task").toString(),
+                        row.get("description") != null ? row.get("description").toString() : "",
                         row.get("deadline").toString(),
-                        (Boolean)row.get("done")))
+                        (Boolean) row.get("done")
+                ))
                 .toList();
         return taskItems;
     }
@@ -52,7 +54,7 @@ public class TaskListDao {
 
     public int update(TaskItem taskItem) {
         int number = jdbcTemplate.update(
-                "UPDATE tasklist SET task = ?, deadline = ?, done = ? WHERE id = ?",
+                "UPDATE tasklist SET task = ?,description=?, deadline = ?, done = ? WHERE id = ?",
                 taskItem.task(),
                 taskItem.deadline(),
                 taskItem.done(),
