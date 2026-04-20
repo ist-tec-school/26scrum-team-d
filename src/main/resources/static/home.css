@@ -24,12 +24,20 @@ input {
     width: 150px;
 }
 
-/* タスク一覧 */
+
+.tasklist table th,
+.tasklist table td {
+    border: 1px solid #ccc; /* これで中の仕切り線が入ります */
+    padding: 10px;
+    text-align: left;
+}
+
 .tasklist table {
     width: 100%;
-    border: 1px solid;
     border-collapse: collapse;
+    border: 1px solid #ccc; /* 外枠 */
 }
+
 
 /* タスク更新ダイアログ (第18章のサンプルで使用) */
 #updateDialog {
@@ -41,3 +49,42 @@ input {
     top: 120px;
     z-index: 9999;
 }
+
+
+/* テーブル全体の枠線とレイアウト */
+#task-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#task-table th, #task-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+}
+
+/* 幅の指定を一箇所にまとめる */
+.col-deadline { width: 150px; }
+.col-status   { width: 100px; }
+.col-action   { width: 50px; }
+
+/* 隠し項目の設定 */
+.hidden {
+    display: none;
+}
+
+/* テーブル全体の枠線を「1本」に合体させる設定（必須！） */
+#task-table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 10px;
+    border: 1px solid black; /* 外枠 */
+}
+
+/* ヘッダー(th)とデータセル(td)の両方に枠線を引く */
+#task-table th,
+#task-table td {
+    border: 1px solid;
+    padding: 10px;          /* 文字が線にぶつからないよう余白を作る */
+    text-align: left;       /* 文字を左寄せ（中央なら center） */
+}
+
