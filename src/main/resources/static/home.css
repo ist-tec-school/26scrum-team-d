@@ -58,5 +58,5 @@ input {
 .filter_area form {
     display: flex;
     align-items: center;
-    gap: 11px; /* 要素間の隙間 */
+    gap: 10px; /* 要素間の隙間 */
 }
