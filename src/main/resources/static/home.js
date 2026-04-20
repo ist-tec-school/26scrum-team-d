@@ -1,0 +1,19 @@
+function openUpdateDialog(button) {
+    let row = button.parentElement.parentElement;
+
+    document.getElementById('update_id').value = row.cells[0].innerText;
+    document.getElementById('update_task').value = row.cells[1].innerText;
+    document.getElementById('update_deadline').value = row.cells[2].innerText;
+
+    const statusMap = {'未着手': 0, '着手中': 1, 'レビュー中': 2, '完了': 3};
+    const text = row.cells[3].innerText.trim();
+    document.getElementById('update_status').value = statusMap[text] ?? 0;
+
+    var dialog = document.getElementById('updateDialog');
+    dialog.style.left = ((window.innerWidth - 500) / 2) + 'px';
+    dialog.style.display = 'block';
+}
+
+function closeUpdateDialog() {
+    document.getElementById('updateDialog').style.display = 'none';
+}
