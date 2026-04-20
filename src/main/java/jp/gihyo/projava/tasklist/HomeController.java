@@ -1,10 +1,3 @@
-/*
-「プロになるJava」サンプル
-https://gihyo.jp/book/2022/978-4-297-12685-8
-
-Takaaki Sugiyama 2022 copyright reserved.
-License: CC0 1.0 Universal
-*/
 package jp.gihyo.projava.tasklist;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Controller
 public class HomeController {
-    record TaskItem(String id, String task, String deadline, boolean done) {
-    }
+    record TaskItem(String id, String task, String deadline, int done) {}
 
-    private List<TaskItem> taskItems = new ArrayList<>();
     private final TaskListDao dao;
 
     @Autowired
@@ -39,17 +29,36 @@ public class HomeController {
     }
 
     @GetMapping("/list")
-    String listItems(Model model) {
-        List<TaskItem> taskItems = dao.findAll();
+    String listItems(Model model, @RequestParam(name = "status", defaultValue = "all") String status) {
+        List<TaskItem> taskItems;
+
+        // 1. フィルタリングロジック
+        if ("all".equals(status)) {
+            taskItems = dao.findAll();
+        } else if ("working".equals(status)) {
+            taskItems = dao.findByStatusList(List.of(1, 2));
+        } else {
+            // ここで数値変換。万が一変な文字列が来ても落ちないように try-catch
+            try {
+                int statusInt = Integer.parseInt(status);
+                taskItems = dao.findByStatus(statusInt);
+            } catch (NumberFormatException e) {
+                taskItems = dao.findAll();
+            }
+        }
+
+        // 2. 画面に渡すデータをセット
         model.addAttribute("taskList", taskItems);
+        // ★ここが超重要！HTMLの th:selected で使う変数を渡します
+        model.addAttribute("selectedStatus", status);
+
         return "home";
     }
 
     @GetMapping("/add")
-    String addItem(@RequestParam("task") String task,
-                   @RequestParam("deadline") String deadline) {
+    String addItem(@RequestParam("task") String task, @RequestParam("deadline") String deadline) {
         String id = UUID.randomUUID().toString().substring(0, 8);
-        TaskItem item = new TaskItem(id, task, deadline, false);
+        TaskItem item = new TaskItem(id, task, deadline, 0);
         dao.add(item);
         return "redirect:/list";
     }
@@ -61,10 +70,8 @@ public class HomeController {
     }
 
     @GetMapping("/update")
-    String updateItem(@RequestParam("id") String id,
-                      @RequestParam("task") String task,
-                      @RequestParam("deadline") String deadline,
-                      @RequestParam("done") boolean done) {
+    String updateItem(@RequestParam("id") String id, @RequestParam("task") String task,
+                      @RequestParam("deadline") String deadline, @RequestParam("done") int done) {
         TaskItem taskItem = new TaskItem(id, task, deadline, done);
         dao.update(taskItem);
         return "redirect:/list";
