@@ -40,7 +40,8 @@ public class TaskListDao {
                         row.get("id").toString(),
                         row.get("task").toString(),
                         row.get("deadline").toString(),
-                        (Boolean)row.get("done")))
+                        ((Number)row.get("done")).intValue()
+                ))
                 .toList();
         return taskItems;
     }
