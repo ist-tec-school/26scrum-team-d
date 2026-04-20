@@ -23,6 +23,20 @@
 
         <div class="tasklist">
             <h2>現在のタスク一覧</h2>
+            <div class="list_header"> <h2>現在のタスク一覧</h2>
+
+                <div class="filter_area"> <form action="/list" method="get">
+                    <label>状態フィルタ:</label>
+                    <select name="status">
+                        <option value="all">すべて</option>
+                        <option value="0">未着手</option>
+                        <option value="working">対応中</option>
+                        <option value="3">完了</option>
+                    </select>
+                    <button type="submit">表示切替</button>
+                </form>
+                </div>
+            </div>
             <table border="1">
                 <thead>
                     <tr>
