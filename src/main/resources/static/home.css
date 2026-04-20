@@ -13,7 +13,7 @@ input {
 
 /* タスク入力フォーム */
 .task_form {
-    padding: 0px 10px 10px 10px;
+    padding: 0 10px 10px 10px;
     border: 1px solid #4D648D;
 }
 .task_form form {
