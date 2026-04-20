@@ -25,11 +25,20 @@ input {
 }
 
 /* タスク一覧 */
-.tasklist table {
+/* テーブルの枠線を表示させる設定 */
+
+.tasklist table{
     width: 100%;
-    border: 1px solid;
-    border-collapse: collapse;
+ }
+.tasklist table, .tasklist th, .tasklist td {
+    border: 1px solid #283655; /* 枠線を引く */
+    border-collapse: collapse; /* 重なる線を一本にする */
+    padding: 8px;              /* 文字の周りに隙間を作る */}
+
+.tasklist th {
+    background-color: #f4f7f6; /* 見出しに色をつける */
 }
+
 
 /* タスク更新ダイアログ (第18章のサンプルで使用) */
 #updateDialog {

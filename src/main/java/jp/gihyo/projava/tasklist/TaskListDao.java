@@ -1,7 +1,5 @@
 package jp.gihyo.projava.tasklist;
-
-import jp.gihyo.projava.tasklist.HomeController.TaskItem;
-import org.springframework.beans.factory.annotation.Autowired;
+import jp.gihyo.projava.tasklist.HomeController.TaskItem;import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -60,9 +58,21 @@ public class TaskListDao {
 
     // 複数のステータス（1と2など）で検索する場合
     public List<TaskItem> findByStatusList(List<Integer> statusList) {
-        // IN句を使って「1 か 2」に一致するものを探す
-        String query = "SELECT * FROM tasklist WHERE done IN (1, 2)";
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(query);
+        // ① 引数が空っぽだった時のために、安全策として空のリストを返すようにしておく
+        if (statusList == null || statusList.isEmpty()) {
+            return List.of();
+        }
+
+        // ② 引数の数だけ「?」を準備する（例: [1, 2] なら "?,?" になる）
+        String placeholders = String.join(",", statusList.stream().map(s -> "?").toList());
+
+        // ③ SQL文を組み立てる。ここで「(1, 2)」を「(?, ?)」に置き換えた！
+        String query = "SELECT * FROM tasklist WHERE done IN (" + placeholders + ")";
+
+        // ④ 実行する時に、初めて「箱の中身（1, 2）」を流し込む
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(query, statusList.toArray());
+
+        // ⑤ 画面表示用の形式に変換して返す
         return mapToTaskItems(result);
     }
 
