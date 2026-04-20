@@ -46,18 +46,34 @@
             <td th:text="${task.taskUser}"></td>
             <td width="100px" th:text="${task.deadline}"></td>
             <td width="50px" th:text="${task.done} ? '完了': '未完了'"></td>
+<!--            <td width="50px">-->
+<!--                <button type="submit" id="update_button" onclick="-->
+<!--                                let row = this.parentElement.parentElement;-->
+<!--                                getElementById('update_id').value=row.cells[0].firstChild.data;-->
+<!--                                getElementById('update_task').value=row.cells[1].firstChild.data;-->
+<!--                                getElementById('update_user').value=row.cells[2].firstChild.data;-->
+<!--                                getElementById('update_deadline').value=row.cells[3].firstChild.data;-->
+<!--                                getElementById('update_status').selectedIndex=(row.cells[4].firstChild.data=='完了')?1:0;-->
+<!--                                var dialog = getElementById('updateDialog');-->
+<!--                                dialog.style.left = ((window.innerWidth - 500) / 2) + 'px';-->
+<!--                                dialog.style.display = 'block';-->
+<!--                            ">更新</button>-->
+<!--            </td>-->
             <td width="50px">
                 <button type="submit" id="update_button" onclick="
-                                let row = this.parentElement.parentElement;
-                                getElementById('update_id').value=row.cells[0].firstChild.data;
-                                getElementById('update_task').value=row.cells[1].firstChild.data;
-                                getElementById('update_user').value=row.cells[2].firstChild.data;
-                                getElementById('update_deadline').value=row.cells[3].firstChild.data;
-                                getElementById('update_status').selectedIndex=(row.cells[4].firstChild.data=='完了')?1:0;
-                                var dialog = getElementById('updateDialog');
-                                dialog.style.left = ((window.innerWidth - 500) / 2) + 'px';
-                                dialog.style.display = 'block';
-                            ">更新</button>
+                    let row = this.parentElement.parentElement;
+                    document.getElementById('update_id').value = row.cells[0].innerText;
+                    document.getElementById('update_task').value = row.cells[1].innerText;
+                    document.getElementById('update_user').value = row.cells[2].innerText;
+                    document.getElementById('update_deadline').value = row.cells[3].innerText;
+
+                    let status = row.cells[4].innerText.trim();
+                    document.getElementById('update_status').value = (status === '完了') ? 'true' : 'false';
+
+                    let dialog = document.getElementById('updateDialog');
+                    dialog.style.left = ((window.innerWidth - 500) / 2) + 'px';
+                    dialog.style.display = 'block';
+                ">更新</button>
             </td>
             <td width="50px">
                 <form action="/delete">
