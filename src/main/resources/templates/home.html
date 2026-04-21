@@ -1,46 +1,58 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
 <head>
     <meta charset="UTF-8">
     <title>タスク管理アプリケーション</title>
     <link th:href="@{/home.css}" rel="stylesheet">
     <script th:src="@{/home.js}" defer></script>
 </head>
-
 <body>
 <h1>タスク管理アプリケーション</h1>
 
 <div class="task_form">
     <h2>タスクの管理</h2>
-
     <form action="/add">
         <label>タスク</label>
         <input name="task" type="text"/>
         <label>担当者</label>
-        <select name="taskUser"> <option value=""></option>
+        <select name="taskUser">
+            <option value=""></option>
             <option th:each="user : ${userList}" th:value="${user}" th:text="${user}"></option>
         </select>
         <label>説明</label>
         <input name="description" type="text"/>
         <label>期限</label>
-        <input name="deadline" type="date" />
-        <input type="submit" vaule="登録" />
+        <input name="deadline" type="date"/>
+        <input type="submit" value="登録"/>
     </form>
 </div>
 
 <div class="tasklist">
-    <h2>現在のタスク一覧</h2>
-    <table id="task-table">
+    <div class="filter_area">
+        <h2>現在のタスク一覧</h2>
+        <form action="/list" method="get">
+            <label for="status-filter">状態フィルタ:</label>
+            <select name="status" id="status-filter">
+                <option value="all" th:selected="${selectedStatus == 'all'}">すべて</option>
+                <option value="0" th:selected="${selectedStatus == '0'}">未着手</option>
+                <option value="working" th:selected="${selectedStatus == 'working'}">対応中</option>
+                <option value="3" th:selected="${selectedStatus == '3'}">完了</option>
+            </select>
+            <button type="submit">表示切替</button>
+        </form>
+    </div>
+
+    <table>
         <thead>
         <tr>
             <th class="hidden">ID</th>
             <th>タスク</th>
             <th>担当者</th>
-            <th width="100px">説明</th>
-            <th width="150px">期限</th>
-            <th width="100px">状態</th>
-            <th></th>
-            <th></th>
+            <th>説明</th>
+            <th>期限</th>
+            <th>状態</th>
+            <th>更新</th>
+            <th>削除</th>
         </tr>
         </thead>
         <tbody>
@@ -48,31 +60,34 @@
             <td class="hidden" th:text="${task.id}"></td>
             <td th:text="${task.task}"></td>
             <td th:text="${task.taskUser}"></td>
-            <td width="100px" th:text="${task.description}"></td>
-            <td width="100px" th:text="${task.deadline}"></td>
-            <td width="50px" th:text="${task.done} ? '完了': '未完了'"></td>
-
-            <td width="50px">
-                <button type="submit" id="update_button" onclick="
-                    let row = this.parentElement.parentElement;
-                    document.getElementById('update_id').value = row.cells[0].innerText;
-                    document.getElementById('update_task').value = row.cells[1].innerText;
-                    document.getElementById('update_user').value = row.cells[2].innerText;
-                    document.getElementById('update_description').value=row.cells[3].innerText;
-                    document.getElementById('update_deadline').value = row.cells[4].innerText;
-
-                    let status = row.cells[5].innerText.trim();
-                    document.getElementById('update_status').value = (status === '完了') ? 'true' : 'false';
-
-                    let dialog = document.getElementById('updateDialog');
-                    dialog.style.left = ((window.innerWidth - 500) / 2) + 'px';
-                    dialog.style.display = 'block';
+            <td th:text="${task.description}"></td>
+            <td th:text="${task.deadline}"></td>
+            <td th:switch="${task.done}">
+                <span th:case="0">未着手</span>
+                <span th:case="1">対応中</span>
+                <span th:case="2">レビュー中</span>
+                <span th:case="3">完了</span>
+            </td>
+            <td>
+                <button type="button" onclick="
+let row = this.parentElement.parentElement;
+document.getElementById('update_id').value = row.cells[0].innerText;
+document.getElementById('update_task').value = row.cells[1].innerText;
+document.getElementById('update_user').value = row.cells[2].innerText;
+document.getElementById('update_description').value = row.cells[3].innerText;
+document.getElementById('update_deadline').value = row.cells[4].innerText;
+const statusMap = {'未着手':0, '対応中':1, 'レビュー中':2, '完了':3};
+const text = row.cells[5].innerText.trim();
+document.getElementById('update_status').value = statusMap[text] ?? 0;
+let dialog = document.getElementById('updateDialog');
+dialog.style.left = ((window.innerWidth - 500) / 2) + 'px';
+dialog.style.display = 'block';
                 ">更新</button>
             </td>
-            <td width="50px">
+            <td>
                 <form action="/delete">
-                    <button type="submit" id="delete_button">削除</button>
-                    <input type="hidden" name="id" th:value="${task.id}" />
+                    <button type="submit">削除</button>
+                    <input type="hidden" name="id" th:value="${task.id}"/>
                 </form>
             </td>
         </tr>
@@ -80,35 +95,34 @@
     </table>
 </div>
 
-<div id="updateDialog">
+<div id="updateDialog" style="display: none;">
     <div class="task_form">
         <h2>タスクの更新</h2>
         <form action="/update">
-            <input id="update_id" name="id" type="hidden" />
+            <input id="update_id" name="id" type="hidden"/>
             <label>タスク</label>
-            <input id="update_task" name="task" type="text" />
+            <input id="update_task" name="task" type="text"/>
             <label>担当者</label>
             <select id="update_user" name="taskUser">
                 <option th:each="user : ${userList}" th:value="${user}" th:text="${user}"></option>
             </select>
             <label>説明</label>
-            <input id="update_description" name="description" type="text" />
+            <input id="update_description" name="description" type="text"/>
             <label>期限</label>
-            <input id="update_deadline" name="deadline" type="date" />
+            <input id="update_deadline" name="deadline" type="date"/>
             <label>状態</label>
             <select id="update_status" name="done">
-                <option value="false">未完了</option>
-                <option value="true">完了</option>
+                <option value="0">未着手</option>
+                <option value="1">対応中</option>
+                <option value="2">レビュー中</option>
+                <option value="3">完了</option>
             </select>
             <div>
                 <button type="submit">更新</button>
-                <button type="reset"
-                        onclick="getElementById('updateDialog').style.display='none';">
-                    キャンセル</button>
+                <button type="button" onclick="document.getElementById('updateDialog').style.display='none';">キャンセル</button>
             </div>
         </form>
     </div>
 </div>
-
 </body>
 </html>

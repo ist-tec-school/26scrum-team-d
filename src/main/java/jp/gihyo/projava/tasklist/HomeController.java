@@ -11,13 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+
 
 @Controller
 public class HomeController {
@@ -32,19 +33,25 @@ public class HomeController {
         this.dao = dao;
     }
 
-    @RequestMapping(value = "/hello")
-    String hello(Model model) {
-        model.addAttribute("time", LocalDateTime.now());
-        return "hello";
-    }
-
     @GetMapping("/list")
-    String listItems(Model model) {
-        List<TaskItem> taskItems = dao.findAll();
+// int status ではなく String status で受け取る
+    String listItems(Model model, @RequestParam(value = "status", defaultValue = "all") String status) {
+        List<TaskItem> taskItems;
+
+        // 文字列の比較で分岐させる
+        if (status.equals("all")) {
+            taskItems = dao.findAll();
+        } else if (status.equals("working")) {
+            // "working" の時は 状態「1」のものを探す
+            taskItems = dao.findByStatus(1);
+        } else {
+            // それ以外（数値の文字列 "0" や "3" など）は数値に変換して検索
+            taskItems = dao.findByStatus(Integer.parseInt(status));
+        }
+
         model.addAttribute("taskList", taskItems);
-        List<String> users = dao.findAllUsers();
-        model.addAttribute("userList",users);
-        // ★ここが超重要！HTMLの th:selected で使う変数を渡します
+        model.addAttribute("userList", dao.findAllUsers());
+        // HTML側に現在の選択状態（文字列）を渡す
         model.addAttribute("selectedStatus", status);
 
         return "home";
