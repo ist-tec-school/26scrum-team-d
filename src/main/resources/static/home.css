@@ -60,3 +60,33 @@ input {
     top: 120px;
     z-index: 9999;
 }
+
+/* 既存のCSSの末尾に追加 */
+
+/* 状態カードの基本スタイル */
+.status-card {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px; /* 丸み */
+    font-size: 0.85em;
+    font-weight: bold;
+    color: white;
+    cursor: pointer; /* 押せることを示す */
+    transition: transform 0.1s, box-shadow 0.1s;
+    user-select: none;
+}
+
+.status-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.status-card:active {
+    transform: translateY(0);
+}
+
+/* ステータス別の色 */
+.bg-backlog    { background-color: #8a8d91; } /* 未着手 */
+.bg-progress   { background-color: #007bff; } /* 着手中 */
+.bg-review     { background-color: #ffc107; color: #333 !important; } /* レビュー中 */
+.bg-done       { background-color: #28a745; } /* 完了 */
