@@ -78,7 +78,7 @@ public class TaskListDao {
         }
 
         String placeholders = String.join(",", statusList.stream().map(s -> "?").toList());
-        
+
         String query = "SELECT * FROM tasklist WHERE done IN (" + placeholders + ") ORDER BY deadline ASC";
 
         List<Map<String, Object>> result = jdbcTemplate.queryForList(query, statusList.toArray());
