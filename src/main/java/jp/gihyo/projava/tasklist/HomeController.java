@@ -35,13 +35,24 @@ public class HomeController {
 
     @GetMapping("/list")
 
-    String listItems(Model model, @RequestParam(value = "status", defaultValue = "0") int status) {
-        List<TaskItem> taskItems = dao.findAll();
-        model.addAttribute("taskList", taskItems);
-        List<String> users = dao.findAllUsers();
-        model.addAttribute("userList", users);
+// int status ではなく String status で受け取る
+    String listItems(Model model, @RequestParam(value = "status", defaultValue = "all") String status) {
+        List<TaskItem> taskItems;
 
-        // これでエラーが消えます
+        // 文字列の比較で分岐させる
+        if (status.equals("all")) {
+            taskItems = dao.findAll();
+        } else if (status.equals("working")) {
+            // "working" の時は 状態「1」のものを探す
+            taskItems = dao.findByStatus(1);
+        } else {
+            // それ以外（数値の文字列 "0" や "3" など）は数値に変換して検索
+            taskItems = dao.findByStatus(Integer.parseInt(status));
+        }
+
+        model.addAttribute("taskList", taskItems);
+        model.addAttribute("userList", dao.findAllUsers());
+        // HTML側に現在の選択状態（文字列）を渡す
         model.addAttribute("selectedStatus", status);
 
         return "home";
