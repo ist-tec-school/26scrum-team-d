@@ -33,10 +33,10 @@
         <form action="/list" method="get">
             <label for="status-filter">状態フィルタ:</label>
             <select name="status" id="status-filter">
-                <option value="all" th:selected="${selectedStatus == 'all'}">すべて</option>
-                <option value="0" th:selected="${selectedStatus == '0'}">未着手のタスク</option>
+                <option value="all" th:selected="${selectedStatus == 'all'}">すべてのタスク</option>
+                <option value="0" th:selected="${selectedStatus == '0'}">未完了のタスク</option>
                 <option value="working" th:selected="${selectedStatus == 'working'}">対応中のタスク</option>
-                <option value="3" th:selected="${selectedStatus == '3'}">完了のタスク</option>
+                <option value="3" th:selected="${selectedStatus == '3'}">完了したタスク</option>
             </select>
             <button type="submit">絞り込み</button>
         </form>
