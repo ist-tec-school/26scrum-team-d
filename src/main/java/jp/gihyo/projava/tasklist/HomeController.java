@@ -13,7 +13,8 @@ import java.util.UUID;
 
 @Controller
 public class HomeController {
-    record TaskItem(String id, String task, String deadline, int done) {}
+    record TaskItem(String id, String task, String taskUser, String deadline, int done) {
+    }
 
     private final TaskListDao dao;
 
@@ -49,6 +50,8 @@ public class HomeController {
 
         // 2. 画面に渡すデータをセット
         model.addAttribute("taskList", taskItems);
+        List<String> users = dao.findAllUsers();
+        model.addAttribute("userList",users);
         // ★ここが超重要！HTMLの th:selected で使う変数を渡します
         model.addAttribute("selectedStatus", status);
 
@@ -56,9 +59,12 @@ public class HomeController {
     }
 
     @GetMapping("/add")
-    String addItem(@RequestParam("task") String task, @RequestParam("deadline") String deadline) {
+    String addItem(@RequestParam("task") String task,
+                   @RequestParam("taskUser") String taskUser,
+                   @RequestParam("deadline") String deadline) {
         String id = UUID.randomUUID().toString().substring(0, 8);
-        TaskItem item = new TaskItem(id, task, deadline, 0);
+        TaskItem item = new TaskItem(id, task, taskUser, deadline, 0);
+        
         dao.add(item);
         return "redirect:/list";
     }
@@ -70,9 +76,12 @@ public class HomeController {
     }
 
     @GetMapping("/update")
-    String updateItem(@RequestParam("id") String id, @RequestParam("task") String task,
-                      @RequestParam("deadline") String deadline, @RequestParam("done") int done) {
-        TaskItem taskItem = new TaskItem(id, task, deadline, done);
+    String updateItem(@RequestParam("id") String id,
+                      @RequestParam("task") String task,
+                      @RequestParam("taskUser") String taskUser,
+                      @RequestParam("deadline") String deadline,
+                      @RequestParam("done") int done) {
+        TaskItem taskItem = new TaskItem(id, task, taskUser, deadline, done);
         dao.update(taskItem);
         return "redirect:/list";
     }

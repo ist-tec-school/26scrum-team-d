@@ -29,9 +29,16 @@ public class TaskListDao {
 
     // findAllも新しく作った共通処理（mapToTaskItems）を使うようにスッキリさせます
     public List<TaskItem> findAll() {
-        String query = "SELECT * FROM tasklist";
+        String query = """
+            SELECT id, task, task_user AS taskUser, deadline, done FROM tasklist
+            """;
         List<Map<String,Object>> result = jdbcTemplate.queryForList(query);
         return mapToTaskItems(result);
+    }
+
+    public List<String> findAllUsers(){
+        String query = "SELECT name FROM Users";
+        return jdbcTemplate.queryForList(query, String.class);
     }
 
     public int delete(String id) {
@@ -41,8 +48,9 @@ public class TaskListDao {
 
     public int update(TaskItem taskItem) {
         int number = jdbcTemplate.update(
-                "UPDATE tasklist SET task = ?, deadline = ?, done = ? WHERE id = ?",
+                "UPDATE tasklist SET task = ?, task_user = ?, deadline = ?, done = ? WHERE id = ?",
                 taskItem.task(),
+                taskItem.taskUser(),
                 taskItem.deadline(),
                 taskItem.done(),
                 taskItem.id());
@@ -72,9 +80,9 @@ public class TaskListDao {
                 .map((Map<String, Object> row) -> new TaskItem(
                         row.get("id").toString(),
                         row.get("task").toString(),
+                        row.get("taskUser")!=null?row.get("taskUser").toString():"未割当",
                         row.get("deadline").toString(),
-                        ((Number)row.get("done")).intValue()
-                ))
+                        (Boolean)row.get("done")))
                 .toList();
     }
 }
