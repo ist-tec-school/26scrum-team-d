@@ -74,15 +74,15 @@ public class TaskListDao {
         return mapToTaskItems(result);
     }
 
-    // 共通の変換処理（findAllなどから呼び出される）
     private List<TaskItem> mapToTaskItems(List<Map<String, Object>> result) {
         return result.stream()
                 .map((Map<String, Object> row) -> new TaskItem(
                         row.get("id").toString(),
                         row.get("task").toString(),
-                        row.get("taskUser")!=null?row.get("taskUser").toString():"未割当",
+                        row.get("taskUser") != null ? row.get("taskUser").toString() : "未割当",
                         row.get("deadline").toString(),
-                        (Boolean)row.get("done")))
-                .toList();
-    }
-}
+                        ((Number) row.get("done")).intValue()
+                )) // ← TaskItemのコンストラクタと map の閉じカッコ
+                .toList(); // ← StreamをListに変換
+    } // ← メソッドの閉じカッコ
+} // ← クラスの閉じカッコ
