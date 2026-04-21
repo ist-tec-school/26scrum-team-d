@@ -53,12 +53,15 @@
             <th>説明</th>
             <th>期限</th>
             <th>状態</th>
+            <th>更新</th>
+            <th>削除</th>
                 </thead>
                 <tbody>
                     <tr th:each="task : ${taskList}">
                         <td class="hidden" th:text="${task.id}"></td>
                         <td th:text="${task.task}"></td>
                         <td th:text="${task.taskUser}"></td>
+                        <td th:text="${task.description}"></td>
                         <td th:text="${task.deadline}"></td>
                         <td th:switch="${task.done}">
                             <span th:case="0">未着手</span>
