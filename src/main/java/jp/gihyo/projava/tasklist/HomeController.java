@@ -34,6 +34,7 @@ public class HomeController {
     }
 
     @GetMapping("/list")
+
 // int status ではなく String status で受け取る
     String listItems(Model model, @RequestParam(value = "status", defaultValue = "all") String status) {
         List<TaskItem> taskItems;
