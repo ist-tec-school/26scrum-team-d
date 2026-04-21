@@ -24,22 +24,33 @@ input {
     width: 150px;
 }
 
+/* タスクリスト表示エリア */
+.tasklist {
+    margin-top: 20px;
+}
 
-.tasklist table th,
-.tasklist table td {
-    border: 1px solid #ccc; /* これで中の仕切り線が入ります */
+/* テーブル全体のレイアウト */
+#task-table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 10px;
+    border: 1px solid black; /* 外枠 */
+}
+
+/* ヘッダー(th)とデータセル(td)の枠線と余白 */
+#task-table th,
+#task-table td {
+    border: 1px solid #ccc;
     padding: 10px;
     text-align: left;
 }
 
-.tasklist table {
-    width: 100%;
-    border-collapse: collapse;
-    border: 1px solid #ccc; /* 外枠 */
-}
+/* 列ごとの幅指定 */
+.col-deadline { width: 150px; }
+.col-status   { width: 100px; }
+.col-action   { width: 50px; }
 
-
-/* タスク更新ダイアログ (第18章のサンプルで使用) */
+/* タスク更新ダイアログ */
 #updateDialog {
     display: none;
     background-color: #FFFFFF;
@@ -49,23 +60,3 @@ input {
     top: 120px;
     z-index: 9999;
 }
-.list_header {
-    display: flex;          /* 横並びにする */
-    align-items: center;    /* 上下の中心を揃える */
-    justify-content: space-between; /* 両端に振り分ける（左に見出し、右にフィルター） */
-    margin-bottom: 10px;    /* 下のテーブルとの隙間 */
-}
-
-/* フィルター内の余白も微調整 */
-.filter_area {
-    padding: 5px 10px;
-    background-color: #f4f7f6;
-    border-radius: 5px;
-}
-
-.filter_area form {
-    display: flex;
-    align-items: center;
-    gap: 10px; /* 要素間の隙間 */
-}
-
