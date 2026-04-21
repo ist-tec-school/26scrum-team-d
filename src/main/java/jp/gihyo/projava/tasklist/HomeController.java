@@ -78,7 +78,7 @@ public class HomeController {
     @GetMapping("/update")
     String updateItem(@RequestParam("id") String id,
                       @RequestParam("task") String task,
-                      @RequestParam("taskUser") String taskUser,
+                      @RequestParam(value="taskUser",required=false) String taskUser,
                       @RequestParam("description") String description,
                       @RequestParam("deadline") String deadline,
                       @RequestParam("done") int done) {

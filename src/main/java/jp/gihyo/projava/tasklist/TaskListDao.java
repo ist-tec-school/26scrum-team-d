@@ -95,7 +95,7 @@ public class TaskListDao {
                 .map((Map<String, Object> row) -> new TaskItem(
                         row.get("id").toString(),
                         row.get("task").toString(),
-                        row.get("taskUser")!=null?row.get("taskUser").toString():"未割当",
+                        row.get("taskUser")!=null?row.get("taskUser").toString():"",
                         row.get("description") != null ? row.get("description").toString() : "",
                         row.get("deadline").toString(),
                         ((Number)row.get("done")).intValue()
