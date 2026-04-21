@@ -27,11 +27,10 @@
     </form>
 </div>
 
-<div class="tasklist">
+<div class="list_header">
+    <h2>タスク一覧</h2>
     <div class="filter_area">
-        <h2>現在のタスク一覧</h2>
         <form action="/list" method="get">
-            <label for="status-filter">状態フィルタ:</label>
             <select name="status" id="status-filter">
                 <option value="all" th:selected="${selectedStatus == 'all'}">すべてのタスク</option>
                 <option value="0" th:selected="${selectedStatus == '0'}">未完了のタスク</option>
@@ -41,7 +40,9 @@
             <button type="submit">絞り込み</button>
         </form>
     </div>
+</div>
 
+<div class="tasklist">
     <table>
         <thead>
             <tr>
@@ -88,6 +89,7 @@
         </tbody>
     </table>
 </div>
+
 
 <div id="updateDialog" style="display: none;">
     <div class="task_form">
