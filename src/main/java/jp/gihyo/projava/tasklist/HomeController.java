@@ -34,12 +34,13 @@ public class HomeController {
     }
 
     @GetMapping("/list")
-    String listItems(Model model) {
+    String listItems(Model model, @RequestParam(value = "status", defaultValue = "0") int status) {
         List<TaskItem> taskItems = dao.findAll();
         model.addAttribute("taskList", taskItems);
         List<String> users = dao.findAllUsers();
-        model.addAttribute("userList",users);
-        // ★ここが超重要！HTMLの th:selected で使う変数を渡します
+        model.addAttribute("userList", users);
+
+        // これでエラーが消えます
         model.addAttribute("selectedStatus", status);
 
         return "home";
