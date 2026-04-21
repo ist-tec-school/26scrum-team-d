@@ -10,7 +10,7 @@
 <h1>タスク管理アプリケーション</h1>
 
 <div class="task_form">
-    <h2>タスクの管理</h2>
+    <h2>タスクの登録</h2>
     <form action="/add">
         <label>タスク</label>
         <input name="task" type="text"/>
@@ -33,12 +33,12 @@
         <form action="/list" method="get">
             <label for="status-filter">状態フィルタ:</label>
             <select name="status" id="status-filter">
-                <option value="all" th:selected="${selectedStatus == 'all'}">すべて</option>
-                <option value="0" th:selected="${selectedStatus == '0'}">未着手</option>
-                <option value="working" th:selected="${selectedStatus == 'working'}">対応中</option>
-                <option value="3" th:selected="${selectedStatus == '3'}">完了</option>
+                <option value="all" th:selected="${selectedStatus == 'all'}">すべてのタスク</option>
+                <option value="0" th:selected="${selectedStatus == '0'}">未完了のタスク</option>
+                <option value="working" th:selected="${selectedStatus == 'working'}">対応中のタスク</option>
+                <option value="3" th:selected="${selectedStatus == '3'}">完了したタスク</option>
             </select>
-            <button type="submit">表示切替</button>
+            <button type="submit">絞り込み</button>
         </form>
     </div>
 
@@ -48,8 +48,8 @@
                 <th class="hidden">ID</th>
                 <th>タスク</th>
                 <th>担当者</th>
-                <th>説明</th>
                 <th>期限</th>
+                <th>説明</th>
                 <th>状態</th>
                 <th>更新</th>
                 <th>削除</th>
@@ -68,6 +68,7 @@
             </td>
             <td th:text="${task.description}"></td>
             <td th:text="${task.deadline}"></td>
+            <td th:text="${task.description}"></td>
             <td th:switch="${task.done}">
                 <span th:case="0">未着手</span>
                 <span th:case="1">対応中</span>
@@ -99,10 +100,10 @@
             <select id="update_user" name="taskUserId">
                 <option th:each="user : ${userList}" th:value="${user.USER_ID}" th:text="${user.NAME}"></option>
             </select>
-            <label>説明</label>
-            <input id="update_description" name="description" type="text"/>
             <label>期限</label>
             <input id="update_deadline" name="deadline" type="date"/>
+            <label>説明</label>
+            <input id="update_description" name="description" type="text"/>
             <label>状態</label>
             <select id="update_status" name="done">
                 <option value="0">未着手</option>
