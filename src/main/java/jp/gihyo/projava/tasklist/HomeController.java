@@ -45,7 +45,7 @@ public class HomeController {
         List<String> users = dao.findAllUsers();
         model.addAttribute("userList",users);
         // ★ここが超重要！HTMLの th:selected で使う変数を渡します
-        model.addAttribute("selectedStatus", status);
+        model.addAttribute("selectedStatus");
 
         return "home";
     }

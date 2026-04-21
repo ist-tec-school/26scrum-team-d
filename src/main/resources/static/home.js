@@ -1,9 +1,9 @@
-function openUpdateDialog(button) {
-    let row = button.parentElement.parentElement;
+function openUpdateDialog(element) {
+    let row = element.closest('tr');
 
-    document.getElementById('update_id').value = row.cells[0].innerText;
-    document.getElementById('update_task').value = row.cells[1].innerText;
-    document.getElementById('update_deadline').value = row.cells[2].innerText;
+    document.getElementById('update_id').value = row.cells[0].innerText.trim();
+    document.getElementById('update_task').value = row.cells[1].innerText.trim();
+    document.getElementById('update_deadline').value = row.cells[2].innerText.trim();
 
     const statusMap = {'未着手': 0, '着手中': 1, 'レビュー中': 2, '完了': 3};
     const text = row.cells[3].innerText.trim();
