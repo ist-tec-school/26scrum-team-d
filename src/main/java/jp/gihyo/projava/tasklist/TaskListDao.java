@@ -89,6 +89,7 @@ public class TaskListDao {
                         row.get("description") != null ? row.get("description").toString() : "",
                         row.get("deadline").toString(),
                         ((Number)row.get("done")).intValue()
+                ))
                 .toList();
     }
 }

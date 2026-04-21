@@ -39,7 +39,7 @@ public class HomeController {
     }
 
     @GetMapping("/list")
-    String listItems(Model model) {
+    String listItems(Model model,@RequestParam(value = "status", defaultValue = "0") int status) {
         List<TaskItem> taskItems = dao.findAll();
         model.addAttribute("taskList", taskItems);
         List<String> users = dao.findAllUsers();
