@@ -11,13 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+
 
 @Controller
 public class HomeController {
@@ -32,19 +33,14 @@ public class HomeController {
         this.dao = dao;
     }
 
-    @RequestMapping(value = "/hello")
-    String hello(Model model) {
-        model.addAttribute("time", LocalDateTime.now());
-        return "hello";
-    }
-
     @GetMapping("/list")
-    String listItems(Model model) {
+    String listItems(Model model, @RequestParam(value = "status", defaultValue = "0") int status) {
         List<TaskItem> taskItems = dao.findAll();
         model.addAttribute("taskList", taskItems);
         List<String> users = dao.findAllUsers();
-        model.addAttribute("userList",users);
-        // ★ここが超重要！HTMLの th:selected で使う変数を渡します
+        model.addAttribute("userList", users);
+
+        // これでエラーが消えます
         model.addAttribute("selectedStatus", status);
 
         return "home";
