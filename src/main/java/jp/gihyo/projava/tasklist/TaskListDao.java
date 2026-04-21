@@ -87,7 +87,6 @@ public class TaskListDao {
         return mapToTaskItems(result);
     }
 
-    // 共通の変換処理（findAllなどから呼び出される）
     private List<TaskItem> mapToTaskItems(List<Map<String, Object>> result) {
         return result.stream()
                 .map((Map<String, Object> row) -> new TaskItem(
