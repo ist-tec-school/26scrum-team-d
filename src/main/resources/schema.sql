@@ -8,6 +8,5 @@ CREATE TABLE IF NOT EXISTS tasklist (
     task VARCHAR(256),
     task_user VARCHAR(256),
     deadline VARCHAR(10),
-    done BOOLEAN
-    );
-
+    done INT
+);

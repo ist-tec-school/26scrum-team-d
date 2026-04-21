@@ -24,14 +24,33 @@ input {
     width: 150px;
 }
 
-/* タスク一覧 */
-.tasklist table {
-    width: 100%;
-    border: 1px solid;
-    border-collapse: collapse;
+/* タスクリスト表示エリア */
+.tasklist {
+    margin-top: 20px;
 }
 
-/* タスク更新ダイアログ (第18章のサンプルで使用) */
+/* テーブル全体のレイアウト */
+#task-table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 10px;
+    border: 1px solid black; /* 外枠 */
+}
+
+/* ヘッダー(th)とデータセル(td)の枠線と余白 */
+#task-table th,
+#task-table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+}
+
+/* 列ごとの幅指定 */
+.col-deadline { width: 150px; }
+.col-status   { width: 100px; }
+.col-action   { width: 50px; }
+
+/* タスク更新ダイアログ */
 #updateDialog {
     display: none;
     background-color: #FFFFFF;

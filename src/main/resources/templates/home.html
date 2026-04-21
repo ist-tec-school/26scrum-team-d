@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>タスク管理アプリケーション</title>
     <link th:href="@{/home.css}" rel="stylesheet">
+    <script th:src="@{/home.js}" defer></script>
 </head>
 
 <body>
@@ -27,7 +28,7 @@
 
 <div class="tasklist">
     <h2>現在のタスク一覧</h2>
-    <table border="1">
+    <table id="task-table">
         <thead>
         <tr>
             <th class="hidden">ID</th>
