@@ -20,6 +20,8 @@
         <select name="taskUser"> <option value=""></option>
             <option th:each="user : ${userList}" th:value="${user}" th:text="${user}"></option>
         </select>
+        <label>説明</label>
+        <input name="description" type="text"/>
         <label>期限</label>
         <input name="deadline" type="date" />
         <input type="submit" vaule="登録" />
@@ -34,6 +36,7 @@
             <th class="hidden">ID</th>
             <th>タスク</th>
             <th>担当者</th>
+            <th width="100px">説明</th>
             <th width="150px">期限</th>
             <th width="100px">状態</th>
             <th></th>
@@ -45,30 +48,20 @@
             <td class="hidden" th:text="${task.id}"></td>
             <td th:text="${task.task}"></td>
             <td th:text="${task.taskUser}"></td>
+            <td width="100px" th:text="${task.description}"></td>
             <td width="100px" th:text="${task.deadline}"></td>
             <td width="50px" th:text="${task.done} ? '完了': '未完了'"></td>
-<!--            <td width="50px">-->
-<!--                <button type="submit" id="update_button" onclick="-->
-<!--                                let row = this.parentElement.parentElement;-->
-<!--                                getElementById('update_id').value=row.cells[0].firstChild.data;-->
-<!--                                getElementById('update_task').value=row.cells[1].firstChild.data;-->
-<!--                                getElementById('update_user').value=row.cells[2].firstChild.data;-->
-<!--                                getElementById('update_deadline').value=row.cells[3].firstChild.data;-->
-<!--                                getElementById('update_status').selectedIndex=(row.cells[4].firstChild.data=='完了')?1:0;-->
-<!--                                var dialog = getElementById('updateDialog');-->
-<!--                                dialog.style.left = ((window.innerWidth - 500) / 2) + 'px';-->
-<!--                                dialog.style.display = 'block';-->
-<!--                            ">更新</button>-->
-<!--            </td>-->
+
             <td width="50px">
                 <button type="submit" id="update_button" onclick="
                     let row = this.parentElement.parentElement;
                     document.getElementById('update_id').value = row.cells[0].innerText;
                     document.getElementById('update_task').value = row.cells[1].innerText;
                     document.getElementById('update_user').value = row.cells[2].innerText;
-                    document.getElementById('update_deadline').value = row.cells[3].innerText;
+                    document.getElementById('update_description').value=row.cells[3].innerText;
+                    document.getElementById('update_deadline').value = row.cells[4].innerText;
 
-                    let status = row.cells[4].innerText.trim();
+                    let status = row.cells[5].innerText.trim();
                     document.getElementById('update_status').value = (status === '完了') ? 'true' : 'false';
 
                     let dialog = document.getElementById('updateDialog');
@@ -98,6 +91,8 @@
             <select id="update_user" name="taskUser">
                 <option th:each="user : ${userList}" th:value="${user}" th:text="${user}"></option>
             </select>
+            <label>説明</label>
+            <input id="update_description" name="description" type="text" />
             <label>期限</label>
             <input id="update_deadline" name="deadline" type="date" />
             <label>状態</label>
