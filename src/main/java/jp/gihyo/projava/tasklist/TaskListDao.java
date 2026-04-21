@@ -1,3 +1,11 @@
+/*
+「プロになるJava」サンプル
+https://gihyo.jp/book/2022/978-4-297-12685-8
+
+Takaaki Sugiyama 2022 copyright reserved.
+License: CC0 1.0 Universal
+*/
+
 package jp.gihyo.projava.tasklist;
 
 import jp.gihyo.projava.tasklist.HomeController.TaskItem;
@@ -13,12 +21,10 @@ import java.util.Map;
 @Service
 public class TaskListDao {
     private final JdbcTemplate jdbcTemplate;
-
     @Autowired
     TaskListDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-
     public void add(TaskItem taskItem) {
         SqlParameterSource param = new BeanPropertySqlParameterSource(taskItem);
         SimpleJdbcInsert insert =
@@ -26,11 +32,9 @@ public class TaskListDao {
                         .withTableName("tasklist");
         insert.execute(param);
     }
-
-    // findAllも新しく作った共通処理（mapToTaskItems）を使うようにスッキリさせます
     public List<TaskItem> findAll() {
         String query = """
-            SELECT id, task, task_user AS taskUser, deadline, done FROM tasklist
+            SELECT id, task, task_user AS taskUser,description, deadline, done FROM tasklist
             """;
         List<Map<String,Object>> result = jdbcTemplate.queryForList(query);
         return mapToTaskItems(result);
@@ -48,9 +52,10 @@ public class TaskListDao {
 
     public int update(TaskItem taskItem) {
         int number = jdbcTemplate.update(
-                "UPDATE tasklist SET task = ?, task_user = ?, deadline = ?, done = ? WHERE id = ?",
+                "UPDATE tasklist SET task = ?, task_user = ?, description=?, deadline = ?, done = ? WHERE id = ?",
                 taskItem.task(),
                 taskItem.taskUser(),
+                taskItem.description(),
                 taskItem.deadline(),
                 taskItem.done(),
                 taskItem.id());
@@ -81,8 +86,9 @@ public class TaskListDao {
                         row.get("id").toString(),
                         row.get("task").toString(),
                         row.get("taskUser")!=null?row.get("taskUser").toString():"未割当",
+                        row.get("description") != null ? row.get("description").toString() : "",
                         row.get("deadline").toString(),
-                        (Boolean)row.get("done")))
+                        ((Number)row.get("done")).intValue()
                 .toList();
     }
 }
