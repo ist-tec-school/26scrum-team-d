@@ -32,7 +32,9 @@ public class TaskListDao {
     }
     public List<TaskItem> findAll() {
         String query = """
-            SELECT id, task, task_user AS taskUser,description, deadline, done FROM tasklist
+            SELECT id, task, task_user AS taskUser, description, deadline, done 
+            FROM tasklist
+            ORDER BY deadline ASC
             """;
         List<Map<String,Object>> result = jdbcTemplate.queryForList(query);
         return mapToTaskItems(result);
@@ -64,28 +66,24 @@ public class TaskListDao {
 
     // 1つのステータスで検索する場合
     public List<TaskItem> findByStatus(int status) {
-        String query = "SELECT * FROM tasklist WHERE done = ?";
+        String query = "SELECT * FROM tasklist WHERE done = ? ORDER BY deadline ASC";
         List<Map<String, Object>> result = jdbcTemplate.queryForList(query, status);
         return mapToTaskItems(result);
     }
 
     // 複数のステータス（1と2など）で検索する場合
     public List<TaskItem> findByStatusList(List<Integer> statusList) {
-        // ① 引数が空っぽだった時のために、安全策として空のリストを返すようにしておく
         if (statusList == null || statusList.isEmpty()) {
             return List.of();
         }
 
-        // ② 引数の数だけ「?」を準備する（例: [1, 2] なら "?,?" になる）
         String placeholders = String.join(",", statusList.stream().map(s -> "?").toList());
 
-        // ③ SQL文を組み立てる。ここで「(1, 2)」を「(?, ?)」に置き換えた！
-        String query = "SELECT * FROM tasklist WHERE done IN (" + placeholders + ")";
+        // ③ SQL文を組み立てる。最後に ORDER BY を追加！
+        String query = "SELECT * FROM tasklist WHERE done IN (" + placeholders + ") ORDER BY deadline ASC";
 
-        // ④ 実行する時に、初めて「箱の中身（1, 2）」を流し込む
         List<Map<String, Object>> result = jdbcTemplate.queryForList(query, statusList.toArray());
 
-        // ⑤ 画面表示用の形式に変換して返す
         return mapToTaskItems(result);
     }
 
@@ -95,7 +93,7 @@ public class TaskListDao {
                 .map((Map<String, Object> row) -> new TaskItem(
                         row.get("id").toString(),
                         row.get("task").toString(),
-                        row.get("taskUser")!=null?row.get("taskUser").toString():"未割当",
+                        row.get("taskUser")!=null?row.get("taskUser").toString():"",
                         row.get("description") != null ? row.get("description").toString() : "",
                         row.get("deadline").toString(),
                         ((Number)row.get("done")).intValue()
