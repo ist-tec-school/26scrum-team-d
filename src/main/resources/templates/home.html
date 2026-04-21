@@ -15,9 +15,9 @@
         <label>タスク</label>
         <input name="task" type="text"/>
         <label>担当者</label>
-        <select name="taskUser">
+        <select name="taskUserId">
             <option value=""></option>
-            <option th:each="user : ${userList}" th:value="${user}" th:text="${user}"></option>
+            <option th:each="user : ${userList}" th:value="${user.USER_ID}" th:text="${user.NAME}"></option>
         </select>
         <label>説明</label>
         <input name="description" type="text"/>
@@ -59,7 +59,14 @@
         <tr th:each="task : ${taskList}">
             <td class="hidden" th:text="${task.id}"></td>
             <td th:text="${task.task}"></td>
-            <td th:text="${task.taskUser}"></td>
+            <td th:data-user-id="${task.taskUserId}">
+                <span th:each="user : ${userList}"
+                      th:if="${user.USER_ID == task.taskUserId}"
+                      th:text="${user.NAME}">
+                </span>
+                <span th:if="${task.taskUserId == 0 or task.taskUserId == null}"></span>
+            </td>
+            <td th:text="${task.description}"></td>
             <td th:text="${task.deadline}"></td>
             <td th:text="${task.description}"></td>
             <td th:switch="${task.done}">
@@ -90,8 +97,8 @@
             <label>タスク</label>
             <input id="update_task" name="task" type="text"/>
             <label>担当者</label>
-            <select id="update_user" name="taskUser">
-                <option th:each="user : ${userList}" th:value="${user}" th:text="${user}"></option>
+            <select id="update_user" name="taskUserId">
+                <option th:each="user : ${userList}" th:value="${user.USER_ID}" th:text="${user.NAME}"></option>
             </select>
             <label>期限</label>
             <input id="update_deadline" name="deadline" type="date"/>
