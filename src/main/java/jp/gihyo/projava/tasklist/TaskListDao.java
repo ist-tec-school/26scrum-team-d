@@ -33,18 +33,16 @@ public class TaskListDao {
         insert.execute(param);
     }
     public List<TaskItem> findAll() {
-        String query = "SELECT * FROM tasklist";
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(query);
-        List<TaskItem> taskItems = result.stream()
-                .map((Map<String, Object> row) -> new TaskItem(
-                        row.get("id").toString(),
-                        row.get("task").toString(),
-                        row.get("description") != null ? row.get("description").toString() : "",
-                        row.get("deadline").toString(),
-                        (Boolean) row.get("done")
-                ))
-                .toList();
-        return taskItems;
+        String query = """
+            SELECT id, task, task_user AS taskUser,description, deadline, done FROM tasklist
+            """;
+        List<Map<String,Object>> result = jdbcTemplate.queryForList(query);
+        return mapToTaskItems(result);
+    }
+
+    public List<String> findAllUsers(){
+        String query = "SELECT name FROM Users";
+        return jdbcTemplate.queryForList(query, String.class);
     }
 
     public int delete(String id) {
@@ -54,12 +52,43 @@ public class TaskListDao {
 
     public int update(TaskItem taskItem) {
         int number = jdbcTemplate.update(
-                "UPDATE tasklist SET task = ?,description=?, deadline = ?, done = ? WHERE id = ?",
+                "UPDATE tasklist SET task = ?, task_user = ?, description=?, deadline = ?, done = ? WHERE id = ?",
                 taskItem.task(),
+                taskItem.taskUser(),
                 taskItem.description(),
                 taskItem.deadline(),
                 taskItem.done(),
                 taskItem.id());
         return number;
+    }
+
+    // --- ここから追加したメソッド（ちゃんとクラスの { } の中に入っています） ---
+
+    // 1つのステータスで検索する場合
+    public List<TaskItem> findByStatus(int status) {
+        String query = "SELECT * FROM tasklist WHERE done = ?";
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(query, status);
+        return mapToTaskItems(result);
+    }
+
+    // 複数のステータス（1と2など）で検索する場合
+    public List<TaskItem> findByStatusList(List<Integer> statusList) {
+        // IN句を使って「1 か 2」に一致するものを探す
+        String query = "SELECT * FROM tasklist WHERE done IN (1, 2)";
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(query);
+        return mapToTaskItems(result);
+    }
+
+    // 共通の変換処理（findAllなどから呼び出される）
+    private List<TaskItem> mapToTaskItems(List<Map<String, Object>> result) {
+        return result.stream()
+                .map((Map<String, Object> row) -> new TaskItem(
+                        row.get("id").toString(),
+                        row.get("task").toString(),
+                        row.get("taskUser")!=null?row.get("taskUser").toString():"未割当",
+                        row.get("description") != null ? row.get("description").toString() : "",
+                        row.get("deadline").toString(),
+                        ((Number)row.get("done")).intValue()
+                .toList();
     }
 }

@@ -21,7 +21,7 @@ import java.util.UUID;
 
 @Controller
 public class HomeController {
-    record TaskItem(String id, String task, String description, String deadline, boolean done) {
+    record TaskItem(String id, String task, String taskUser, String description, String deadline, int done) {
     }
 
     private List<TaskItem> taskItems = new ArrayList<>();
@@ -42,15 +42,22 @@ public class HomeController {
     String listItems(Model model) {
         List<TaskItem> taskItems = dao.findAll();
         model.addAttribute("taskList", taskItems);
+        List<String> users = dao.findAllUsers();
+        model.addAttribute("userList",users);
+        // ★ここが超重要！HTMLの th:selected で使う変数を渡します
+        model.addAttribute("selectedStatus", status);
+
         return "home";
     }
 
     @GetMapping("/add")
     String addItem(@RequestParam("task") String task,
+                   @RequestParam("taskUser") String taskUser,
                    @RequestParam("description") String description,
                    @RequestParam("deadline") String deadline) {
         String id = UUID.randomUUID().toString().substring(0, 8);
-        TaskItem item = new TaskItem(id, task, description, deadline,false);
+        TaskItem item = new TaskItem(id, task, taskUser, description, deadline, 0);
+        
         dao.add(item);
         return "redirect:/list";
     }
@@ -64,10 +71,11 @@ public class HomeController {
     @GetMapping("/update")
     String updateItem(@RequestParam("id") String id,
                       @RequestParam("task") String task,
+                      @RequestParam("taskUser") String taskUser,
                       @RequestParam("description") String description,
                       @RequestParam("deadline") String deadline,
-                      @RequestParam("done") boolean done) {
-        TaskItem taskItem = new TaskItem(id, task, description, deadline, done);
+                      @RequestParam("done") int done) {
+        TaskItem taskItem = new TaskItem(id, task, taskUser, description, deadline, done);
         dao.update(taskItem);
         return "redirect:/list";
     }
