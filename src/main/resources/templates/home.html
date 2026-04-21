@@ -48,8 +48,8 @@
                 <th class="hidden">ID</th>
                 <th>タスク</th>
                 <th>担当者</th>
-                <th>説明</th>
                 <th>期限</th>
+                <th>説明</th>
                 <th>状態</th>
                 <th>更新</th>
                 <th>削除</th>
@@ -60,8 +60,8 @@
             <td class="hidden" th:text="${task.id}"></td>
             <td th:text="${task.task}"></td>
             <td th:text="${task.taskUser}"></td>
-            <td th:text="${task.description}"></td>
             <td th:text="${task.deadline}"></td>
+            <td th:text="${task.description}"></td>
             <td th:switch="${task.done}">
                 <span th:case="0">未着手</span>
                 <span th:case="1">対応中</span>
@@ -93,10 +93,10 @@
             <select id="update_user" name="taskUser">
                 <option th:each="user : ${userList}" th:value="${user}" th:text="${user}"></option>
             </select>
-            <label>説明</label>
-            <input id="update_description" name="description" type="text"/>
             <label>期限</label>
             <input id="update_deadline" name="deadline" type="date"/>
+            <label>説明</label>
+            <input id="update_description" name="description" type="text"/>
             <label>状態</label>
             <select id="update_status" name="done">
                 <option value="0">未着手</option>
