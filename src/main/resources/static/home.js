@@ -7,7 +7,7 @@ function showUpdateDialog(button) {
     document.getElementById('update_deadline').value = row.cells[3].innerText;
     document.getElementById('update_description').value = row.cells[4].innerText;
 
-    const statusMap = {'未着手': 0, '対応中': 1, 'レビュー中': 2, '完了': 3};
+    const statusMap = {'未着手': 0, '対応中': 1, '完了': 3};
     const text = row.cells[5].innerText.trim();
     document.getElementById('update_status').value = statusMap[text] ?? 0;
 

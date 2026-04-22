@@ -41,12 +41,12 @@
         <form action="/list" method="get">
             <select name="status" id="status-filter" onchange="this.form.submit()">
                 <option value="all" th:selected="${selectedStatus == 'all'}">すべてのタスク</option>
-                <option value="0" th:selected="${selectedStatus == '0'}">未完了のタスク</option>
+                <option value="0" th:selected="${selectedStatus == '0'}">未着手のタスク</option>
                 <option value="working" th:selected="${selectedStatus == 'working'}">対応中のタスク</option>
                 <option value="3" th:selected="${selectedStatus == '3'}">完了したタスク</option>
             </select>
         </form>
-    </div>４
+    </div>
 </div>
 
 <div class="tasklist">
@@ -79,7 +79,6 @@
             <td th:switch="${task.done}">
                 <span th:case="0">未着手</span>
                 <span th:case="1">対応中</span>
-                <span th:case="2">レビュー中</span>
                 <span th:case="3">完了</span>
             </td>
             <td>
@@ -116,7 +115,6 @@
             <select id="update_status" name="done">
                 <option value="0">未着手</option>
                 <option value="1">対応中</option>
-                <option value="2">レビュー中</option>
                 <option value="3">完了</option>
             </select>
             <div>
