@@ -62,7 +62,7 @@ public class TaskListDao {
                 "UPDATE tasklist SET task = ?, task_user_id = ?, project_id = ?, description = ?, deadline = ?, done = ? WHERE id = ?",
                 taskItem.task(),
                 taskItem.taskUserId(),
-                taskItem.projectID(), // 追加：プロジェクトIDの更新
+                taskItem.projectId(), // 追加：プロジェクトIDの更新
                 taskItem.description(),
                 taskItem.deadline(),
                 taskItem.done(),

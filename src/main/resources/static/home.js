@@ -32,7 +32,7 @@ function handleProjectChange(selectElement) {
             hiddenInput.value = newProjectName;
 
             // リストの3番目（新規登録の下）に項目を追加して選択
-            const newOption = new Option(newProjectName, "new_added");
+            const newOption = new Option(newProjectName, "new");
             selectElement.add(newOption, selectElement.options[2]);
             newOption.selected = true;
         } else {
