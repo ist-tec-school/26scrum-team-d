@@ -25,8 +25,6 @@ input {
 }
 
 /* タスク一覧 */
-/* テーブルの枠線を表示させる設定 */
-
 .tasklist table{
     width: 100%;
 }
@@ -70,87 +68,55 @@ input {
     gap: 10px; /* 要素間の隙間 */
 }
 
-/* 状態別の背景色 */
 
-/* 未着手 */
-.status-todo {
-    background-color: #e0e0e0;
-    color: #616161;
+/* 検索エリアの配置 */
+.search_area {
+    padding: 5px 10px;
+}
+.search-container {
+    margin: 15px 0;
 }
 
-/* 対応中 */
-.status-working {
-    background-color: #fff9c4;
-    color: #616161;
+.search-form {
+    display: flex;
+    align-items: center;
 }
 
-/* 完了 */
-.status-done {
-    background-color: #c8e6c9;
-    color: #616161;
+/* 入力フィールド：画像の枠線の太さに合わせる */
+.search-input {
+    width: 600px;
+    padding: 8px;
+    border: 2px solid #333; /* 少し太めの枠線 */
+    border-right: none;    /* ボタンと連結させる */
+    outline: none;
 }
 
-.status-common {
+/* 検索ボタン：画像通りの真っ黒な背景 */
+.search-submit-button {
+    background-color: #000;
+    color: #fff;
+    border: 2px solid #000;
+    padding: 8px 20px;
+    cursor: pointer;
     font-weight: bold;
+    transition: opacity 0.2s;
 }
 
-/* テーブルの右側から3つの列（現段階では状態・更新・削除）のセルを中央揃えにする */
-.tasklist th:nth-last-child(-n+3),
-.tasklist td:nth-last-child(-n+3) {
-    text-align: center;
+.search-submit-button:hover {
+    opacity: 0.8;
 }
 
-.choices {
-    width: 100% !important;
-    max-width: 400px;
-    margin: 0 !important;
-    vertical-align: middle;
-    padding: 3px 0;
+/* 0件メッセージ：画像のように細い線で区切る */
+.search-no-result {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+    font-size: 1.1em;
 }
 
-.choices__inner {
-    height: 30px !important;
-    min-height: 30px !important;
-    padding: 0 10px !important;
-    border: 1px solid #000 !important;
-    border-radius: 0 !important;
-    background-color: #fff !important;
-    display: flex !important;
-    align-items: center !important;
-    box-sizing: border-box !important;
-}
-
-.is-focused .choices__inner,
-.is-open .choices__inner {
-    border: 1px solid #000 !important;
-    z-index: 1;
-}
-
-.choices__list--dropdown {
-    border: 1px solid #000 !important;
-    border-top: none !important;
-    border-radius: 0 !important;
-    box-sizing: border-box !important;
-    z-index: 100 !important;
-}
-
-.choices__list--dropdown .choices__input {
-    border: 1px solid #ccc !important;
-    border-radius: 0 !important;
-    margin: 5px !important;
-    padding: 4px 8px !important;
-    width: calc(100% - 10px) !important;
-    box-sizing: border-box !important;
-}
-
-.choices[data-type*="select-one"]::after {
-    border-color: #000 transparent transparent transparent !important;
-    border-width: 5px !important;
-    right: 12px !important;
-    margin-top: -2.5px !important;
-}
-
-.choices[data-type*="select-one"].is-open::after {
-    border-color: transparent transparent #000 transparent !important;
-    margin-top: -7.5px !important;
+.search-no-result p {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }

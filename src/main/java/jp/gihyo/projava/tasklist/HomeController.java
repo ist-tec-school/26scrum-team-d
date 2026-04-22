@@ -42,26 +42,17 @@ public class HomeController {
     }
 
     @GetMapping("/list")
+    String listItems(Model model,
+                     @RequestParam(value = "status", defaultValue = "all") String status,
+                     @RequestParam(value = "keyword", defaultValue = "") String keyword) {
 
-// int status ではなく String status で受け取る
-    String listItems(Model model, @RequestParam(value = "status", defaultValue = "all") String status) {
-        List<TaskItem> taskItems;
-
-        // 文字列の比較で分岐させる
-        if (status.equals("all")) {
-            taskItems = dao.findAll();
-        } else if (status.equals("working")) {
-            // "working" の時は 状態「1」のものを探す
-            taskItems = dao.findByStatus(1);
-        } else {
-            // それ以外（数値の文字列 "0" や "3" など）は数値に変換して検索
-            taskItems = dao.findByStatus(Integer.parseInt(status));
-        }
+        List<TaskItem> taskItems = dao.findByCondition(status, keyword);
 
         model.addAttribute("taskList", taskItems);
         model.addAttribute("userList", dao.findAllUsers());
         model.addAttribute("projectList", dao.findAllProjects());
         model.addAttribute("selectedStatus", status);
+        model.addAttribute("keyword", keyword);
 
         return "home";
     }
