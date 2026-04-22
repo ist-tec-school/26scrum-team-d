@@ -39,13 +39,12 @@
     <h2>タスク一覧</h2>
     <div class="filter_area">
         <form action="/list" method="get">
-            <select name="status" id="status-filter">
+            <select name="status" id="status-filter" onchange="this.form.submit()">
                 <option value="all" th:selected="${selectedStatus == 'all'}">すべてのタスク</option>
                 <option value="0" th:selected="${selectedStatus == '0'}">未完了のタスク</option>
                 <option value="working" th:selected="${selectedStatus == 'working'}">対応中のタスク</option>
                 <option value="3" th:selected="${selectedStatus == '3'}">完了したタスク</option>
             </select>
-            <button type="submit">絞り込み</button>
         </form>
     </div>
 </div>
