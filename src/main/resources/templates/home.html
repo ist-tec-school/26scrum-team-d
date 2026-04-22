@@ -39,9 +39,10 @@
     <h2>タスク一覧</h2>
     <div class="filter_area">
         <form action="/list" method="get">
-            <input type="hidden" name="projectID" th:value="${selectedProject}">
+            <input type="hidden" name="projectId" th:value="${selectedProject}">
             <input type="hidden" name="deptId" th:value="${selectedDept}">
             <input type="hidden" name="sectionId" th:value="${selectedSection}">
+
             <select name="status" id="status-filter" onchange="this.form.submit()">
                 <option value="all" th:selected="${selectedStatus == 'all'}">すべてのタスク</option>
                 <option value="0" th:selected="${selectedStatus == '0'}">未着手のタスク</option>
@@ -50,6 +51,20 @@
             </select>
         </form>
     </div>
+</div>
+
+<div class="filter_container">
+    <div class="filter_item">
+        <form action="/list" method="get"> <input type="hidden" name="status" th:value="${selectedStatus}">
+            <input type="hidden" name="projectId" th:value="${selectedProject}">
+            <input type="hidden" name="sectionId" th:value="${selectedSection}">
+            <select name="deptId" onchange="this.form.submit()">
+                <option value="all">すべての部署</option>
+                <option th:each="dept : ${deptList}" th:value="${dept.DEPT_ID}" th:text="${dept.DEPT_NAME}" th:selected="${selectedDept == dept.DEPT_ID.toString()}"></option>
+            </select>
+        </form>
+    </div>
+
 </div>
 
 <div class="filter_container">
