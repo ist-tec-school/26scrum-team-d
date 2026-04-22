@@ -69,3 +69,18 @@ function handleProjectChange(selectElement, hiddenInputId) {
         hiddenInput.value = "";
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const el = document.getElementById('add_task_user');
+
+    if (el) {
+        new Choices(el, {
+            searchEnabled: true,
+            searchPlaceholderValue: '名前で検索...',
+            itemSelectText: '',
+            shouldSort: false,
+            searchFloor: 0,
+            renderChoiceLimit: -1,
+        });
+    }
+});

@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>タスク管理アプリケーション</title>
     <link th:href="@{/home.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <script th:src="@{/home.js}" defer></script>
 </head>
 <body>
@@ -22,7 +24,7 @@
         <label>タスク</label>
         <input name="task" type="text"/>
         <label>担当者</label>
-        <select name="taskUserId">
+        <select name="taskUserId" id="add_task_user">
             <option value=""></option>
             <option th:each="user : ${userList}" th:value="${user.USER_ID}" th:text="${user.NAME}"></option>
         </select>
@@ -92,10 +94,11 @@
             </td>
             <td th:text="${task.deadline}"></td>
             <td th:text="${task.description}"></td>
-            <td th:switch="${task.done}">
+            <td th:switch="${task.done}"
+                class="status-common"
+                th:classappend="${task.done == 0} ? 'status-todo' : (${task.done == 1} ? 'status-working' : (${task.done == 3} ? 'status-done' : ''))">
                 <span th:case="0">未着手</span>
                 <span th:case="1">対応中</span>
-                <span th:case="2">レビュー中</span>
                 <span th:case="3">完了</span>
             </td>
             <td>
@@ -139,7 +142,6 @@
             <select id="update_status" name="done">
                 <option value="0">未着手</option>
                 <option value="1">対応中</option>
-                <option value="2">レビュー中</option>
                 <option value="3">完了</option>
             </select>
             <div>
