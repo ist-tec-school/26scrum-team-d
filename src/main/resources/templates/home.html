@@ -79,10 +79,11 @@
             </td>
             <td th:text="${task.deadline}"></td>
             <td th:text="${task.description}"></td>
-            <td th:switch="${task.done}">
+            <td th:switch="${task.done}"
+                class="status-common"
+                th:classappend="${task.done == 0} ? 'status-todo' : (${task.done == 1} ? 'status-working' : (${task.done == 3} ? 'status-done' : ''))">
                 <span th:case="0">未着手</span>
                 <span th:case="1">対応中</span>
-                <span th:case="2">レビュー中</span>
                 <span th:case="3">完了</span>
             </td>
             <td>
@@ -126,7 +127,6 @@
             <select id="update_status" name="done">
                 <option value="0">未着手</option>
                 <option value="1">対応中</option>
-                <option value="2">レビュー中</option>
                 <option value="3">完了</option>
             </select>
             <div>
