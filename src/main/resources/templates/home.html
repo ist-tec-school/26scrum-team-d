@@ -47,8 +47,21 @@
                 <option value="working" th:selected="${selectedStatus == 'working'}">対応中のタスク</option>
                 <option value="3" th:selected="${selectedStatus == '3'}">完了したタスク</option>
             </select>
+            <input type="hidden" name="keyword" th:value="${keyword}">
             <button type="submit">絞り込み</button>
         </form>
+    </div>
+</div>
+
+<div class="search_area">
+    <form action="/list" method="get">
+        <input type="hidden" name="status" th:value="${selectedStatus}">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="検索ワード">
+        <button type="submit" class="search-button">検索</button>
+    </form>
+
+    <div th:if="${#lists.isEmpty(taskList) and (keyword != null and keyword != '')}" class="no-result-message">
+        <p> 「<span th:text="${keyword}"></span>」での検索結果  — 0件です —</p>
     </div>
 </div>
 
