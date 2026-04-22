@@ -50,6 +50,41 @@
     </div>
 </div>
 
+<div class="filter_container">
+
+    <div class="filter_item">
+        <form>
+            <select name="deptId">
+                <option value="all">部署</option>
+            </select>
+            <button type="button">絞り込み</button>
+        </form>
+    </div>
+
+    <div class="filter_item">
+        <form>
+            <select name="sectionId">
+                <option value="all">課</option>
+            </select>
+            <button type="button">絞り込み</button>
+        </form>
+    </div>
+
+    <div class="filter_item">
+        <form action="/list" method="get">
+            <select name="projectId">
+                <option value="all" th:selected="${selectedProject == 'all'}">プロジェクト</option>
+                <option th:each="project : ${projectList}"
+                        th:value="${project.id}"
+                        th:text="${project.name}"
+                        th:selected="${selectedProject == project.id.toString()}">
+                </option>
+            </select>
+            <button type="submit">絞り込み</button>
+        </form>
+    </div>
+</div>
+
 <div class="tasklist">
     <table>
         <thead>

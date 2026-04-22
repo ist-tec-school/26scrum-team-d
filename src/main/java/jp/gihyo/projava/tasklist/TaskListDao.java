@@ -94,6 +94,19 @@ public class TaskListDao {
         return mapToTaskItems(result);
     }
 
+
+    public List<TaskItem> findByProjectId(int projectId) {
+        String query = """
+    SELECT t.*, p.project_name 
+    FROM tasklist t
+    LEFT JOIN projects p ON t.project_id = p.project_id
+    WHERE t.project_id = ?
+    ORDER BY t.deadline ASC
+    """;
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(query, projectId);
+        return mapToTaskItems(result);
+    }
+
     // 新しいプロジェクトをDBに登録し、自動で割り振られたIDを返すメソッド
     public int addProject(String projectName) {
         // 1. 挿入したいデータを「カラム名」と「値」のペアとして準備します

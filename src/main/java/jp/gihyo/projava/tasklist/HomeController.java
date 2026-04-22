@@ -42,26 +42,33 @@ public class HomeController {
     }
 
     @GetMapping("/list")
+    String listItems(Model model,
+                     @RequestParam(value = "status", defaultValue = "all") String status,
+                     @RequestParam(value = "projectId", defaultValue = "all") String projectId) {
 
-// int status ではなく String status で受け取る
-    String listItems(Model model, @RequestParam(value = "status", defaultValue = "all") String status) {
         List<TaskItem> taskItems;
 
-        // 文字列の比較で分岐させる
-        if (status.equals("all")) {
+        // 1. まずプロジェクトで絞り込むか、全件かを判断します
+        if (!projectId.equals("all")) {
+            // プロジェクトIDが指定されている場合（数値の文字列が来ている場合）
+            taskItems = dao.findByProjectId(Integer.parseInt(projectId));
+        } else if (status.equals("all")) {
+            // プロジェクト指定がなく、ステータスも「すべて」の場合
             taskItems = dao.findAll();
         } else if (status.equals("working")) {
-            // "working" の時は 状態「1」のものを探す
+            // ステータスが「対応中」の場合
             taskItems = dao.findByStatus(1);
         } else {
-            // それ以外（数値の文字列 "0" や "3" など）は数値に変換して検索
+            // それ以外のステータス数値指定の場合
             taskItems = dao.findByStatus(Integer.parseInt(status));
         }
 
+        // 2. 画面（Thymeleaf）に渡すデータをセット
         model.addAttribute("taskList", taskItems);
         model.addAttribute("userList", dao.findAllUsers());
         model.addAttribute("projectList", dao.findAllProjects());
         model.addAttribute("selectedStatus", status);
+        model.addAttribute("selectedProject", projectId); // 現在選ばれているプロジェクトを保持
 
         return "home";
     }
