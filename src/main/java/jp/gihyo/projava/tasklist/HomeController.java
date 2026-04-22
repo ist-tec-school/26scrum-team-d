@@ -23,7 +23,7 @@ import java.util.UUID;
 
 @Controller
 public class HomeController {
-    record TaskItem(String id, String task, String taskUser, String description, String deadline, int done) {
+    record TaskItem(String id, String task, Integer taskUserId, String description, String deadline, int done) {
     }
 
     private List<TaskItem> taskItems = new ArrayList<>();
@@ -35,6 +35,7 @@ public class HomeController {
     }
 
     @GetMapping("/list")
+
 // int status ではなく String status で受け取る
     String listItems(Model model, @RequestParam(value = "status", defaultValue = "all") String status) {
         List<TaskItem> taskItems;
@@ -60,11 +61,11 @@ public class HomeController {
 
     @GetMapping("/add")
     String addItem(@RequestParam("task") String task,
-                   @RequestParam("taskUser") String taskUser,
+                   @RequestParam(value="taskUserId",required = false) Integer taskUserId,
                    @RequestParam("description") String description,
                    @RequestParam("deadline") String deadline) {
         String id = UUID.randomUUID().toString().substring(0, 8);
-        TaskItem item = new TaskItem(id, task, taskUser, description, deadline, 0);
+        TaskItem item = new TaskItem(id, task, taskUserId, description, deadline, 0);
         
         dao.add(item);
         return "redirect:/list";
@@ -79,11 +80,11 @@ public class HomeController {
     @GetMapping("/update")
     String updateItem(@RequestParam("id") String id,
                       @RequestParam("task") String task,
-                      @RequestParam("taskUser") String taskUser,
+                      @RequestParam(value="taskUserId",required=false) Integer taskUserId,
                       @RequestParam("description") String description,
                       @RequestParam("deadline") String deadline,
                       @RequestParam("done") int done) {
-        TaskItem taskItem = new TaskItem(id, task, taskUser, description, deadline, done);
+        TaskItem taskItem = new TaskItem(id, task, taskUserId, description, deadline, done);
         dao.update(taskItem);
         return "redirect:/list";
     }

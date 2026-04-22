@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class TaskListDao {
@@ -32,15 +33,16 @@ public class TaskListDao {
     }
     public List<TaskItem> findAll() {
         String query = """
-            SELECT id, task, task_user AS taskUser,description, deadline, done FROM tasklist
+            SELECT id, task, task_user_id,description, deadline, done FROM tasklist
+            ORDER BY deadline ASC
             """;
         List<Map<String,Object>> result = jdbcTemplate.queryForList(query);
         return mapToTaskItems(result);
     }
 
-    public List<String> findAllUsers(){
-        String query = "SELECT name FROM Users";
-        return jdbcTemplate.queryForList(query, String.class);
+    public List<Map<String, Object>> findAllUsers(){
+        String query = "SELECT user_id,name FROM users";
+        return jdbcTemplate.queryForList(query);
     }
 
     public int delete(String id) {
@@ -50,9 +52,9 @@ public class TaskListDao {
 
     public int update(TaskItem taskItem) {
         int number = jdbcTemplate.update(
-                "UPDATE tasklist SET task = ?, task_user = ?, description=?, deadline = ?, done = ? WHERE id = ?",
+                "UPDATE tasklist SET task = ?, task_user_id = ?, description=?, deadline = ?, done = ? WHERE id = ?",
                 taskItem.task(),
-                taskItem.taskUser(),
+                taskItem.taskUserId(),
                 taskItem.description(),
                 taskItem.deadline(),
                 taskItem.done(),
@@ -64,38 +66,32 @@ public class TaskListDao {
 
     // 1つのステータスで検索する場合
     public List<TaskItem> findByStatus(int status) {
-        String query = "SELECT * FROM tasklist WHERE done = ?";
+        String query = "SELECT * FROM tasklist WHERE done = ? ORDER BY deadline ASC";
         List<Map<String, Object>> result = jdbcTemplate.queryForList(query, status);
         return mapToTaskItems(result);
     }
 
     // 複数のステータス（1と2など）で検索する場合
     public List<TaskItem> findByStatusList(List<Integer> statusList) {
-        // ① 引数が空っぽだった時のために、安全策として空のリストを返すようにしておく
         if (statusList == null || statusList.isEmpty()) {
             return List.of();
         }
 
-        // ② 引数の数だけ「?」を準備する（例: [1, 2] なら "?,?" になる）
         String placeholders = String.join(",", statusList.stream().map(s -> "?").toList());
 
-        // ③ SQL文を組み立てる。ここで「(1, 2)」を「(?, ?)」に置き換えた！
-        String query = "SELECT * FROM tasklist WHERE done IN (" + placeholders + ")";
+        String query = "SELECT * FROM tasklist WHERE done IN (" + placeholders + ") ORDER BY deadline ASC";
 
-        // ④ 実行する時に、初めて「箱の中身（1, 2）」を流し込む
         List<Map<String, Object>> result = jdbcTemplate.queryForList(query, statusList.toArray());
 
-        // ⑤ 画面表示用の形式に変換して返す
         return mapToTaskItems(result);
     }
 
-    // 共通の変換処理（findAllなどから呼び出される）
     private List<TaskItem> mapToTaskItems(List<Map<String, Object>> result) {
         return result.stream()
                 .map((Map<String, Object> row) -> new TaskItem(
                         row.get("id").toString(),
                         row.get("task").toString(),
-                        row.get("taskUser")!=null?row.get("taskUser").toString():"未割当",
+                        row.get("task_user_id") != null ? ((Number)row.get("task_user_id")).intValue() : 0,
                         row.get("description") != null ? row.get("description").toString() : "",
                         row.get("deadline").toString(),
                         ((Number)row.get("done")).intValue()
