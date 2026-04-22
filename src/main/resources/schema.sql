@@ -17,12 +17,20 @@ CREATE TABLE IF NOT EXISTS users(
     FOREIGN KEY(section_id) REFERENCES sections(section_id)
 );
 
+CREATE TABLE IF NOT EXISTS projects (
+    project_id INT PRIMARY KEY AUTO_INCREMENT,
+    project_name VARCHAR(100) NOT NULL
+    );
+
 CREATE TABLE IF NOT EXISTS tasklist (
     id   VARCHAR(8)  PRIMARY KEY,
     task VARCHAR(256),
     task_user_id INT,
+    project_id INT,
     description VARCHAR(512),
     deadline VARCHAR(10),
     done INT,
-    FOREIGN KEY(task_user_id) REFERENCES users(user_id)
+    FOREIGN KEY(task_user_id) REFERENCES users(user_id),
+    FOREIGN KEY(project_id) REFERENCES projects(project_id)
 );
+
