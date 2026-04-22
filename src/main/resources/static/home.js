@@ -20,3 +20,27 @@ function showUpdateDialog(button) {
 function closeUpdateDialog() {
     document.getElementById('updateDialog').style.display = 'none';
 }
+
+function handleProjectChange(selectElement) {
+    const selectedValue = selectElement.value;
+    const hiddenInput = document.getElementById('new-project-name-hidden');
+
+    if (selectedValue === 'new') {
+        const newProjectName = prompt("新しいプロジェクト名を入力してください");
+
+        if (newProjectName && newProjectName.trim() !== "") {
+            hiddenInput.value = newProjectName;
+
+            // リストの3番目（新規登録の下）に項目を追加して選択
+            const newOption = new Option(newProjectName, "new_added");
+            selectElement.add(newOption, selectElement.options[2]);
+            newOption.selected = true;
+        } else {
+            selectElement.value = "";
+            hiddenInput.value = "";
+        }
+    } else {
+        hiddenInput.value = "";
+    }
+}
+
