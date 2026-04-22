@@ -21,16 +21,20 @@ function closeUpdateDialog() {
     document.getElementById('updateDialog').style.display = 'none';
 }
 
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
-    new TomSelect("#add_task_user", {
-        create: false,
-        allowEmptyOption: true,
-        placeholder: "担当者を選択または検索...",
-        controlInput: '<input />',
-        render: {
-            option: function(data, escape) {
-                return '<div>' + escape(data.text) + '</div>';
-            }
-        }
-    });
+    const el = document.getElementById('add_task_user');
+
+    if (el) {
+        new Choices(el, {
+            searchEnabled: true,
+            searchPlaceholderValue: '名前で検索...',
+            itemSelectText: '',
+            shouldSort: false,
+            searchFloor: 0,
+            renderChoiceLimit: -1,
+        });
+    }
 });
