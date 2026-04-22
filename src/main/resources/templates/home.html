@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>タスク管理アプリケーション</title>
     <link th:href="@{/home.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <script th:src="@{/home.js}" defer></script>
 </head>
 <body>
@@ -22,7 +24,7 @@
         <label>タスク</label>
         <input name="task" type="text"/>
         <label>担当者</label>
-        <select name="taskUserId">
+        <select name="taskUserId" id="add_task_user">
             <option value=""></option>
             <option th:each="user : ${userList}" th:value="${user.USER_ID}" th:text="${user.NAME}"></option>
         </select>
