@@ -15,11 +15,12 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.ArrayList;
 
 @Service
 public class TaskListDao {
     private final JdbcTemplate jdbcTemplate;
+
     @Autowired
     TaskListDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -31,14 +32,29 @@ public class TaskListDao {
                         .withTableName("tasklist");
         insert.execute(param);
     }
-    public List<TaskItem> findAll() {
-        String query = """
-        SELECT t.*, p.project_name 
-        FROM tasklist t
-        LEFT JOIN projects p ON t.project_id = p.project_id
-        ORDER BY t.deadline ASC
-        """;
-        List<Map<String,Object>> result = jdbcTemplate.queryForList(query);
+    public List<TaskItem> findByCondition(String status, String keyword){
+        StringBuilder query = new StringBuilder("""
+            SELECT t.*, p.project_name 
+            FROM tasklist t
+            LEFT JOIN projects p ON t.project_id = p.project_id
+            WHERE 1=1
+            """);
+        List<Object> params = new ArrayList<>();
+
+        if (status != null && !"all".equals(status)) {
+            query.append(" AND t.done = ?");
+            params.add("working".equals(status) ? 1 : Integer.parseInt(status));
+        }
+
+        if (keyword != null && !keyword.isBlank()) {
+            query.append(" AND LOWER(t.task) LIKE LOWER(?)");
+            params.add("%" + keyword + "%");
+        }
+
+        query.append(" ORDER BY t.deadline ASC");
+
+        // 実行
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(query.toString(), params.toArray());
         return mapToTaskItems(result);
     }
 
@@ -70,30 +86,6 @@ public class TaskListDao {
         return number;
     }
 
-    // --- ここから追加したメソッド（ちゃんとクラスの { } の中に入っています） ---
-
-    // 1つのステータスで検索する場合
-    public List<TaskItem> findByStatus(int status) {
-        String query = "SELECT * FROM tasklist WHERE done = ? ORDER BY deadline ASC";
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(query, status);
-        return mapToTaskItems(result);
-    }
-
-    // 複数のステータス（1と2など）で検索する場合
-    public List<TaskItem> findByStatusList(List<Integer> statusList) {
-        if (statusList == null || statusList.isEmpty()) {
-            return List.of();
-        }
-
-        String placeholders = String.join(",", statusList.stream().map(s -> "?").toList());
-
-        String query = "SELECT * FROM tasklist WHERE done IN (" + placeholders + ") ORDER BY deadline ASC";
-
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(query, statusList.toArray());
-
-        return mapToTaskItems(result);
-    }
-
     // 新しいプロジェクトをDBに登録し、自動で割り振られたIDを返すメソッド
     public int addProject(String projectName) {
         // 1. 挿入したいデータを「カラム名」と「値」のペアとして準備します
@@ -112,7 +104,7 @@ public class TaskListDao {
     private List<TaskItem> mapToTaskItems(List<Map<String, Object>> result) {
         return result.stream()
                 .map((Map<String, Object> row) -> new TaskItem(
-                        row.get("id").toString(),
+                        row.get("ID").toString(),
                         row.get("task").toString(),
                         row.get("task_user_id") != null ? ((Number)row.get("task_user_id")).intValue() : 0,
                         row.get("project_id") != null ? ((Number)row.get("project_id")).intValue() : 0, // 追加
