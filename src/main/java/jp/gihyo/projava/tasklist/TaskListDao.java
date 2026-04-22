@@ -42,10 +42,15 @@ public class TaskListDao {
         return mapToTaskItems(result);
     }
 
-    public List<Map<String, Object>> findAllUsers(){
+    public List<Map<String, Object>> findAllUsers() {
         String query = "SELECT user_id,name FROM users";
         return jdbcTemplate.queryForList(query);
     }
+
+        public List<Map<String, Object>> findAllProjects() {
+            return jdbcTemplate.queryForList("SELECT project_id as id, project_name as name FROM projects");
+        }
+
 
     public int delete(String id) {
         int number = jdbcTemplate.update("DELETE FROM tasklist WHERE id = ?", id);

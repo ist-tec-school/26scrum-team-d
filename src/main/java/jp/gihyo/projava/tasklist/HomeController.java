@@ -52,7 +52,7 @@ public class HomeController {
 
         model.addAttribute("taskList", taskItems);
         model.addAttribute("userList", dao.findAllUsers());
-        // HTML側に現在の選択状態（文字列）を渡す
+        model.addAttribute("projectList", dao.findAllProjects());
         model.addAttribute("selectedStatus", status);
 
         return "home";

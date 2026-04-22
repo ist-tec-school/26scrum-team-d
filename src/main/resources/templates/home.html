@@ -23,6 +23,14 @@
         <input name="description" type="text"/>
         <label>期限</label>
         <input name="deadline" type="date"/>
+        <label>プロジェクト</label>
+        <select name="projectId" id="project-select" onchange="handleProjectChange(this)">
+            <option value=""></option>
+            <option value="new">+ 新規で登録</option>
+            <option th:each="project : ${projectList}" th:value="${project.id}" th:text="${project.name}"></option>
+        </select>
+
+        <input type="hidden" name="newProjectName" id="new-project-name-hidden">
         <input type="submit" value="登録"/>
     </form>
 </div>
@@ -45,20 +53,22 @@
 <div class="tasklist">
     <table>
         <thead>
-            <tr>
-                <th class="hidden">ID</th>
-                <th>タスク</th>
-                <th>担当者</th>
-                <th>期限</th>
-                <th>説明</th>
-                <th>状態</th>
-                <th>更新</th>
-                <th>削除</th>
-            </tr>
+        <tr>
+            <th class="hidden">ID</th>
+            <th>プロジェクト</th>
+            <th>タスク</th>
+            <th>担当者</th>
+            <th>期限</th>
+            <th>説明</th>
+            <th>状態</th>
+            <th>更新</th>
+            <th>削除</th>
+        </tr>
         </thead>
         <tbody>
         <tr th:each="task : ${taskList}">
             <td class="hidden" th:text="${task.id}"></td>
+            <td th:text="${task.projectName}">プロジェクト名</td>
             <td th:text="${task.task}"></td>
             <td th:data-user-id="${task.taskUserId}">
                 <span th:each="user : ${userList}"
