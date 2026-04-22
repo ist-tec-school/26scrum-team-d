@@ -1,7 +1,19 @@
+CREATE TABLE IF NOT EXISTS departments (
+    dept_id INT PRIMARY KEY AUTO_INCREMENT,
+    dept_name VARCHAR(100)
+);
+
+CREATE TABLE IF NOT EXISTS sections (
+    section_id INT PRIMARY KEY AUTO_INCREMENT,
+    section_name VARCHAR(100),
+    dept_id INT,
+    FOREIGN KEY(dept_id) REFERENCES departments(dept_id)
+);
+
 CREATE TABLE IF NOT EXISTS users(
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100)
-    );
+);
 
 CREATE TABLE IF NOT EXISTS tasklist (
     id   VARCHAR(8)  PRIMARY KEY,
