@@ -79,20 +79,7 @@ public class TaskListDao {
         return mapToTaskItems(result);
     }
 
-    // 複数のステータス（1と2など）で検索する場合
-    public List<TaskItem> findByStatusList(List<Integer> statusList) {
-        if (statusList == null || statusList.isEmpty()) {
-            return List.of();
-        }
 
-        String placeholders = String.join(",", statusList.stream().map(s -> "?").toList());
-
-        String query = "SELECT * FROM tasklist WHERE done IN (" + placeholders + ") ORDER BY deadline ASC";
-
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(query, statusList.toArray());
-
-        return mapToTaskItems(result);
-    }
 
     // 新しいプロジェクトをDBに登録し、自動で割り振られたIDを返すメソッド
     public int addProject(String projectName) {
