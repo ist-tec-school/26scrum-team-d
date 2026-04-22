@@ -67,7 +67,6 @@
                 </span>
                 <span th:if="${task.taskUserId == 0 or task.taskUserId == null}"></span>
             </td>
-            <td th:text="${task.description}"></td>
             <td th:text="${task.deadline}"></td>
             <td th:text="${task.description}"></td>
             <td th:switch="${task.done}">
