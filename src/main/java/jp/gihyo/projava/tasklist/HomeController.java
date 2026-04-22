@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
@@ -69,7 +70,7 @@ public class HomeController {
         return "redirect:/list";
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     String deleteItem(@RequestParam("id") String id) {
         dao.delete(id);
         return "redirect:/list";
