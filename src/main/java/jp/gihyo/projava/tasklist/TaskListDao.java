@@ -86,6 +86,7 @@ public class TaskListDao {
         return number;
     }
 
+
     // 新しいプロジェクトをDBに登録し、自動で割り振られたIDを返すメソッド
     public int addProject(String projectName) {
         // 1. 挿入したいデータを「カラム名」と「値」のペアとして準備します
