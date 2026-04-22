@@ -69,3 +69,19 @@ input {
     align-items: center;
     gap: 10px; /* 要素間の隙間 */
 }
+
+/* 担当者検索窓 */
+.ts-control {
+    border-radius: 4px !important;
+    border: 1px solid #ccc !important;
+    padding: 8px !important;
+}
+
+.ts-dropdown .active {
+    background-color: #eef2ff !important;
+    color: #000 !important;
+}
+.ts-dropdown .optgroup-header,
+.ts-dropdown [data-selectable] {
+    padding: 8px 12px;
+}

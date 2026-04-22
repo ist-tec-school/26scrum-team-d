@@ -22,10 +22,15 @@ function closeUpdateDialog() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // 登録フォームの担当者プルダウンを検索可能にする
     new TomSelect("#add_task_user", {
         create: false,
         allowEmptyOption: true,
-        placeholder: "担当者を検索..."
+        placeholder: "担当者を選択または検索...",
+        controlInput: '<input />',
+        render: {
+            option: function(data, escape) {
+                return '<div>' + escape(data.text) + '</div>';
+            }
+        }
     });
 });
