@@ -44,31 +44,28 @@ public class HomeController {
     @GetMapping("/list")
     String listItems(Model model,
                      @RequestParam(value = "status", defaultValue = "all") String status,
-                     @RequestParam(value = "projectId", defaultValue = "all") String projectId) {
+                     @RequestParam(value = "projectId", defaultValue = "all") String projectId,
+                     @RequestParam(value = "deptId", defaultValue = "all") String deptId,
+                     @RequestParam(value = "sectionId", defaultValue = "all") String sectionId) {
 
-        List<TaskItem> taskItems;
-
-        // 1. まずプロジェクトで絞り込むか、全件かを判断します
-        if (!projectId.equals("all")) {
-            // プロジェクトIDが指定されている場合（数値の文字列が来ている場合）
-            taskItems = dao.findByProjectId(Integer.parseInt(projectId));
-        } else if (status.equals("all")) {
-            // プロジェクト指定がなく、ステータスも「すべて」の場合
-            taskItems = dao.findAll();
-        } else if (status.equals("working")) {
-            // ステータスが「対応中」の場合
-            taskItems = dao.findByStatus(1);
-        } else {
-            // それ以外のステータス数値指定の場合
-            taskItems = dao.findByStatus(Integer.parseInt(status));
-        }
+        // 1. DAOの新しいメソッド「findFiltered」だけで検索を完結させます。
+        // これにより、statusもprojectIdもdeptIdもすべて組み合わされた結果が返ってきます。
+        List<TaskItem> taskItems = dao.findFiltered(status, projectId, deptId, sectionId);
 
         // 2. 画面（Thymeleaf）に渡すデータをセット
         model.addAttribute("taskList", taskItems);
         model.addAttribute("userList", dao.findAllUsers());
         model.addAttribute("projectList", dao.findAllProjects());
+
+        // 部署と課のリストもプルダウンに表示するために必要です（DAOにメソッドがある前提）
+        model.addAttribute("deptList", dao.findAllDepartments());
+        model.addAttribute("sectionList", dao.findAllSections());
+
+        // 現在選ばれている値を保持（HTML側の th:selected や hidden で使用）
         model.addAttribute("selectedStatus", status);
-        model.addAttribute("selectedProject", projectId); // 現在選ばれているプロジェクトを保持
+        model.addAttribute("selectedProject", projectId);
+        model.addAttribute("selectedDept", deptId);
+        model.addAttribute("selectedSection", sectionId);
 
         return "home";
     }
