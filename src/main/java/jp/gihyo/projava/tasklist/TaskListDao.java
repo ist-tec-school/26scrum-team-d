@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class TaskListDao {
@@ -32,17 +33,16 @@ public class TaskListDao {
     }
     public List<TaskItem> findAll() {
         String query = """
-            SELECT id, task, task_user AS taskUser, description, deadline, done 
-            FROM tasklist
-            ORDER BY deadline ASC
+            SELECT id, task, task_user_id,description, deadline, done FROM tasklist
+            ORDER BY deadline AS
             """;
         List<Map<String,Object>> result = jdbcTemplate.queryForList(query);
         return mapToTaskItems(result);
     }
 
-    public List<String> findAllUsers(){
-        String query = "SELECT name FROM Users";
-        return jdbcTemplate.queryForList(query, String.class);
+    public List<Map<String, Object>> findAllUsers(){
+        String query = "SELECT user_id,name FROM users";
+        return jdbcTemplate.queryForList(query);
     }
 
     public int delete(String id) {
@@ -52,9 +52,9 @@ public class TaskListDao {
 
     public int update(TaskItem taskItem) {
         int number = jdbcTemplate.update(
-                "UPDATE tasklist SET task = ?, task_user = ?, description=?, deadline = ?, done = ? WHERE id = ?",
+                "UPDATE tasklist SET task = ?, task_user_id = ?, description=?, deadline = ?, done = ? WHERE id = ?",
                 taskItem.task(),
-                taskItem.taskUser(),
+                taskItem.taskUserId(),
                 taskItem.description(),
                 taskItem.deadline(),
                 taskItem.done(),
@@ -91,7 +91,7 @@ public class TaskListDao {
                 .map((Map<String, Object> row) -> new TaskItem(
                         row.get("id").toString(),
                         row.get("task").toString(),
-                        row.get("taskUser")!=null?row.get("taskUser").toString():"",
+                        row.get("task_user_id") != null ? ((Number)row.get("task_user_id")).intValue() : 0,
                         row.get("description") != null ? row.get("description").toString() : "",
                         row.get("deadline").toString(),
                         ((Number)row.get("done")).intValue()
