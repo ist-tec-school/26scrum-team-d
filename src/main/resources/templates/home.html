@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>タスク管理アプリケーション</title>
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
     <link th:href="@{/home.css}" rel="stylesheet">
     <script th:src="@{/home.js}" defer></script>
 </head>
@@ -15,7 +17,7 @@
         <label>タスク</label>
         <input name="task" type="text"/>
         <label>担当者</label>
-        <select name="taskUserId">
+        <select name="taskUserId" id="add_task_user">
             <option value=""></option>
             <option th:each="user : ${userList}" th:value="${user.USER_ID}" th:text="${user.NAME}"></option>
         </select>

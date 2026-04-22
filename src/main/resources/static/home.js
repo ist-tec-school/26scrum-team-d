@@ -20,3 +20,12 @@ function showUpdateDialog(button) {
 function closeUpdateDialog() {
     document.getElementById('updateDialog').style.display = 'none';
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    // 登録フォームの担当者プルダウンを検索可能にする
+    new TomSelect("#add_task_user", {
+        create: false,
+        allowEmptyOption: true,
+        placeholder: "担当者を検索..."
+    });
+});
