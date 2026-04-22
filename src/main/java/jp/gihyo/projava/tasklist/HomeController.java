@@ -101,11 +101,21 @@ public class HomeController {
     String updateItem(@RequestParam("id") String id,
                       @RequestParam("task") String task,
                       @RequestParam(value="taskUserId",required=false) Integer taskUserId,
-                      @RequestParam(value="projectId",required=false) Integer projectId,
+                      @RequestParam(value="projectId",required=false) String projectId, // Stringで受け取る
+                      @RequestParam(value="newProjectName",required=false) String newProjectName, // 追加
                       @RequestParam("description") String description,
                       @RequestParam("deadline") String deadline,
                       @RequestParam("done") int done) {
-        TaskItem taskItem = new TaskItem(id, task, taskUserId, projectId, "", description, deadline, done);
+
+        Integer targetProjectId = null;
+        if ("new".equals(projectId) && newProjectName != null && !newProjectName.isEmpty()) {
+            targetProjectId = dao.addProject(newProjectName);
+        } else if (projectId != null && !projectId.isEmpty()) {
+            targetProjectId = Integer.parseInt(projectId);
+        }
+
+        // 引数の最後から2番目を targetProjectId に変更
+        TaskItem taskItem = new TaskItem(id, task, taskUserId, targetProjectId, "", description, deadline, done);
 
         dao.update(taskItem);
         return "redirect:/list";
