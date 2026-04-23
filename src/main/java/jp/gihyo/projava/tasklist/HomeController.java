@@ -31,7 +31,8 @@ public class HomeController {
             String description,
             String deadline,
             int done
-    ) {}
+    ) {
+    }
 
     private List<TaskItem> taskItems = new ArrayList<>();
     private final TaskListDao dao;
@@ -44,14 +45,31 @@ public class HomeController {
     @GetMapping("/list")
     String listItems(Model model,
                      @RequestParam(value = "status", defaultValue = "all") String status,
+                     @RequestParam(value = "projectId", defaultValue = "all") String projectId,
+                     @RequestParam(value = "deptId", defaultValue = "all") String deptId,
+                     @RequestParam(value = "sectionId", defaultValue = "all") String sectionId,
                      @RequestParam(value = "keyword", defaultValue = "") String keyword) {
 
-        List<TaskItem> taskItems = dao.findByCondition(status, keyword);
+        List<TaskItem> taskItems = dao.findFiltered(status, projectId, deptId, sectionId, keyword);
 
         model.addAttribute("taskList", taskItems);
         model.addAttribute("userList", dao.findAllUsers());
         model.addAttribute("projectList", dao.findAllProjects());
+        model.addAttribute("deptList", dao.findAllDepartments());
+
+        // --- ここを修正 ---
+        // 部署が選択されている（all以外）場合は、その部署の課だけを取得する
+        if (!"all".equals(deptId)) {
+            model.addAttribute("sectionList", dao.findSectionsByDeptId(Integer.parseInt(deptId)));
+        } else {
+            model.addAttribute("sectionList", dao.findAllSections());
+        }
+        // -----------------
+
         model.addAttribute("selectedStatus", status);
+        model.addAttribute("selectedProject", projectId);
+        model.addAttribute("selectedDept", deptId);
+        model.addAttribute("selectedSection", sectionId);
         model.addAttribute("keyword", keyword);
 
         return "home";
@@ -59,9 +77,9 @@ public class HomeController {
 
     @GetMapping("/add")
     String addItem(@RequestParam("task") String task,
-                   @RequestParam(value="projectId", required=false) String projectId,
-                   @RequestParam(value="newProjectName", required=false) String newProjectName,
-                   @RequestParam(value="taskUserId",required = false) Integer taskUserId,
+                   @RequestParam(value = "projectId", required = false) String projectId,
+                   @RequestParam(value = "newProjectName", required = false) String newProjectName,
+                   @RequestParam(value = "taskUserId", required = false) Integer taskUserId,
                    @RequestParam("description") String description,
                    @RequestParam("deadline") String deadline) {
 
@@ -76,7 +94,7 @@ public class HomeController {
 
         String id = UUID.randomUUID().toString().substring(0, 8);
         // ★ここを修正：nullの代わりに targetProjectId を渡す
-        TaskItem item = new TaskItem(id, task, taskUserId, targetProjectId, "", description, deadline, 0);
+        TaskItem item = new TaskItem(id, task, taskUserId, targetProjectId, newProjectName, description, deadline, 0);
 
         dao.add(item);
         return "redirect:/list";
@@ -88,12 +106,13 @@ public class HomeController {
         return "redirect:/list";
     }
 
+    // HomeController.java 118行目付近
     @GetMapping("/update")
     String updateItem(@RequestParam("id") String id,
                       @RequestParam("task") String task,
-                      @RequestParam(value="taskUserId",required=false) Integer taskUserId,
-                      @RequestParam(value="projectId",required=false) String projectId, // Stringで受け取る
-                      @RequestParam(value="newProjectName",required=false) String newProjectName, // 追加
+                      @RequestParam(value = "taskUserId", required = false) Integer taskUserId,
+                      @RequestParam(value = "projectId", required = false) String projectId,
+                      @RequestParam(value = "newProjectName", required = false) String newProjectName, // ←これを受け取っている
                       @RequestParam("description") String description,
                       @RequestParam("deadline") String deadline,
                       @RequestParam("done") int done) {
@@ -105,8 +124,7 @@ public class HomeController {
             targetProjectId = Integer.parseInt(projectId);
         }
 
-        // 引数の最後から2番目を targetProjectId に変更
-        TaskItem taskItem = new TaskItem(id, task, taskUserId, targetProjectId, "", description, deadline, done);
+        TaskItem taskItem = new TaskItem(id, task, taskUserId, targetProjectId, newProjectName, description, deadline, done);
 
         dao.update(taskItem);
         return "redirect:/list";

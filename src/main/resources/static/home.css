@@ -55,12 +55,13 @@ input {
     margin-bottom: 10px;    /* 下のテーブルとの隙間 */
 }
 
-/* フィルター内の余白も微調整 */
+
 .filter_area {
     padding: 5px 10px;
     background-color: #f4f7f6;
     border-radius: 5px;
 }
+
 
 .filter_area form {
     display: flex;
@@ -68,6 +69,34 @@ input {
     gap: 10px; /* 要素間の隙間 */
 }
 
+/* フィルター全体を包むコンテナ */
+.filter_container {
+    display: flex;                /* 子要素を横並びにする指示です */
+    justify-content: space-between; /* 子要素を「均等な間隔」で配置します（Reactでもよく使いますね！） */
+    gap: 20px;                    /* 要素間に一定の隙間を作ります */
+    margin-bottom: 20px;          /* 下にあるテーブルとの間に余白を作ります */
+    padding: 15px;                /* 内側の余白です */
+    background-color: #f4f7f6;    /* 背景色を薄いグレーにして「フィルターエリア」であることを強調します */
+    border-radius: 8px;           /* 角を少し丸くしておしゃれにします */
+}
+
+/* 各フィルター項目（プロジェクト、部署、課） */
+.filter_item {
+    flex: 1;                      /* これが重要！3つの要素が同じ幅（1:1:1）で広がるようになります */
+}
+
+/* フィルター内のフォーム（ラベル、セレクト、ボタン）を整える */
+.filter_item form {
+    display: flex;                /* フォーム内の部品を横並びにします */
+    flex-direction: column;       /* スマホっぽく縦に並べたい場合はこれを使いますが、今回は横のままでもOK */
+    gap: 5px;                     /* ラベルとセレクトボックスの間の隙間です */
+}
+
+/* セレクトボックスとボタンの幅を調整 */
+.filter_item select, .filter_item button {
+    width: 100%;                  /* flex: 1 で確保した親の幅いっぱいに広げます */
+    padding: 5px;                 /* 押しやすいように内側に余白を入れます */
+}
 
 
 /* 検索エリアの配置 */
@@ -152,3 +181,58 @@ input {
     text-align: center;
 }
 
+
+.choices {
+    width: 100% !important;
+    max-width: 400px;
+    margin: 0 !important;
+    vertical-align: middle;
+    padding: 3px 0;
+}
+
+.choices__inner {
+    height: 30px !important;
+    min-height: 30px !important;
+    padding: 0 10px !important;
+    border: 1px solid #000 !important;
+    border-radius: 0 !important;
+    background-color: #fff !important;
+    display: flex !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+}
+
+.is-focused .choices__inner,
+.is-open .choices__inner {
+    border: 1px solid #000 !important;
+    z-index: 1;
+}
+
+.choices__list--dropdown {
+    border: 1px solid #000 !important;
+    border-top: none !important;
+    border-radius: 0 !important;
+    box-sizing: border-box !important;
+    z-index: 100 !important;
+}
+
+.choices__list--dropdown .choices__input {
+    border: 1px solid #ccc !important;
+    border-radius: 0 !important;
+    margin: 5px !important;
+    padding: 4px 8px !important;
+    width: calc(100% - 10px) !important;
+    box-sizing: border-box !important;
+}
+
+.choices[data-type*="select-one"]::after {
+    border-color: #000 transparent transparent transparent !important;
+    border-width: 5px !important;
+    right: 12px !important;
+    margin-top: -2.5px !important;
+}
+
+.choices[data-type*="select-one"].is-open::after {
+    border-color: transparent transparent #000 transparent !important;
+    margin-top: -7.5px !important;
+}
