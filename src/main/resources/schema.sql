@@ -12,7 +12,9 @@ CREATE TABLE IF NOT EXISTS sections (
 
 CREATE TABLE IF NOT EXISTS users(
     user_id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(100)
+    name VARCHAR(100),
+    section_id INT,
+    FOREIGN KEY(section_id) REFERENCES sections(section_id)
 );
 
 CREATE TABLE IF NOT EXISTS projects (
@@ -23,12 +25,18 @@ CREATE TABLE IF NOT EXISTS projects (
 CREATE TABLE IF NOT EXISTS tasklist (
     id   VARCHAR(8)  PRIMARY KEY,
     task VARCHAR(256),
-    task_user_id INT,
     project_id INT,
     description VARCHAR(512),
     deadline VARCHAR(10),
     done INT,
-    FOREIGN KEY(task_user_id) REFERENCES users(user_id),
     FOREIGN KEY(project_id) REFERENCES projects(project_id)
 );
+
+CREATE TABLE IF NOT EXISTS task_assignments(
+    task_id VARCHAR(8),
+    user_id INT,
+    PRIMARY KEY (task_id, user_id),
+    FOREIGN KEY (task_id) REFERENCES tasklist(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+)
 

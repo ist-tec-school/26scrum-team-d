@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 @Service
 public class TaskListDao {
@@ -36,20 +37,11 @@ public class TaskListDao {
                         .withTableName("tasklist");
         insert.execute(param);
     }
-
-    public List<TaskItem> findAll() {
-        String query = """
-                SELECT t.*, p.project_name 
-                FROM tasklist t
-                LEFT JOIN projects p ON t.project_id = p.project_id
-                ORDER BY t.deadline ASC
-                """;
-        List<Map<String, Object>> result = jdbcTemplate.queryForList(query);
         return mapToTaskItems(result);
     }
 
     // --- フィルタリング用メソッド ---
-    public List<TaskItem> findFiltered(String status, String projectId, String deptId, String sectionId) {
+    public List<TaskItem> findFiltered(String status, String projectId, String deptId, String sectionId,String keyword) {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT t.*, p.project_name ");
         sql.append("FROM tasklist t ");
@@ -78,6 +70,11 @@ public class TaskListDao {
         if (!"all".equals(sectionId) && sectionId != null && !sectionId.isEmpty()) {
             sql.append(" AND s.section_id = ?");
             params.add(Integer.parseInt(sectionId));
+        }
+      
+      if (keyword != null && !keyword.isBlank()) {
+            query.append(" AND LOWER(t.task) LIKE LOWER(?)");
+            params.add("%" + keyword + "%");
         }
 
         sql.append(" ORDER BY t.deadline ASC");
@@ -134,7 +131,7 @@ public class TaskListDao {
     private List<TaskItem> mapToTaskItems(List<Map<String, Object>> result) {
         return result.stream()
                 .map((Map<String, Object> row) -> new TaskItem(
-                        row.get("id").toString(),
+                        row.get("ID").toString(),
                         row.get("task").toString(),
                         row.get("task_user_id") != null ? ((Number) row.get("task_user_id")).intValue() : 0,
                         row.get("project_id") != null ? ((Number) row.get("project_id")).intValue() : 0,
