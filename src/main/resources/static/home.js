@@ -1,35 +1,42 @@
+/**
+ * 更新ダイアログを表示する
+ */
 function showUpdateDialog(button) {
-    // 1. ボタンが押された行全体(tr)を取得します
-    let row = button.parentElement.parentElement;
+    // ボタンが属する行(tr)を取得
+    const row = button.closest('tr');
+    const dialog = document.getElementById('updateDialog');
 
-    // 2. [0番目] 隠れているIDをセット
-    document.getElementById('update_id').value = row.cells[0].innerText;
+    // 各セルのデータを取得（セルの位置に注意）
+    const id = row.cells[0].innerText;                // ID (hidden)
+    const projectId = row.cells[1].dataset.projectId;  // プロジェクトID
+    const task = row.cells[2].innerText;               // タスク名
+    const userId = button.getAttribute('data-user-id');// 担当者ID
+    const deadline = row.cells[4].innerText;           // 期限
+    const description = row.cells[5].innerText;        // 説明
 
-    // 3. [1番目] プロジェクトIDをセット（セルのdata-project-id属性から取得）
-    if(document.getElementById('update_project')) {
-        document.getElementById('update_project').value = row.cells[1].dataset.projectId || '';
+    // ダイアログの各入力欄に値をセット
+    document.getElementById('update_id').value = id;
+    document.getElementById('update_task').value = task;
+    document.getElementById('update_deadline').value = deadline;
+    document.getElementById('update_description').value = description;
+
+    // プロジェクトのセレクトボックスをセット
+    const projectSelect = document.getElementById('update_project');
+    if (projectSelect) {
+        projectSelect.value = projectId || '';
     }
 
-    // 4. [2番目] タスク名をセット（以前は1番目でしたが2番目にズレました）
-    document.getElementById('update_task').value = row.cells[2].innerText;
+    // Choices.js を使用している担当者セレクトボックスをセット
+    if (updateChoice) {
+        updateChoice.setChoiceByValue(userId ? userId.toString() : "");
+    }
 
-    // 5. [3番目] 担当者IDをセット（以前は2番目でしたが3番目にズレました）
-    document.getElementById('update_user').value = row.cells[3].dataset.userId || '';
+    // 状態（テキストから数値へ変換）
+    const statusMap = {'未着手': 0, '対応中': 1, '完了': 3};
+    const statusText = row.cells[6].innerText.trim();
+    document.getElementById('update_status').value = statusMap[statusText] ?? 0;
 
-    // 6. [4番目] 期限をセット（ここが「説明」に入り込んでいた原因！）
-    document.getElementById('update_deadline').value = row.cells[4].innerText;
-
-    // 7. [5番目] 説明をセット
-    document.getElementById('update_description').value = row.cells[5].innerText;
-
-    // 8. [6番目] 状態（テキスト→数値変換）をセット
-    const statusMap = {'未着手': 0, '対応中': 1, 'レビュー中': 2, '完了': 3};
-    const text = row.cells[6].innerText.trim();
-    document.getElementById('update_status').value = statusMap[text] ?? 0;
-
-    // 9. ダイアログを表示
-    let dialog = document.getElementById('updateDialog');
-    dialog.style.left = ((window.innerWidth - 500) / 2) + 'px';
+    // ダイアログを表示
     dialog.style.display = 'block';
 }
 
@@ -41,9 +48,9 @@ function closeUpdateDialog() {
 }
 
 /**
- * プロジェクト選択が変更された時の処理（新規登録・更新共通）
- * @param selectElement - 選択されたselect要素自体
- * @param hiddenInputId - プロジェクト名を格納する隠し入力欄のID
+ * プロジェクト選択が「新規」になった時の入力処理
+ * @param selectElement - 選択されたselect要素
+ * @param hiddenInputId - プロジェクト名を格納するhiddenのID
  */
 function handleProjectChange(selectElement, hiddenInputId) {
     const selectedValue = selectElement.value;
@@ -55,30 +62,32 @@ function handleProjectChange(selectElement, hiddenInputId) {
         if (newProjectName && newProjectName.trim() !== "") {
             hiddenInput.value = newProjectName;
 
-            // ユーザーに見せるために、一時的にセレクトボックスに選択肢を追加する
+            // 画面上の選択肢に一時的に追加
             const newOption = new Option(newProjectName, "new");
             selectElement.add(newOption, selectElement.options[2]);
             newOption.selected = true;
         } else {
-            // キャンセルされた場合は選択を空に戻す
+            // キャンセル時は選択をリセット
             selectElement.value = "";
             hiddenInput.value = "";
         }
     } else {
-        // 既存のプロジェクトを選んだ場合は隠しフィールドを空にする
         hiddenInput.value = "";
     }
 }
 
+// --- ページ読み込み時の初期化 ---
 let updateChoice;
 
 document.addEventListener('DOMContentLoaded', function() {
+    // 登録フォームの担当者（Choices.js）
     new Choices('#add_task_user', {
         searchEnabled: true,
         itemSelectText: '',
         shouldSort: false,
     });
 
+    // 更新フォームの担当者（Choices.js）
     const updateEl = document.getElementById('update_user');
     if (updateEl) {
         updateChoice = new Choices(updateEl, {
@@ -88,29 +97,3 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
-function showUpdateDialog(button) {
-    const dialog = document.getElementById('updateDialog');
-
-    const row = button.closest('tr');
-    const id = row.querySelector('.hidden').textContent;
-    const task = row.cells[2].textContent;
-    const deadline = row.cells[4].textContent;
-    const description = row.cells[5].textContent;
-    const userId = button.getAttribute('data-user-id');
-
-    document.getElementById('update_id').value = id;
-    document.getElementById('update_task').value = task;
-    document.getElementById('update_deadline').value = deadline;
-    document.getElementById('update_description').value = description;
-
-    if (updateChoice) {
-        updateChoice.setChoiceByValue(userId ? userId.toString() : "");
-    }
-
-    dialog.style.display = 'block';
-}
-
-function closeUpdateDialog() {
-    document.getElementById('updateDialog').style.display = 'none';
-}

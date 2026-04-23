@@ -151,6 +151,28 @@ input {
     gap: 10px;
 }
 
+/* エラーメッセージのスタイル */
+.error-text {
+    color: #d93025; /* Google等のエラーで使われる赤色 */
+    background-color: #fce8e6;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #fad2cf;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+/* 必須項目のラベルに「*」を付ける（任意） */
+label:has(+ input[required])::after {
+    content: " *";
+    color: #d93025;
+}
+
+/* ブラウザのバリデーションエラー時に枠線を赤くする */
+input:invalid:focus {
+    border-color: #d93025;
+}
+
 /* 状態別の背景色 */
 
 /* 未着手 */
@@ -181,3 +203,58 @@ input {
     text-align: center;
 }
 
+
+.choices {
+    width: 100% !important;
+    max-width: 400px;
+    margin: 0 !important;
+    vertical-align: middle;
+    padding: 3px 0;
+}
+
+.choices__inner {
+    height: 30px !important;
+    min-height: 30px !important;
+    padding: 0 10px !important;
+    border: 1px solid #000 !important;
+    border-radius: 0 !important;
+    background-color: #fff !important;
+    display: flex !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+}
+
+.is-focused .choices__inner,
+.is-open .choices__inner {
+    border: 1px solid #000 !important;
+    z-index: 1;
+}
+
+.choices__list--dropdown {
+    border: 1px solid #000 !important;
+    border-top: none !important;
+    border-radius: 0 !important;
+    box-sizing: border-box !important;
+    z-index: 100 !important;
+}
+
+.choices__list--dropdown .choices__input {
+    border: 1px solid #ccc !important;
+    border-radius: 0 !important;
+    margin: 5px !important;
+    padding: 4px 8px !important;
+    width: calc(100% - 10px) !important;
+    box-sizing: border-box !important;
+}
+
+.choices[data-type*="select-one"]::after {
+    border-color: #000 transparent transparent transparent !important;
+    border-width: 5px !important;
+    right: 12px !important;
+    margin-top: -2.5px !important;
+}
+
+.choices[data-type*="select-one"].is-open::after {
+    border-color: transparent transparent #000 transparent !important;
+    margin-top: -7.5px !important;
+}
