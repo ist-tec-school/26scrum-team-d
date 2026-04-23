@@ -36,12 +36,13 @@
         <input name="task" type="text"
                th:value="${taskItem?.task}" required/>
         <label>担当者</label>
-        <select name="taskUserId" id="add_task_user">
+        <select name="taskUserIds" id="add_task_user" multiple>
             <option value=""></option>
             <option th:each="user : ${userList}"
                     th:value="${user.USER_ID}"
-                    th:text="${user.NAME}"
-                    th:selected="${user.USER_ID == taskItem?.taskUserId}"></option>
+                    th:text="${user.NAME}">
+                <!--                    th:selected="${user.USER_ID == taskItem?.taskUserId}"-->
+            </option>
         </select>
         <label>期限</label>
         <input name="deadline" type="date"
@@ -49,7 +50,7 @@
         <label>説明</label>
         <textarea name="description" rows="4"></textarea>
 
-        <input type="submit" value="登録"/>
+        <input type="submit" value="登録" class="btn-register"/>
     </form>
 </div>
 
@@ -64,7 +65,7 @@
             <select name="status" id="status-filter" onchange="this.form.submit()">
                 <option value="all" th:selected="${selectedStatus == 'all'}">すべてのタスク</option>
                 <option value="0" th:selected="${selectedStatus == '0'}">未着手のタスク</option>
-                <option value="working" th:selected="${selectedStatus == '1'}">対応中のタスク</option>
+                <option value="1" th:selected="${selectedStatus == '1'}">対応中のタスク</option>
                 <option value="3" th:selected="${selectedStatus == '3'}">完了したタスク</option>
             </select>
         </form>
@@ -74,22 +75,22 @@
 <div class="filter_container">
 
     <div class="filter_item">
-    <form action="/list" method="get">
-        <input type="hidden" name="status" th:value="${selectedStatus}">
-        <input type="hidden" name="projectId" th:value="${selectedProject}">
-        <input type="hidden" name="keyword" th:value="${keyword}">
-        <input type="hidden" name="sectionId" value="all">
+        <form action="/list" method="get">
+            <input type="hidden" name="status" th:value="${selectedStatus}">
+            <input type="hidden" name="projectId" th:value="${selectedProject}">
+            <input type="hidden" name="keyword" th:value="${keyword}">
+            <input type="hidden" name="sectionId" value="all">
 
-        <select name="deptId" onchange="this.form.submit()">
-            <option value="all" th:selected="${selectedDept == 'all'}">すべての部署</option>
-            <option th:each="dept : ${deptList}"
-                    th:value="${dept.DEPT_ID}"
-                    th:text="${dept.DEPT_NAME}"
-                    th:selected="${selectedDept == dept.DEPT_ID.toString()}">
-            </option>
-        </select>
-    </form>
-</div>
+            <select name="deptId" onchange="this.form.submit()">
+                <option value="all" th:selected="${selectedDept == 'all'}">すべての部署</option>
+                <option th:each="dept : ${deptList}"
+                        th:value="${dept.DEPT_ID}"
+                        th:text="${dept.DEPT_NAME}"
+                        th:selected="${selectedDept == dept.DEPT_ID.toString()}">
+                </option>
+            </select>
+        </form>
+    </div>
 
     <div class="filter_item">
         <form action="/list" method="get">
@@ -129,7 +130,7 @@
 <div class="search_area">
     <form action="/list" method="get">
         <input type="hidden" name="status" th:value="${selectedStatus}">
-        <input type="text" name="keyword" th:value="${keyword}" placeholder="検索ワード">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="検索ワード タスクを検索できます。">
         <button type="submit" class="search-button">検索</button>
     </form>
 
@@ -157,12 +158,14 @@
             <td class="hidden" th:text="${task.id}"></td>
             <td th:text="${task.projectName}" th:data-project-id="${task.projectId}">プロジェクト名</td>
             <td th:text="${task.task}"></td>
-            <td th:data-user-id="${task.taskUserId}">
-                <span th:each="user : ${userList}"
-                      th:if="${user.USER_ID == task.taskUserId}"
-                      th:text="${user.NAME}">
+            <td th:data-user-id="${task.taskUserIds}">
+                <span th:each="uid,stat : ${task.taskUserIds}">
+                    <span th:each="user : ${userList}"
+                          th:if="${user.USER_ID == uid}"
+                          th:text="${user.NAME} + ${!stat.last ? ', ' : ''}">
+                    </span>
                 </span>
-                <span th:if="${task.taskUserId == 0 or task.taskUserId == null}"></span>
+                <span th:if="${task.taskUserIds == 0 or task.taskUserIds == null}"></span>
             </td>
             <td th:text="${task.deadline}"></td>
             <td th:text="${task.description}"></td>
@@ -175,7 +178,6 @@
             </td>
             <td>
                 <button type="button"
-                        th:data-user-id="${task.taskUserId}"
                         onclick="showUpdateDialog(this)">更新</button>
             </td>
             <td>
@@ -204,8 +206,7 @@
             <input id="update_id" name="id" type="hidden"
                    th:value="${updateItem?.id}"/>
             <label>プロジェクト</label>
-            <select id="update_project" name="projectId"
-                    onchange="handleProjectChange(this, 'update_newProjectName_hidden_modal')">
+            <select id="update_project" name="projectId" onchange="handleProjectChange(this, 'update_newProjectName_hidden')">
                 <option value=""></option>
                 <option value="new">+ 新規で登録</option>
                 <option th:each="project : ${projectList}"
@@ -213,17 +214,15 @@
                         th:text="${project.name}"
                         th:selected="${project.id == updateItem?.projectId}"></option>
             </select>
-            <input type="hidden" name="newProjectName"
-                   id="update_newProjectName_hidden_modal">
+            <input type="hidden" name="newProjectName" id="update_newProjectName_hidden">
             <label>タスク</label>
             <input id="update_task" name="task" type="text"
                    th:value="${updateItem?.task}" required/>
             <label>担当者</label>
-            <select id="update_user" name="taskUserId">
+            <select id="update_user" name="taskUserIds" multiple>
                 <option th:each="user : ${userList}"
                         th:value="${user.USER_ID}"
-                        th:text="${user.NAME}"
-                        th:selected="${user.USER_ID == updateItem?.taskUserId}">
+                        th:text="${user.NAME}">
                 </option>
             </select>
             <label>期限</label>

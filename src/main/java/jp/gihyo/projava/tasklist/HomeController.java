@@ -30,7 +30,7 @@ public class HomeController {
     record TaskItem(
             String id,
             @NotBlank String task,
-            Integer taskUserId,
+            List<Integer> taskUserIds,
             Integer projectId,
             String projectName,
             String description,
@@ -84,6 +84,9 @@ public class HomeController {
                    Model model,
                    @RequestParam(value="projectId", required=false) String projectId,
                    @RequestParam(value="newProjectName", required=false) String newProjectName,
+                   @RequestParam(value="taskUserIds",required = false) List<Integer> taskUserIds,
+                   @RequestParam("description") String description,
+                   @RequestParam("deadline") String deadline,
                    @RequestParam(value="status", defaultValue="all") String status,
                    @RequestParam(value="keyword", defaultValue="") String keyword) {
 
@@ -108,16 +111,21 @@ public class HomeController {
         }
 
         String id = UUID.randomUUID().toString().substring(0, 8);
+        // 担当者が一人も選択されていない場合は空のリストをセットする
+        List<Integer> userIds = (taskUserIds != null) ? taskUserIds : new ArrayList<>();
         // itemから値を取り出して新規作成（doneは固定で0）
         TaskItem newItem = new TaskItem(
                 id, item.task(),
-                item.taskUserId(),
+                item.taskUserIds(),
                 targetProjectId,
                 "",
                 item.description(),
                 item.deadline(),
                 0
         );
+//
+//        // ★ここを修正：nullの代わりに targetProjectId を渡す
+//        TaskItem newItem = new TaskItem(id, task, userIds, targetProjectId, "", description, deadline, 0);
 
         dao.add(newItem);
         return "redirect:/list";
@@ -130,11 +138,16 @@ public class HomeController {
     }
 
     @PostMapping("/update")
-    String updateItem(@Validated @ModelAttribute("updateItem") TaskItem item, // 2. Validatedを追加
-                      BindingResult result, // 3. エラー結果を受け取る
+    String updateItem(@Validated @ModelAttribute("updateItem") TaskItem item,
                       Model model,
+                      @RequestParam("id") String id,
+                      @RequestParam("task") String task,
+                      @RequestParam(value="taskUserIds",required=false) List<Integer> taskUserIds,
                       @RequestParam(value="projectId", required=false) String projectId,
                       @RequestParam(value="newProjectName", required=false) String newProjectName,
+                      @RequestParam("deadline") String deadline,
+                      @RequestParam("done") int done,
+                      @RequestParam("description") String description,
                       @RequestParam(value="status", defaultValue="all") String status,
                       @RequestParam(value="keyword", defaultValue="") String keyword) {
 
@@ -148,7 +161,6 @@ public class HomeController {
             model.addAttribute("selectedStatus", status);
             model.addAttribute("keyword", keyword);
             model.addAttribute("errorMessage", "必須事項を入力してください。");
-
             // 5. ダイアログ制御用のフラグとメッセージ
             model.addAttribute("isUpdateError", true);
             model.addAttribute("updateErrorMessage", "更新に失敗しました。必須事項を入力してください。");
@@ -163,11 +175,14 @@ public class HomeController {
             targetProjectId = Integer.parseInt(projectId);
         }
 
+        List<Integer> userIds = (taskUserIds != null) ? taskUserIds : new ArrayList<>();
+
+        TaskItem taskItem = new TaskItem(id, task, userIds, targetProjectId, "", description, deadline, done);
         // 更新用データの作成
         TaskItem updateData = new TaskItem(
                 item.id(),
                 item.task(),
-                item.taskUserId(),
+                item.taskUserIds(),
                 targetProjectId, // projectId
                 "",              // projectName (更新時は空文字またはDAOで取得)
                 item.description(),
@@ -178,3 +193,4 @@ public class HomeController {
         return "redirect:/list";
     }
 }
+//taskItemかも

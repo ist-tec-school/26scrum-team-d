@@ -28,17 +28,15 @@ CREATE TABLE IF NOT EXISTS tasklist (
     project_id INT,
     description VARCHAR(512),
     deadline VARCHAR(10),
-    task_user_id INT,
     done INT,
-    FOREIGN KEY(task_user_id) REFERENCES users(user_id),
     FOREIGN KEY(project_id) REFERENCES projects(project_id)
 );
 
--- CREATE TABLE IF NOT EXISTS task_assignments(
---     task_id VARCHAR(8),
---     user_id INT,
---     PRIMARY KEY (task_id, user_id),
---     FOREIGN KEY (task_id) REFERENCES tasklist(id) ON DELETE CASCADE,
---     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
--- )
+CREATE TABLE IF NOT EXISTS task_assignments(
+    task_id VARCHAR(8),
+    user_id INT,
+    PRIMARY KEY (task_id, user_id),
+    FOREIGN KEY (task_id) REFERENCES tasklist(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+)
 
