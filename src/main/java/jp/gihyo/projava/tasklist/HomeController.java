@@ -36,7 +36,7 @@ public class HomeController {
             String description,
             @NotBlank(message = "期限を入力してください")
             String deadline,
-            int done
+            Integer done
     ) {}
 
     private List<TaskItem> taskItems = new ArrayList<>();

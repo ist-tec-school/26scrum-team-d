@@ -13,25 +13,41 @@
 
 <div class="task_form">
     <h2>タスクの登録</h2>
-    <form action="/add">
+    <p class="error-text"
+       th:if="${errorMessage}"
+       th:text="${errorMessage}"></p>
+
+    <form action="/add" method="post">
         <label>プロジェクト</label>
-        <select name="projectId" id="update_project" onchange="handleProjectChange(this, 'update_newProjectName_hidden')">
+        <select name="projectId"
+                id="add_project"
+                onchange="handleProjectChange(this, 'add_newProjectName_hidden')">
             <option value=""></option>
             <option value="new">+ 新規で登録</option>
-            <option th:each="project : ${projectList}" th:value="${project.id}" th:text="${project.name}"></option>
+            <option th:each="project : ${projectList}"
+                    th:value="${project.id}"
+                    th:text="${project.name}"
+                    th:selected="${project.id == taskItem?.projectId}">
+            </option>
         </select>
-        <input type="hidden" name="newProjectName" id="update_newProjectName_hidden">
+        <input type="hidden" name="newProjectName" id="add_newProjectName_hidden">
         <label>タスク</label>
-        <input name="task" type="text"/>
+        <input name="task" type="text"
+               th:value="${taskItem?.task}" required/>
         <label>担当者</label>
         <select name="taskUserId" id="add_task_user">
             <option value=""></option>
-            <option th:each="user : ${userList}" th:value="${user.USER_ID}" th:text="${user.NAME}"></option>
+            <option th:each="user : ${userList}"
+                    th:value="${user.USER_ID}"
+                    th:text="${user.NAME}"
+                    th:selected="${user.USER_ID == taskItem?.taskUserId}"></option>
         </select>
         <label>期限</label>
-        <input name="deadline" type="date"/>
+        <input name="deadline" type="date"
+               th:value="${taskItem?.deadline}" required/>
         <label>説明</label>
-        <input name="description" type="text"/>
+        <input name="description" type="text"
+               th:value="${taskItem?.description}"/>
 
         <input type="submit" value="登録"/>
     </form>
