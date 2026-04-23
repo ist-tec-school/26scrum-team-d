@@ -99,6 +99,10 @@ public class TaskListDao {
         return jdbcTemplate.queryForList("SELECT * FROM sections");
     }
 
+    public List<Map<String, Object>> findSectionsByDeptId(int deptId) {
+        return jdbcTemplate.queryForList("SELECT * FROM sections WHERE dept_id = ?", deptId);
+    }
+
     // --- 更新・削除 ---
     public int delete(String id) {
         return jdbcTemplate.update("DELETE FROM tasklist WHERE id = ?", id);

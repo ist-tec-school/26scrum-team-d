@@ -49,20 +49,22 @@ public class HomeController {
                      @RequestParam(value = "sectionId", defaultValue = "all") String sectionId,
                      @RequestParam(value = "keyword", defaultValue = "") String keyword) {
 
-        // 1. DAOの新しいメソッド「findFiltered」だけで検索を完結させます。
-        // これにより、statusもprojectIdもdeptIdもすべて組み合わされた結果が返ってきます。
-        List<TaskItem> taskItems = dao.findFiltered(status, projectId, deptId, sectionId,keyword);
+        List<TaskItem> taskItems = dao.findFiltered(status, projectId, deptId, sectionId, keyword);
 
-        // 2. 画面（Thymeleaf）に渡すデータをセット
         model.addAttribute("taskList", taskItems);
         model.addAttribute("userList", dao.findAllUsers());
         model.addAttribute("projectList", dao.findAllProjects());
-
-        // 部署と課のリストもプルダウンに表示するために必要です（DAOにメソッドがある前提）
         model.addAttribute("deptList", dao.findAllDepartments());
-        model.addAttribute("sectionList", dao.findAllSections());
 
-        // 現在選ばれている値を保持（HTML側の th:selected や hidden で使用）
+        // --- ここを修正 ---
+        // 部署が選択されている（all以外）場合は、その部署の課だけを取得する
+        if (!"all".equals(deptId)) {
+            model.addAttribute("sectionList", dao.findSectionsByDeptId(Integer.parseInt(deptId)));
+        } else {
+            model.addAttribute("sectionList", dao.findAllSections());
+        }
+        // -----------------
+
         model.addAttribute("selectedStatus", status);
         model.addAttribute("selectedProject", projectId);
         model.addAttribute("selectedDept", deptId);
