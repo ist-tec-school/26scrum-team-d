@@ -157,7 +157,7 @@
             <td class="hidden" th:text="${task.id}"></td>
             <td th:text="${task.projectName}" th:data-project-id="${task.projectId}">プロジェクト名</td>
             <td th:text="${task.task}"></td>
-            <td th:data-user-id="${task.taskUserIds}">
+            <td th:data-user-ids="${task.taskUserIds}">
                 <span th:each="uid,stat : ${task.taskUserIds}">
                     <span th:each="user : ${userList}"
                           th:if="${user.USER_ID == uid}"

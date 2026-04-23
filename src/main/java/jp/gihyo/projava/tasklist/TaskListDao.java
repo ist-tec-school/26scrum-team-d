@@ -84,10 +84,11 @@ public class TaskListDao {
         }
 
         if (keyword != null && !keyword.isBlank()) {
-            sql.append(" AND (LOWER(t.task) LIKE LOWER(?) OR LOWER(u.name) LIKE LOWER(?))");
+            sql.append(" AND (LOWER(t.task) LIKE LOWER(?) OR LOWER(p.project_name) LIKE LOWER(?) OR LOWER(u.name) LIKE LOWER(?))");
             String wildcardKeyword = "%" + keyword + "%";
             params.add(wildcardKeyword); // task 用
             params.add(wildcardKeyword); // u.name 用
+            params.add(wildcardKeyword);
         }
 
         sql.append(" ORDER BY t.deadline ASC");
