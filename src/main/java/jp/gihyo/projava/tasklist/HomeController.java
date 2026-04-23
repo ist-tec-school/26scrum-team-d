@@ -120,7 +120,7 @@ public class HomeController {
             targetProjectId = Integer.parseInt(projectId);
         }
 
-        // 引数の最後から2番目を targetProjectId に変更
+        // 引数の最後から2番目を targetProjectId に変
         TaskItem taskItem = new TaskItem(id, task, taskUserId, targetProjectId, "", description, deadline, done);
 
         dao.update(taskItem);
