@@ -41,11 +41,55 @@
     <h2>タスク一覧</h2>
     <div class="filter_area">
         <form action="/list" method="get">
-            <select name="status" id="status-filter">
+            <input type="hidden" name="projectId" th:value="${selectedProject}">
+            <input type="hidden" name="deptId" th:value="${selectedDept}">
+            <input type="hidden" name="sectionId" th:value="${selectedSection}">
+
+            <select name="status" id="status-filter" onchange="this.form.submit()">
                 <option value="all" th:selected="${selectedStatus == 'all'}">すべてのタスク</option>
-                <option value="0" th:selected="${selectedStatus == '0'}">未完了のタスク</option>
-                <option value="working" th:selected="${selectedStatus == 'working'}">対応中のタスク</option>
+                <option value="0" th:selected="${selectedStatus == '0'}">未着手のタスク</option>
+                <option value="working" th:selected="${selectedStatus == '1'}">対応中のタスク</option>
                 <option value="3" th:selected="${selectedStatus == '3'}">完了したタスク</option>
+            </select>
+        </form>
+    </div>
+</div>
+
+<div class="filter_container">
+
+    <div class="filter_item">
+        <form>
+            <input type="hidden" name="status" th:value="${selectedStatus}">
+            <input type="hidden" name="deptId" th:value="${selectedDept}">
+            <input type="hidden" name="sectionId" th:value="${selectedSection}">
+            <select name="deptId" onchange="this.form.submit()">
+                <option value="all">部署</option>
+            </select>
+        </form>
+    </div>
+
+    <div class="filter_item">
+        <form>
+            <input type="hidden" name="status" th:value="${selectedStatus}">
+            <input type="hidden" name="deptId" th:value="${selectedDept}">
+            <input type="hidden" name="sectionId" th:value="${selectedSection}">
+            <select name="deptId" onchange="this.form.submit()">
+                <option value="all">課</option>
+            </select>
+        </form>
+    </div>
+
+    <div class="filter_item">
+        <form action="/list" method="get">
+            <input type="hidden" name="status" th:value="${selectedStatus}"> <input type="hidden" name="deptId" th:value="${selectedDept}">
+            <input type="hidden" name="sectionId" th:value="${selectedSection}">
+            <select name="projectId" onchange ="this.form.submit()">
+                <option value="all">プロジェクト</option>
+                <option th:each="project : ${projectList}"
+                        th:value="${project.id}"
+                        th:text="${project.name}"
+                        th:selected="${selectedProject == project.id.toString()}">
+                </option>
             </select>
             <input type="hidden" name="keyword" th:value="${keyword}">
             <button type="submit">絞り込み</button>
@@ -136,6 +180,7 @@
             </select>
             <label>期限</label>
             <input id="update_deadline" name="deadline" type="date"/>
+          
             <label>説明</label>
             <input id="update_description" name="description" type="text"/>
             <label>状態</label>

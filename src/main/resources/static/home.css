@@ -55,12 +55,13 @@ input {
     margin-bottom: 10px;    /* 下のテーブルとの隙間 */
 }
 
-/* フィルター内の余白も微調整 */
+
 .filter_area {
     padding: 5px 10px;
     background-color: #f4f7f6;
     border-radius: 5px;
 }
+
 
 .filter_area form {
     display: flex;
@@ -68,6 +69,34 @@ input {
     gap: 10px; /* 要素間の隙間 */
 }
 
+/* フィルター全体を包むコンテナ */
+.filter_container {
+    display: flex;                /* 子要素を横並びにする指示です */
+    justify-content: space-between; /* 子要素を「均等な間隔」で配置します（Reactでもよく使いますね！） */
+    gap: 20px;                    /* 要素間に一定の隙間を作ります */
+    margin-bottom: 20px;          /* 下にあるテーブルとの間に余白を作ります */
+    padding: 15px;                /* 内側の余白です */
+    background-color: #f4f7f6;    /* 背景色を薄いグレーにして「フィルターエリア」であることを強調します */
+    border-radius: 8px;           /* 角を少し丸くしておしゃれにします */
+}
+
+/* 各フィルター項目（プロジェクト、部署、課） */
+.filter_item {
+    flex: 1;                      /* これが重要！3つの要素が同じ幅（1:1:1）で広がるようになります */
+}
+
+/* フィルター内のフォーム（ラベル、セレクト、ボタン）を整える */
+.filter_item form {
+    display: flex;                /* フォーム内の部品を横並びにします */
+    flex-direction: column;       /* スマホっぽく縦に並べたい場合はこれを使いますが、今回は横のままでもOK */
+    gap: 5px;                     /* ラベルとセレクトボックスの間の隙間です */
+}
+
+/* セレクトボックスとボタンの幅を調整 */
+.filter_item select, .filter_item button {
+    width: 100%;                  /* flex: 1 で確保した親の幅いっぱいに広げます */
+    padding: 5px;                 /* 押しやすいように内側に余白を入れます */
+}
 
 
 /* 検索エリアの配置 */
