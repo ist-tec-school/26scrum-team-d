@@ -40,7 +40,7 @@
             <option th:each="user : ${userList}"
                     th:value="${user.USER_ID}"
                     th:text="${user.NAME}">
-<!--                    th:selected="${user.USER_ID == taskItem?.taskUserId}"-->
+                <!--                    th:selected="${user.USER_ID == taskItem?.taskUserId}"-->
             </option>
         </select>
         <label>期限</label>
@@ -74,22 +74,22 @@
 <div class="filter_container">
 
     <div class="filter_item">
-    <form action="/list" method="get">
-        <input type="hidden" name="status" th:value="${selectedStatus}">
-        <input type="hidden" name="projectId" th:value="${selectedProject}">
-        <input type="hidden" name="keyword" th:value="${keyword}">
-        <input type="hidden" name="sectionId" value="all">
+        <form action="/list" method="get">
+            <input type="hidden" name="status" th:value="${selectedStatus}">
+            <input type="hidden" name="projectId" th:value="${selectedProject}">
+            <input type="hidden" name="keyword" th:value="${keyword}">
+            <input type="hidden" name="sectionId" value="all">
 
-        <select name="deptId" onchange="this.form.submit()">
-            <option value="all" th:selected="${selectedDept == 'all'}">すべての部署</option>
-            <option th:each="dept : ${deptList}"
-                    th:value="${dept.DEPT_ID}"
-                    th:text="${dept.DEPT_NAME}"
-                    th:selected="${selectedDept == dept.DEPT_ID.toString()}">
-            </option>
-        </select>
-    </form>
-</div>
+            <select name="deptId" onchange="this.form.submit()">
+                <option value="all" th:selected="${selectedDept == 'all'}">すべての部署</option>
+                <option th:each="dept : ${deptList}"
+                        th:value="${dept.DEPT_ID}"
+                        th:text="${dept.DEPT_NAME}"
+                        th:selected="${selectedDept == dept.DEPT_ID.toString()}">
+                </option>
+            </select>
+        </form>
+    </div>
 
     <div class="filter_item">
         <form action="/list" method="get">
@@ -218,7 +218,7 @@
             </select>
             <label>期限</label>
             <input id="update_deadline" name="deadline" type="date"/>
-          
+
             <label>説明</label>
             <input id="update_description" name="description" type="text"/>
             <label>状態</label>

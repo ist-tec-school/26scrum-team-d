@@ -31,24 +31,24 @@ public class TaskListDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-@Transactional
-public void add(TaskItem taskItem) {
-    jdbcTemplate.update(
-            "INSERT INTO tasklist (id, task, project_id, description, deadline, done) VALUES (?, ?, ?, ?, ?, ?)",
-            taskItem.id(), taskItem.task(), taskItem.projectId(),
-            taskItem.description(), taskItem.deadline(), taskItem.done()
-    );
+    @Transactional
+    public void add(TaskItem taskItem) {
+        jdbcTemplate.update(
+                "INSERT INTO tasklist (id, task, project_id, description, deadline, done) VALUES (?, ?, ?, ?, ?, ?)",
+                taskItem.id(), taskItem.task(), taskItem.projectId(),
+                taskItem.description(), taskItem.deadline(), taskItem.done()
+        );
 
-    // 2. 中間テーブルへの担当者登録
-    if (taskItem.taskUserIds() != null) {
-        for (Integer userId : taskItem.taskUserIds()) {
-            jdbcTemplate.update(
-                    "INSERT INTO task_assignments (task_id, user_id) VALUES (?, ?)",
-                    taskItem.id(), userId
-            );
+        // 2. 中間テーブルへの担当者登録
+        if (taskItem.taskUserIds() != null) {
+            for (Integer userId : taskItem.taskUserIds()) {
+                jdbcTemplate.update(
+                        "INSERT INTO task_assignments (task_id, user_id) VALUES (?, ?)",
+                        taskItem.id(), userId
+                );
+            }
         }
     }
-}
 
     // --- フィルタリング用メソッド ---
     public List<TaskItem> findByCondition(String status, String projectId, String deptId, String sectionId, String keyword) {
@@ -82,12 +82,12 @@ public void add(TaskItem taskItem) {
             sql.append(" AND s.section_id = ?");
             params.add(Integer.parseInt(sectionId));
         }
-      
-      if (keyword != null && !keyword.isBlank()) {
+
+        if (keyword != null && !keyword.isBlank()) {
             sql.append(" AND (LOWER(t.task) LIKE LOWER(?) OR LOWER(u.name) LIKE LOWER(?))");
-          String wildcardKeyword = "%" + keyword + "%";
-          params.add(wildcardKeyword); // task 用
-          params.add(wildcardKeyword); // u.name 用
+            String wildcardKeyword = "%" + keyword + "%";
+            params.add(wildcardKeyword); // task 用
+            params.add(wildcardKeyword); // u.name 用
         }
 
         sql.append(" ORDER BY t.deadline ASC");
