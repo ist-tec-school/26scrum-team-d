@@ -39,7 +39,7 @@ public class TaskListDao {
     }
 
     // --- フィルタリング用メソッド ---
-    public List<TaskItem> findFiltered(String status, String projectId, String deptId, String sectionId,String keyword) {
+    public List<TaskItem> findByCondition(String status, String projectId, String deptId, String sectionId,String keyword) {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT t.*, p.project_name ");
         sql.append("FROM tasklist t ");

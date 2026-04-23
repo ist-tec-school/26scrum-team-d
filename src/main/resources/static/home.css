@@ -151,6 +151,28 @@ input {
     gap: 10px;
 }
 
+/* エラーメッセージのスタイル */
+.error-text {
+    color: #d93025; /* Google等のエラーで使われる赤色 */
+    background-color: #fce8e6;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #fad2cf;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+/* 必須項目のラベルに「*」を付ける（任意） */
+label:has(+ input[required])::after {
+    content: " *";
+    color: #d93025;
+}
+
+/* ブラウザのバリデーションエラー時に枠線を赤くする */
+input:invalid:focus {
+    border-color: #d93025;
+}
+
 /* 状態別の背景色 */
 
 /* 未着手 */
