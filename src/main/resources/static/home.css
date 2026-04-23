@@ -98,6 +98,7 @@ input {
     padding: 5px;                 /* 押しやすいように内側に余白を入れます */
 }
 
+
 /* 検索エリアの配置 */
 .search_area {
     padding: 5px 10px;
@@ -149,3 +150,34 @@ input {
     align-items: center;
     gap: 10px;
 }
+
+/* 状態別の背景色 */
+
+/* 未着手 */
+.status-todo {
+    background-color: #e0e0e0;
+    color: #616161;
+}
+
+/* 対応中 */
+.status-working {
+    background-color: #fff9c4;
+    color: #616161;
+}
+
+/* 完了 */
+.status-done {
+    background-color: #c8e6c9;
+    color: #616161;
+}
+
+.status-common {
+    font-weight: bold;
+}
+
+/* テーブルの右側から3つの列（現段階では状態・更新・削除）のセルを中央揃えにする */
+.tasklist th:nth-last-child(-n+3),
+.tasklist td:nth-last-child(-n+3) {
+    text-align: center;
+}
+
