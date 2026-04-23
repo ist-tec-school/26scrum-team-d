@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,21 +31,33 @@ public class TaskListDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void add(TaskItem taskItem) {
-        SqlParameterSource param = new BeanPropertySqlParameterSource(taskItem);
-        SimpleJdbcInsert insert =
-                new SimpleJdbcInsert(jdbcTemplate)
-                        .withTableName("tasklist");
-        insert.execute(param);
+@Transactional
+public void add(TaskItem taskItem) {
+    jdbcTemplate.update(
+            "INSERT INTO tasklist (id, task, project_id, description, deadline, done) VALUES (?, ?, ?, ?, ?, ?)",
+            taskItem.id(), taskItem.task(), taskItem.projectId(),
+            taskItem.description(), taskItem.deadline(), taskItem.done()
+    );
+
+    // 2. 中間テーブルへの担当者登録
+    if (taskItem.taskUserIds() != null) {
+        for (Integer userId : taskItem.taskUserIds()) {
+            jdbcTemplate.update(
+                    "INSERT INTO task_assignments (task_id, user_id) VALUES (?, ?)",
+                    taskItem.id(), userId
+            );
+        }
     }
+}
 
     // --- フィルタリング用メソッド ---
     public List<TaskItem> findByCondition(String status, String projectId, String deptId, String sectionId,String keyword) {
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT t.*, p.project_name ");
+        sql.append("SELECT DISTINCT t.*, p.project_name ");
         sql.append("FROM tasklist t ");
         sql.append("LEFT JOIN projects p ON t.project_id = p.project_id ");
-        sql.append("LEFT JOIN users u ON t.task_user_id = u.user_id ");
+        sql.append("LEFT JOIN task_assignments ta ON t.id = ta.task_id ");
+        sql.append("LEFT JOIN users u ON ta.user_id = u.user_id ");
         sql.append("LEFT JOIN sections s ON u.section_id = s.section_id ");
         sql.append("WHERE 1=1 ");
 
@@ -108,16 +121,27 @@ public class TaskListDao {
         return jdbcTemplate.update("DELETE FROM tasklist WHERE id = ?", id);
     }
 
+    @Transactional
     public int update(TaskItem taskItem) {
-        return jdbcTemplate.update(
-                "UPDATE tasklist SET task = ?, task_user_id = ?, project_id = ?, description = ?, deadline = ?, done = ? WHERE id = ?",
+        int number = jdbcTemplate.update(
+                "UPDATE tasklist SET task = ?, project_id = ?, description = ?, deadline = ?, done = ? WHERE id = ?",
                 taskItem.task(),
-                taskItem.taskUserId(),
                 taskItem.projectId(),
                 taskItem.description(),
                 taskItem.deadline(),
                 taskItem.done(),
                 taskItem.id());
+
+        jdbcTemplate.update("DELETE FROM task_assignments WHERE task_id = ?", taskItem.id());
+        if (taskItem.taskUserIds() != null) {
+            for (Integer userId : taskItem.taskUserIds()) {
+                jdbcTemplate.update(
+                        "INSERT INTO task_assignments (task_id, user_id) VALUES (?, ?)",
+                        taskItem.id(), userId
+                );
+            }
+        }
+        return number;
     }
 
     public int addProject(String projectName) {
@@ -132,16 +156,25 @@ public class TaskListDao {
     // --- マッピング用 ---
     private List<TaskItem> mapToTaskItems(List<Map<String, Object>> result) {
         return result.stream()
-                .map((Map<String, Object> row) -> new TaskItem(
-                        row.get("ID").toString(),
-                        row.get("task").toString(),
-                        row.get("task_user_id") != null ? ((Number) row.get("task_user_id")).intValue() : 0,
-                        row.get("project_id") != null ? ((Number) row.get("project_id")).intValue() : 0,
-                        row.get("project_name") != null ? row.get("project_name").toString() : "未割当",
-                        row.get("description") != null ? row.get("description").toString() : "",
-                        row.get("deadline").toString(),
-                        ((Number) row.get("done")).intValue()
-                ))
+                .map((Map<String, Object> row) -> {
+                    String taskId = row.get("ID").toString();
+                    List<Integer> userIds = jdbcTemplate.queryForList(
+                            "SELECT user_id FROM task_assignments WHERE task_id = ?",
+                            Integer.class,
+                            taskId
+                    );
+
+                    return new TaskItem(
+                            taskId,
+                            row.get("task").toString(),
+                            userIds,
+                            row.get("project_id") != null ? ((Number) row.get("project_id")).intValue() : null,
+                            row.get("project_name") != null ? row.get("project_name").toString() : "未割当",
+                            row.get("description") != null ? row.get("description").toString() : "",
+                            row.get("deadline").toString(),
+                            ((Number) row.get("done")).intValue()
+                    );
+                })
                 .toList();
     }
 }
