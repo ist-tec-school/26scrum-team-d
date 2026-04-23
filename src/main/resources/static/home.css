@@ -1,7 +1,7 @@
 /* 共通項目 */
 body {
     margin: 30px;
-    color: #283655;
+    color: #333;
 }
 input {
     border: 1px solid;
@@ -14,7 +14,7 @@ input {
 /* タスク入力フォーム */
 .task_form {
     padding: 0 10px 10px 10px;
-    border: 1px solid #4D648D;
+    border: 2px solid #333;
 }
 .task_form form {
     display: grid;
@@ -22,6 +22,13 @@ input {
 }
 .task_form input[type="date"], select {
     width: 150px;
+}
+
+.btn-register {
+    background-color: #000;
+    color: #fff;
+    margin-top: 10px;
+    font-weight: bold
 }
 
 /* タスク一覧 */
@@ -102,7 +109,9 @@ input {
 /* 検索エリアの配置 */
 .search_area {
     padding: 5px 10px;
+    margin-bottom: 20px;
 }
+
 .search-container {
     margin: 15px 0;
 }
@@ -113,8 +122,8 @@ input {
 }
 
 /* 入力フィールド：画像の枠線の太さに合わせる */
-.search-input {
-    width: 600px;
+.search_area input[type="text"] {
+    width: 300px;
     padding: 8px;
     border: 2px solid #333; /* 少し太めの枠線 */
     border-right: none;    /* ボタンと連結させる */
@@ -122,11 +131,10 @@ input {
 }
 
 /* 検索ボタン：画像通りの真っ黒な背景 */
-.search-submit-button {
+.search-button {
     background-color: #000;
     color: #fff;
-    border: 2px solid #000;
-    padding: 8px 20px;
+    padding: 8px;
     cursor: pointer;
     font-weight: bold;
     transition: opacity 0.2s;
