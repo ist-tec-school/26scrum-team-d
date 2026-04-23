@@ -64,7 +64,7 @@
             <select name="status" id="status-filter" onchange="this.form.submit()">
                 <option value="all" th:selected="${selectedStatus == 'all'}">すべてのタスク</option>
                 <option value="0" th:selected="${selectedStatus == '0'}">未着手のタスク</option>
-                <option value="working" th:selected="${selectedStatus == '1'}">対応中のタスク</option>
+                <option value="1" th:selected="${selectedStatus == '1'}">対応中のタスク</option>
                 <option value="3" th:selected="${selectedStatus == '3'}">完了したタスク</option>
             </select>
         </form>
@@ -201,12 +201,12 @@
         <form action="/update">
             <input id="update_id" name="id" type="hidden"/>
             <label>プロジェクト</label>
-            <select id="update_project" name="projectId" onchange="handleProjectChange(this, 'add_newProjectName_hidden')">
+            <select id="update_project" name="projectId" onchange="handleProjectChange(this, 'update_newProjectName_hidden')">
                 <option value=""></option>
                 <option value="new">+ 新規で登録</option>
                 <option th:each="project : ${projectList}" th:value="${project.id}" th:text="${project.name}"></option>
             </select>
-            <input type="hidden" name="newProjectName" id="newProjectName_hidden">
+            <input type="hidden" name="newProjectName" id="update_newProjectName_hidden">
             <label>タスク</label>
             <input id="update_task" name="task" type="text"/>
             <label>担当者</label>
