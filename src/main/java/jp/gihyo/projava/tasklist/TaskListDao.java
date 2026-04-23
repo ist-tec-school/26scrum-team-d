@@ -140,7 +140,7 @@ public class TaskListDao {
                         row.get("project_name") != null ? row.get("project_name").toString() : "未割当",
                         row.get("description") != null ? row.get("description").toString() : "",
                         row.get("deadline").toString(),
-                        ((Number) row.get("done")).intValue()
+                        row.get("done") != null ? ((Number) row.get("done")).intValue() : 0
                 ))
                 .toList();
     }

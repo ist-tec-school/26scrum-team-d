@@ -13,6 +13,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import javax.validation.constraints.NotBlank;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,11 +29,13 @@ import java.util.UUID;
 public class HomeController {
     record TaskItem(
             String id,
+            @NotBlank(message = "タスクを入力してください")
             String task,
             Integer taskUserId,
             Integer projectId,
             String projectName,
             String description,
+            @NotBlank(message = "期限を入力してください")
             String deadline,
             int done
     ) {}
@@ -74,27 +80,39 @@ public class HomeController {
     }
 
     @PostMapping("/add")
-    String addItem(@RequestParam("task") String task,
+    String addItem(@Validated @ModelAttribute("taskItem") TaskItem item, // 1. 引数をRecordに変更してバリデーション
+                   BindingResult result,
+                   Model model,
                    @RequestParam(value="projectId", required=false) String projectId,
                    @RequestParam(value="newProjectName", required=false) String newProjectName,
-                   @RequestParam(value="taskUserId",required = false) Integer taskUserId,
-                   @RequestParam("description") String description,
-                   @RequestParam("deadline") String deadline) {
+                   @RequestParam(value="status", defaultValue="all") String status,
+                   @RequestParam(value="keyword", defaultValue="") String keyword) {
 
+        // 2. エラー判定を追加
+        if (result.hasErrors()) {
+            List<TaskItem> taskItems = dao.findByCondition(status, "all", "all", "all", keyword);
+            model.addAttribute("taskList", taskItems);
+            model.addAttribute("userList", dao.findAllUsers());
+            model.addAttribute("projectList", dao.findAllProjects());
+            model.addAttribute("selectedStatus", status);
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("errorMessage", "必須事項が未入力です");
+            return "home";
+        }
+
+        // 3. 正常系のプロジェクト登録ロジック
         Integer targetProjectId = null;
-        if ("new".equals(projectId) && newProjectName != null) {
-            // 新規登録して新しいIDを取得
+        if ("new".equals(projectId) && newProjectName != null && !newProjectName.isEmpty()) {
             targetProjectId = dao.addProject(newProjectName);
         } else if (projectId != null && !projectId.isEmpty()) {
-            // 既存のIDを数値に変換
             targetProjectId = Integer.parseInt(projectId);
         }
 
         String id = UUID.randomUUID().toString().substring(0, 8);
-        // ★ここを修正：nullの代わりに targetProjectId を渡す
-        TaskItem item = new TaskItem(id, task, taskUserId, targetProjectId, "", description, deadline, 0);
+        // itemから値を取り出して新規作成（doneは固定で0）
+        TaskItem newItem = new TaskItem(id, item.task(), item.taskUserId(), targetProjectId, "", item.description(), item.deadline(), 0);
 
-        dao.add(item);
+        dao.add(newItem);
         return "redirect:/list";
     }
 
@@ -104,16 +122,32 @@ public class HomeController {
         return "redirect:/list";
     }
 
-    @GetMapping("/update")
-    String updateItem(@RequestParam("id") String id,
-                      @RequestParam("task") String task,
-                      @RequestParam(value="taskUserId",required=false) Integer taskUserId,
-                      @RequestParam(value="projectId",required=false) String projectId, // Stringで受け取る
-                      @RequestParam(value="newProjectName",required=false) String newProjectName, // 追加
-                      @RequestParam("description") String description,
-                      @RequestParam("deadline") String deadline,
-                      @RequestParam("done") int done) {
+    @PostMapping("/update")
+    String updateItem(@Validated @ModelAttribute("updateItem") TaskItem item, // 2. Validatedを追加
+                      BindingResult result, // 3. エラー結果を受け取る
+                      Model model,
+                      @RequestParam(value="projectId", required=false) String projectId,
+                      @RequestParam(value="newProjectName", required=false) String newProjectName,
+                      @RequestParam(value="status", defaultValue="all") String status,
+                      @RequestParam(value="keyword", defaultValue="") String keyword) {
 
+        // 4. バリデーションエラーの判定
+        if (result.hasErrors()) {
+            // リストの再取得（画面表示を維持するため）
+            List<TaskItem> taskItems = dao.findByCondition(status, "all", "all", "all", keyword);
+            model.addAttribute("taskList", taskItems);
+            model.addAttribute("userList", dao.findAllUsers());
+            model.addAttribute("projectList", dao.findAllProjects());
+            model.addAttribute("selectedStatus", status);
+            model.addAttribute("keyword", keyword);
+
+            // 5. ダイアログ制御用のフラグとメッセージ
+            model.addAttribute("isUpdateError", true);
+            model.addAttribute("updateErrorMessage", "更新に失敗しました。必須事項を入力してください。");
+            return "home"; // redirectせずhomeを返す
+        }
+
+        // 6. 正常時のロジック（プロジェクトの新規登録判定など）
         Integer targetProjectId = null;
         if ("new".equals(projectId) && newProjectName != null && !newProjectName.isEmpty()) {
             targetProjectId = dao.addProject(newProjectName);
@@ -121,10 +155,18 @@ public class HomeController {
             targetProjectId = Integer.parseInt(projectId);
         }
 
-        // 引数の最後から2番目を targetProjectId に変
-        TaskItem taskItem = new TaskItem(id, task, taskUserId, targetProjectId, "", description, deadline, done);
+        // 更新用データの作成
+        TaskItem updateData = new TaskItem(
+                item.id(),
+                item.task(),
+                item.taskUserId(),
+                targetProjectId, // projectId
+                "",              // projectName (更新時は空文字またはDAOで取得)
+                item.description(),
+                item.deadline(),
+                item.done());
 
-        dao.update(taskItem);
+        dao.update(updateData);
         return "redirect:/list";
     }
 }
