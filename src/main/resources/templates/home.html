@@ -15,12 +15,12 @@
     <h2>タスクの登録</h2>
     <form action="/add">
         <label>プロジェクト</label>
-        <select name="projectId" id="update_project" onchange="handleProjectChange(this, 'update_newProjectName_hidden')">
+        <select name="projectId" id="project" onchange="handleProjectChange(this, 'update_newProjectName_hidden')">
             <option value=""></option>
             <option value="new">+ 新規で登録</option>
             <option th:each="project : ${projectList}" th:value="${project.id}" th:text="${project.name}"></option>
         </select>
-        <input type="hidden" name="newProjectName" id="update_newProjectName_hidden">
+        <input type="hidden" name="newProjectName" id="newProjectName_hidden">
         <label>タスク</label>
         <input name="task" type="text"/>
         <label>担当者</label>
@@ -88,7 +88,9 @@
                 <span th:case="3">完了</span>
             </td>
             <td>
-                <button type="button" onclick="showUpdateDialog(this)">更新</button>
+                <button type="button"
+                        th:data-user-id="${task.taskUserId}"
+                        onclick="showUpdateDialog(this)">更新</button>
             </td>
             <td>
                 <form action="/delete">
@@ -118,7 +120,10 @@
             <input id="update_task" name="task" type="text"/>
             <label>担当者</label>
             <select id="update_user" name="taskUserId">
-                <option th:each="user : ${userList}" th:value="${user.USER_ID}" th:text="${user.NAME}"></option>
+                <option th:each="user : ${userList}"
+                        th:value="${user.USER_ID}"
+                        th:text="${user.NAME}">
+                </option>
             </select>
             <label>期限</label>
             <input id="update_deadline" name="deadline" type="date"/>

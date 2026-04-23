@@ -70,17 +70,47 @@ function handleProjectChange(selectElement, hiddenInputId) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    const el = document.getElementById('add_task_user');
+let updateChoice;
 
-    if (el) {
-        new Choices(el, {
+document.addEventListener('DOMContentLoaded', function() {
+    new Choices('#add_task_user', {
+        searchEnabled: true,
+        itemSelectText: '',
+        shouldSort: false,
+    });
+
+    const updateEl = document.getElementById('update_user');
+    if (updateEl) {
+        updateChoice = new Choices(updateEl, {
             searchEnabled: true,
-            searchPlaceholderValue: '名前で検索...',
             itemSelectText: '',
             shouldSort: false,
-            searchFloor: 0,
-            renderChoiceLimit: -1,
         });
     }
 });
+
+function showUpdateDialog(button) {
+    const dialog = document.getElementById('updateDialog');
+
+    const row = button.closest('tr');
+    const id = row.querySelector('.hidden').textContent;
+    const task = row.cells[2].textContent;
+    const deadline = row.cells[4].textContent;
+    const description = row.cells[5].textContent;
+    const userId = button.getAttribute('data-user-id');
+
+    document.getElementById('update_id').value = id;
+    document.getElementById('update_task').value = task;
+    document.getElementById('update_deadline').value = deadline;
+    document.getElementById('update_description').value = description;
+
+    if (updateChoice) {
+        updateChoice.setChoiceByValue(userId ? userId.toString() : "");
+    }
+
+    dialog.style.display = 'block';
+}
+
+function closeUpdateDialog() {
+    document.getElementById('updateDialog').style.display = 'none';
+}
