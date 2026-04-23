@@ -58,23 +58,37 @@
 <div class="filter_container">
 
     <div class="filter_item">
-        <form>
-            <input type="hidden" name="status" th:value="${selectedStatus}">
-            <input type="hidden" name="deptId" th:value="${selectedDept}">
-            <input type="hidden" name="sectionId" th:value="${selectedSection}">
-            <select name="deptId" onchange="this.form.submit()">
-                <option value="all">すべての部署</option>
-            </select>
-        </form>
-    </div>
+    <form action="/list" method="get">
+        <input type="hidden" name="status" th:value="${selectedStatus}">
+        <input type="hidden" name="projectId" th:value="${selectedProject}">
+        <input type="hidden" name="keyword" th:value="${keyword}">
+        <input type="hidden" name="sectionId" value="all">
+
+        <select name="deptId" onchange="this.form.submit()">
+            <option value="all" th:selected="${selectedDept == 'all'}">すべての部署</option>
+            <option th:each="dept : ${deptList}"
+                    th:value="${dept.DEPT_ID}"
+                    th:text="${dept.DEPT_NAME}"
+                    th:selected="${selectedDept == dept.DEPT_ID.toString()}">
+            </option>
+        </select>
+    </form>
+</div>
 
     <div class="filter_item">
-        <form>
+        <form action="/list" method="get">
             <input type="hidden" name="status" th:value="${selectedStatus}">
             <input type="hidden" name="deptId" th:value="${selectedDept}">
-            <input type="hidden" name="sectionId" th:value="${selectedSection}">
-            <select name="deptId" onchange="this.form.submit()">
-                <option value="all">すべての課</option>
+            <input type="hidden" name="projectId" th:value="${selectedProject}">
+            <input type="hidden" name="keyword" th:value="${keyword}">
+
+            <select name="sectionId" onchange="this.form.submit()">
+                <option value="all" th:selected="${selectedSection == 'all'}">すべての課</option>
+                <option th:each="sec : ${sectionList}"
+                        th:value="${sec.SECTION_ID}"
+                        th:text="${sec.SECTION_NAME}"
+                        th:selected="${selectedSection == sec.SECTION_ID.toString()}">
+                </option>
             </select>
         </form>
     </div>
