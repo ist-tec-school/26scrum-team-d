@@ -108,13 +108,12 @@
     </div>
 </div>
 
-<div class="tasklist">
+<div class="tasklist" th:if="${!#lists.isEmpty(taskList)}">
     <table>
         <thead>
         <tr>
             <th class="hidden">ID</th>
-            <th>プロジェクト</th>
-            <th>タスク</th>
+            <th>プロジェクト</th> <th>タスク</th>
             <th>担当者</th>
             <th>期限</th>
             <th>説明</th>
@@ -158,6 +157,10 @@
         </tr>
         </tbody>
     </table>
+</div>
+
+<div th:if="${#lists.isEmpty(taskList)}" style="text-align: center; margin-top: 20px; color: #666;">
+    <p>現在タスクはありません。</p>
 </div>
 
 
