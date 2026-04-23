@@ -12,6 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import javax.validation.constraints.NotBlank;
+import org.springframework.web.bind.annotation.PostMapping; // GETからPOSTに変えるため
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,11 +28,13 @@ import java.util.UUID;
 public class HomeController {
     record TaskItem(
             String id,
+            @NotBlank(message = "タスクを入力してください")
             String task,
             Integer taskUserId,
             Integer projectId,
             String projectName,
             String description,
+            @NotBlank(message = "期限を入力してください")
             String deadline,
             int done
     ) {}
@@ -57,28 +63,35 @@ public class HomeController {
         return "home";
     }
 
-    @GetMapping("/add")
-    String addItem(@RequestParam("task") String task,
-                   @RequestParam(value="projectId", required=false) String projectId,
-                   @RequestParam(value="newProjectName", required=false) String newProjectName,
-                   @RequestParam(value="taskUserId",required = false) Integer taskUserId,
-                   @RequestParam("description") String description,
-                   @RequestParam("deadline") String deadline) {
+    @PostMapping("/add")
+    String addItem(@Validated TaskItem item, // バリデーション実行
+                   BindingResult result,    // エラー結果を受け取る
+                   Model model,
+                   @RequestParam(value="status", defaultValue="all") String status,
+                   @RequestParam(value="keyword", defaultValue="") String keyword) {
 
-        Integer targetProjectId = null;
-        if ("new".equals(projectId) && newProjectName != null) {
-            // 新規登録して新しいIDを取得
-            targetProjectId = dao.addProject(newProjectName);
-        } else if (projectId != null && !projectId.isEmpty()) {
-            // 既存のIDを数値に変換
-            targetProjectId = Integer.parseInt(projectId);
+        // 1. バリデーションエラーがある場合
+        if (result.hasErrors()) {
+            // 現在のリストやユーザー、プロジェクト情報を再取得して画面を再表示
+            List<TaskItem> taskItems = dao.findByCondition(status, keyword);
+            model.addAttribute("taskList", taskItems);
+            model.addAttribute("userList", dao.findAllUsers());
+            model.addAttribute("projectList", dao.findAllProjects());
+            model.addAttribute("selectedStatus", status);
+            model.addAttribute("keyword", keyword);
+
+            // 「必須事項が未入力です」という共通メッセージを渡す
+            model.addAttribute("errorMessage", "必須事項が未入力です");
+            return "home"; // リダイレクトせず、そのままhome.htmlを表示
         }
 
+        // 2. エラーがない場合はIDを発行して登録
         String id = UUID.randomUUID().toString().substring(0, 8);
-        // ★ここを修正：nullの代わりに targetProjectId を渡す
-        TaskItem item = new TaskItem(id, task, taskUserId, targetProjectId, "", description, deadline, 0);
+        // IDをセットした新しいRecordを作成（Recordは不変なため）
+        TaskItem newItem = new TaskItem(id, item.task(), item.taskUserId(), item.projectId(),
+                "", item.description(), item.deadline(), 0);
 
-        dao.add(item);
+        dao.add(newItem);
         return "redirect:/list";
     }
 
