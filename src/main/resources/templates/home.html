@@ -40,7 +40,6 @@
             <option th:each="user : ${userList}"
                     th:value="${user.USER_ID}"
                     th:text="${user.NAME}">
-<!--                    th:selected="${user.USER_ID == taskItem?.taskUserId}"-->
             </option>
         </select>
         <label>期限</label>
@@ -157,14 +156,13 @@
             <td class="hidden" th:text="${task.id}"></td>
             <td th:text="${task.projectName}" th:data-project-id="${task.projectId}">プロジェクト名</td>
             <td th:text="${task.task}"></td>
-            <td th:data-user-id="${task.taskUserIds}">
+            <td th:data-user-ids="${task.taskUserIds}">
                 <span th:each="uid,stat : ${task.taskUserIds}">
                     <span th:each="user : ${userList}"
                           th:if="${user.USER_ID == uid}"
                           th:text="${user.NAME} + ${!stat.last ? ', ' : ''}">
                     </span>
                 </span>
-                <span th:if="${task.taskUserIds == 0 or task.taskUserIds == null}"></span>
             </td>
             <td th:text="${task.deadline}"></td>
             <td th:text="${task.description}"></td>
@@ -211,9 +209,11 @@
             <input id="update_task" name="task" type="text"/>
             <label>担当者</label>
             <select id="update_user" name="taskUserIds" multiple>
+                <option value=""></option>
                 <option th:each="user : ${userList}"
                         th:value="${user.USER_ID}"
-                        th:text="${user.NAME}">
+                        th:text="${user.NAME}"
+                        th:selected="${selectedUserIds != null && selectedUserIds.contains(user.USER_ID)}">
                 </option>
             </select>
             <label>期限</label>
