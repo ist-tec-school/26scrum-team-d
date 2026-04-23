@@ -102,7 +102,9 @@
                 <span th:case="3">完了</span>
             </td>
             <td>
-                <button type="button" onclick="showUpdateDialog(this)">更新</button>
+                <button type="button"
+                        th:data-user-id="${task.taskUserId}"
+                        onclick="showUpdateDialog(this)">更新</button>
             </td>
             <td>
                 <form action="/delete">
@@ -132,7 +134,10 @@
             <input id="update_task" name="task" type="text"/>
             <label>担当者</label>
             <select id="update_user" name="taskUserId">
-                <option th:each="user : ${userList}" th:value="${user.USER_ID}" th:text="${user.NAME}"></option>
+                <option th:each="user : ${userList}"
+                        th:value="${user.USER_ID}"
+                        th:text="${user.NAME}">
+                </option>
             </select>
             <label>期限</label>
             <input id="update_deadline" name="deadline" type="date"/>
