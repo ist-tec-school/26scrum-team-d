@@ -200,7 +200,7 @@
         <p class="error-text"
            th:if="${updateErrorMessage}"
            th:text="${updateErrorMessage}"></p>
-        <form action="/update" method="post">
+        <form action="/update" method="post" th:object="${updateItem}">
             <input id="update_id" name="id" type="hidden"
                    th:value="${updateItem?.id}"/>
             <label>プロジェクト</label>

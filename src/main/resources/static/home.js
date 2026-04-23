@@ -80,14 +80,14 @@ function handleProjectChange(selectElement, hiddenInputId) {
 let updateChoice;
 
 document.addEventListener('DOMContentLoaded', function() {
-    // 登録フォームの担当者（Choices.js）
+    // 1. 登録フォームの担当者初期化
     new Choices('#add_task_user', {
         searchEnabled: true,
         itemSelectText: '',
         shouldSort: false,
     });
 
-    // 更新フォームの担当者（Choices.js）
+    // 2. 更新フォームの担当者初期化
     const updateEl = document.getElementById('update_user');
     if (updateEl) {
         updateChoice = new Choices(updateEl, {
@@ -95,5 +95,19 @@ document.addEventListener('DOMContentLoaded', function() {
             itemSelectText: '',
             shouldSort: false,
         });
+    }
+
+    // 3. エラー時のダイアログ自動再表示（初期化の後に実行）
+    const isUpdateError = document.getElementById('isUpdateError');
+    if (isUpdateError && isUpdateError.value === 'true') {
+        const dialog = document.getElementById('updateDialog');
+        if (dialog) {
+            dialog.style.display = 'block';
+
+            // Choices.jsの表示をサーバーから戻った値に同期
+            if (updateEl && updateChoice) {
+                updateChoice.setChoiceByValue(updateEl.value);
+            }
+        }
     }
 });

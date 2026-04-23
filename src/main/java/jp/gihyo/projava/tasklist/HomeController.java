@@ -29,15 +29,13 @@ import java.util.UUID;
 public class HomeController {
     record TaskItem(
             String id,
-            @NotBlank(message = "タスクを入力してください")
-            String task,
+            @NotBlank String task,
             Integer taskUserId,
             Integer projectId,
             String projectName,
             String description,
-            @NotBlank(message = "期限を入力してください")
-            String deadline,
-            int done
+            @NotBlank String deadline,
+            Integer done
     ) {}
 
     private List<TaskItem> taskItems = new ArrayList<>();
@@ -75,6 +73,7 @@ public class HomeController {
         model.addAttribute("selectedDept", deptId);
         model.addAttribute("selectedSection", sectionId);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("taskItem", new TaskItem(null, null, null, null, null, null, null, null));
 
         return "home";
     }
@@ -110,7 +109,15 @@ public class HomeController {
 
         String id = UUID.randomUUID().toString().substring(0, 8);
         // itemから値を取り出して新規作成（doneは固定で0）
-        TaskItem newItem = new TaskItem(id, item.task(), item.taskUserId(), targetProjectId, "", item.description(), item.deadline(), 0);
+        TaskItem newItem = new TaskItem(
+                id, item.task(),
+                item.taskUserId(),
+                targetProjectId,
+                "",
+                item.description(),
+                item.deadline(),
+                0
+        );
 
         dao.add(newItem);
         return "redirect:/list";
@@ -140,6 +147,7 @@ public class HomeController {
             model.addAttribute("projectList", dao.findAllProjects());
             model.addAttribute("selectedStatus", status);
             model.addAttribute("keyword", keyword);
+            model.addAttribute("errorMessage", "必須事項を入力してください。");
 
             // 5. ダイアログ制御用のフラグとメッセージ
             model.addAttribute("isUpdateError", true);
