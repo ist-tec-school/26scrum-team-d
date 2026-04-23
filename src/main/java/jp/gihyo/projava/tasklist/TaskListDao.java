@@ -70,10 +70,10 @@ public class TaskListDao {
             params.add(Integer.parseInt(sectionId));
         }
       
-      if (keyword != null && !keyword.isBlank()) {
+       if (keyword != null && !keyword.isBlank()) {
             sql.append(" AND LOWER(t.task) LIKE LOWER(?)");
             params.add("%" + keyword + "%");
-        }
+       }
 
         sql.append(" ORDER BY t.deadline ASC");
 
