@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
@@ -72,7 +73,7 @@ public class HomeController {
         return "home";
     }
 
-    @GetMapping("/add")
+    @PostMapping("/add")
     String addItem(@RequestParam("task") String task,
                    @RequestParam(value="projectId", required=false) String projectId,
                    @RequestParam(value="newProjectName", required=false) String newProjectName,
