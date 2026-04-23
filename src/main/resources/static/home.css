@@ -15,13 +15,18 @@ input {
 .task_form {
     padding: 0 10px 10px 10px;
     border: 2px solid #333;
+    max-width: 1200px;
+    margin: 0 auto 20px;
 }
 .task_form form {
     display: grid;
-    grid-template-columns: 100px 1fr;
+    grid-template-columns: 120px 1fr;
+    gap: 15px 10px;
+    align-items: center;
 }
+
 .task_form input[type="date"], select {
-    width: 150px;
+    width: 180px;
 }
 
 .btn-register {
