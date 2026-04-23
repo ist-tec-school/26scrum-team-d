@@ -121,6 +121,7 @@ public class HomeController {
         } else if (projectId != null && !projectId.isEmpty()) {
             targetProjectId = Integer.parseInt(projectId);
         }
+
         List<Integer> userIds = (taskUserIds != null) ? taskUserIds : new ArrayList<>();
 
         TaskItem taskItem = new TaskItem(id, task, userIds, targetProjectId, "", description, deadline, done);
