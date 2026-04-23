@@ -10,7 +10,7 @@ function showUpdateDialog(button) {
     const id = row.cells[0].innerText;                // ID (hidden)
     const projectId = row.cells[1].dataset.projectId;  // プロジェクトID
     const task = row.cells[2].innerText;               // タスク名
-    const userId = button.getAttribute('data-user-id');// 担当者ID
+    const userIds = JSON.parse(row.cells[3].dataset.userIds || "[]");// 担当者ID
     const deadline = row.cells[4].innerText;           // 期限
     const description = row.cells[5].innerText;        // 説明
 
@@ -28,7 +28,8 @@ function showUpdateDialog(button) {
 
     // Choices.js を使用している担当者セレクトボックスをセット
     if (updateChoice) {
-        updateChoice.setChoiceByValue(userId ? userId.toString() : "");
+        updateChoice.removeActiveItems();
+        updateChoice.setChoiceByValue(userIds.map(id => id.toString()));
     }
 
     // 状態（テキストから数値へ変換）
@@ -36,6 +37,7 @@ function showUpdateDialog(button) {
     const statusText = row.cells[6].innerText.trim();
     document.getElementById('update_status').value = statusMap[statusText] ?? 0;
 
+    dialog.style.left = ((window.innerWidth - 500) / 2) + 'px';
     // ダイアログを表示
     dialog.style.display = 'block';
 }
@@ -83,8 +85,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // 登録フォームの担当者（Choices.js）
     new Choices('#add_task_user', {
         searchEnabled: true,
+        searchPlaceholderValue: '名前で検索...',
         itemSelectText: '',
         shouldSort: false,
+        searchFloor: 0,
+        renderChoiceLimit: -1,
+        removeItemButton:true,
     });
 
     // 更新フォームの担当者（Choices.js）
@@ -94,6 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
             searchEnabled: true,
             itemSelectText: '',
             shouldSort: false,
+            removeItemButton: true,
         });
     }
 });
