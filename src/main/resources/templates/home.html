@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>タスク管理アプリケーション</title>
     <link th:href="@{/home.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <script th:src="@{/home.js}" defer></script>
 </head>
 <body>
@@ -12,25 +14,25 @@
 <div class="task_form">
     <h2>タスクの登録</h2>
     <form action="/add">
-        <label>タスク</label>
-        <input name="task" type="text"/>
-        <label>担当者</label>
-        <select name="taskUserId">
-            <option value=""></option>
-            <option th:each="user : ${userList}" th:value="${user.USER_ID}" th:text="${user.NAME}"></option>
-        </select>
-        <label>説明</label>
-        <input name="description" type="text"/>
-        <label>期限</label>
-        <input name="deadline" type="date"/>
         <label>プロジェクト</label>
-        <select name="projectId" id="project-select" onchange="handleProjectChange(this)">
+        <select name="projectId" id="update_project" onchange="handleProjectChange(this, 'update_newProjectName_hidden')">
             <option value=""></option>
             <option value="new">+ 新規で登録</option>
             <option th:each="project : ${projectList}" th:value="${project.id}" th:text="${project.name}"></option>
         </select>
+        <input type="hidden" name="newProjectName" id="update_newProjectName_hidden">
+        <label>タスク</label>
+        <input name="task" type="text"/>
+        <label>担当者</label>
+        <select name="taskUserId" id="add_task_user">
+            <option value=""></option>
+            <option th:each="user : ${userList}" th:value="${user.USER_ID}" th:text="${user.NAME}"></option>
+        </select>
+        <label>期限</label>
+        <input name="deadline" type="date"/>
+        <label>説明</label>
+        <input name="description" type="text"/>
 
-        <input type="hidden" name="newProjectName" id="new-project-name-hidden">
         <input type="submit" value="登録"/>
     </form>
 </div>
@@ -45,28 +47,43 @@
                 <option value="working" th:selected="${selectedStatus == 'working'}">対応中のタスク</option>
                 <option value="3" th:selected="${selectedStatus == '3'}">完了したタスク</option>
             </select>
+            <input type="hidden" name="keyword" th:value="${keyword}">
             <button type="submit">絞り込み</button>
         </form>
+    </div>
+</div>
+
+<div class="search_area">
+    <form action="/list" method="get">
+        <input type="hidden" name="status" th:value="${selectedStatus}">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="検索ワード">
+        <button type="submit" class="search-button">検索</button>
+    </form>
+
+    <div th:if="${#lists.isEmpty(taskList) and (keyword != null and keyword != '')}" class="no-result-message">
+        <p> 「<span th:text="${keyword}"></span>」での検索結果  — 0件です —</p>
     </div>
 </div>
 
 <div class="tasklist">
     <table>
         <thead>
-            <tr>
-                <th class="hidden">ID</th>
-                <th>タスク</th>
-                <th>担当者</th>
-                <th>期限</th>
-                <th>説明</th>
-                <th>状態</th>
-                <th>更新</th>
-                <th>削除</th>
-            </tr>
+        <tr>
+            <th class="hidden">ID</th>
+            <th>プロジェクト</th>
+            <th>タスク</th>
+            <th>担当者</th>
+            <th>期限</th>
+            <th>説明</th>
+            <th>状態</th>
+            <th>更新</th>
+            <th>削除</th>
+        </tr>
         </thead>
         <tbody>
         <tr th:each="task : ${taskList}">
             <td class="hidden" th:text="${task.id}"></td>
+            <td th:text="${task.projectName}" th:data-project-id="${task.projectId}">プロジェクト名</td>
             <td th:text="${task.task}"></td>
             <td th:data-user-id="${task.taskUserId}">
                 <span th:each="user : ${userList}"
@@ -77,10 +94,11 @@
             </td>
             <td th:text="${task.deadline}"></td>
             <td th:text="${task.description}"></td>
-            <td th:switch="${task.done}">
+            <td th:switch="${task.done}"
+                class="status-common"
+                th:classappend="${task.done == 0} ? 'status-todo' : (${task.done == 1} ? 'status-working' : (${task.done == 3} ? 'status-done' : ''))">
                 <span th:case="0">未着手</span>
                 <span th:case="1">対応中</span>
-                <span th:case="2">レビュー中</span>
                 <span th:case="3">完了</span>
             </td>
             <td>
@@ -103,6 +121,13 @@
         <h2>タスクの更新</h2>
         <form action="/update">
             <input id="update_id" name="id" type="hidden"/>
+            <label>プロジェクト</label>
+            <select id="update_project" name="projectId" onchange="handleProjectChange(this, 'update_newProjectName_hidden')">
+                <option value=""></option>
+                <option value="new">+ 新規で登録</option>
+                <option th:each="project : ${projectList}" th:value="${project.id}" th:text="${project.name}"></option>
+            </select>
+            <input type="hidden" name="newProjectName" id="update_newProjectName_hidden">
             <label>タスク</label>
             <input id="update_task" name="task" type="text"/>
             <label>担当者</label>
@@ -117,7 +142,6 @@
             <select id="update_status" name="done">
                 <option value="0">未着手</option>
                 <option value="1">対応中</option>
-                <option value="2">レビュー中</option>
                 <option value="3">完了</option>
             </select>
             <div>

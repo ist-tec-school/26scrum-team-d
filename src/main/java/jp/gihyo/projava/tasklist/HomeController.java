@@ -22,8 +22,16 @@ import java.util.UUID;
 
 @Controller
 public class HomeController {
-    record TaskItem(String id, String task, Integer taskUserId, String description, String deadline, int done) {
-    }
+    record TaskItem(
+            String id,
+            String task,
+            Integer taskUserId,
+            Integer projectId,
+            String projectName,
+            String description,
+            String deadline,
+            int done
+    ) {}
 
     private List<TaskItem> taskItems = new ArrayList<>();
     private final TaskListDao dao;
@@ -34,38 +42,42 @@ public class HomeController {
     }
 
     @GetMapping("/list")
+    String listItems(Model model,
+                     @RequestParam(value = "status", defaultValue = "all") String status,
+                     @RequestParam(value = "keyword", defaultValue = "") String keyword) {
 
-// int status ではなく String status で受け取る
-    String listItems(Model model, @RequestParam(value = "status", defaultValue = "all") String status) {
-        List<TaskItem> taskItems;
-
-        // 文字列の比較で分岐させる
-        if (status.equals("all")) {
-            taskItems = dao.findAll();
-        } else if (status.equals("working")) {
-            // "working" の時は 状態「1」のものを探す
-            taskItems = dao.findByStatus(1);
-        } else {
-            // それ以外（数値の文字列 "0" や "3" など）は数値に変換して検索
-            taskItems = dao.findByStatus(Integer.parseInt(status));
-        }
+        List<TaskItem> taskItems = dao.findByCondition(status, keyword);
 
         model.addAttribute("taskList", taskItems);
         model.addAttribute("userList", dao.findAllUsers());
-        // HTML側に現在の選択状態（文字列）を渡す
+        model.addAttribute("projectList", dao.findAllProjects());
         model.addAttribute("selectedStatus", status);
+        model.addAttribute("keyword", keyword);
 
         return "home";
     }
 
     @GetMapping("/add")
     String addItem(@RequestParam("task") String task,
+                   @RequestParam(value="projectId", required=false) String projectId,
+                   @RequestParam(value="newProjectName", required=false) String newProjectName,
                    @RequestParam(value="taskUserId",required = false) Integer taskUserId,
                    @RequestParam("description") String description,
                    @RequestParam("deadline") String deadline) {
+
+        Integer targetProjectId = null;
+        if ("new".equals(projectId) && newProjectName != null) {
+            // 新規登録して新しいIDを取得
+            targetProjectId = dao.addProject(newProjectName);
+        } else if (projectId != null && !projectId.isEmpty()) {
+            // 既存のIDを数値に変換
+            targetProjectId = Integer.parseInt(projectId);
+        }
+
         String id = UUID.randomUUID().toString().substring(0, 8);
-        TaskItem item = new TaskItem(id, task, taskUserId, description, deadline, 0);
-        
+        // ★ここを修正：nullの代わりに targetProjectId を渡す
+        TaskItem item = new TaskItem(id, task, taskUserId, targetProjectId, "", description, deadline, 0);
+
         dao.add(item);
         return "redirect:/list";
     }
@@ -80,10 +92,22 @@ public class HomeController {
     String updateItem(@RequestParam("id") String id,
                       @RequestParam("task") String task,
                       @RequestParam(value="taskUserId",required=false) Integer taskUserId,
+                      @RequestParam(value="projectId",required=false) String projectId, // Stringで受け取る
+                      @RequestParam(value="newProjectName",required=false) String newProjectName, // 追加
                       @RequestParam("description") String description,
                       @RequestParam("deadline") String deadline,
                       @RequestParam("done") int done) {
-        TaskItem taskItem = new TaskItem(id, task, taskUserId, description, deadline, done);
+
+        Integer targetProjectId = null;
+        if ("new".equals(projectId) && newProjectName != null && !newProjectName.isEmpty()) {
+            targetProjectId = dao.addProject(newProjectName);
+        } else if (projectId != null && !projectId.isEmpty()) {
+            targetProjectId = Integer.parseInt(projectId);
+        }
+
+        // 引数の最後から2番目を targetProjectId に変更
+        TaskItem taskItem = new TaskItem(id, task, taskUserId, targetProjectId, "", description, deadline, done);
+
         dao.update(taskItem);
         return "redirect:/list";
     }
