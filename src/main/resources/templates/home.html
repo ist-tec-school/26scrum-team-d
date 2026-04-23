@@ -20,7 +20,7 @@
             <option value="new">+ 新規で登録</option>
             <option th:each="project : ${projectList}" th:value="${project.id}" th:text="${project.name}"></option>
         </select>
-        <input type="hidden" name="newProjectName" id="newProjectName_hidden">
+        <input type="hidden" name="newProjectName" id="update_newProjectName_hidden">
         <label>タスク</label>
         <input name="task" type="text"/>
         <label>担当者</label>
@@ -184,12 +184,12 @@
         <form action="/update">
             <input id="update_id" name="id" type="hidden"/>
             <label>プロジェクト</label>
-            <select id="update_project" name="projectId" onchange="handleProjectChange(this, 'update_newProjectName_hidden')">
+            <select id="update_project" name="projectId" onchange="handleProjectChange(this, 'add_newProjectName_hidden')">
                 <option value=""></option>
                 <option value="new">+ 新規で登録</option>
                 <option th:each="project : ${projectList}" th:value="${project.id}" th:text="${project.name}"></option>
             </select>
-            <input type="hidden" name="newProjectName" id="update_newProjectName_hidden">
+            <input type="hidden" name="newProjectName" id="add_newProjectName_hidden">
             <label>タスク</label>
             <input id="update_task" name="task" type="text"/>
             <label>担当者</label>
