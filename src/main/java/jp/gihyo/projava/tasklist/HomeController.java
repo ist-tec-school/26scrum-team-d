@@ -25,7 +25,7 @@ public class HomeController {
     record TaskItem(
             String id,
             String task,
-            Integer taskUserId,
+            List<Integer> taskUserIds,
             Integer projectId,
             String projectName,
             String description,
@@ -33,7 +33,7 @@ public class HomeController {
             int done
     ) {}
 
-    private List<TaskItem> taskItems = new ArrayList<>();
+//    private List<TaskItem> taskItems = new ArrayList<>();
     private final TaskListDao dao;
 
     @Autowired
@@ -76,7 +76,7 @@ public class HomeController {
     String addItem(@RequestParam("task") String task,
                    @RequestParam(value="projectId", required=false) String projectId,
                    @RequestParam(value="newProjectName", required=false) String newProjectName,
-                   @RequestParam(value="taskUserId",required = false) Integer taskUserId,
+                   @RequestParam(value="taskUserIds",required = false) List<Integer> taskUserIds,
                    @RequestParam("description") String description,
                    @RequestParam("deadline") String deadline) {
 
@@ -90,8 +90,10 @@ public class HomeController {
         }
 
         String id = UUID.randomUUID().toString().substring(0, 8);
+        // 担当者が一人も選択されていない場合は空のリストをセットする
+        List<Integer> userIds = (taskUserIds != null) ? taskUserIds : new ArrayList<>();
         // ★ここを修正：nullの代わりに targetProjectId を渡す
-        TaskItem item = new TaskItem(id, task, taskUserId, targetProjectId, "", description, deadline, 0);
+        TaskItem item = new TaskItem(id, task, userIds, targetProjectId, "", description, deadline, 0);
 
         dao.add(item);
         return "redirect:/list";
@@ -106,7 +108,7 @@ public class HomeController {
     @GetMapping("/update")
     String updateItem(@RequestParam("id") String id,
                       @RequestParam("task") String task,
-                      @RequestParam(value="taskUserId",required=false) Integer taskUserId,
+                      @RequestParam(value="taskUserIds",required=false)  List<Integer> taskUserIds,
                       @RequestParam(value="projectId",required=false) String projectId, // Stringで受け取る
                       @RequestParam(value="newProjectName",required=false) String newProjectName, // 追加
                       @RequestParam("description") String description,
@@ -119,9 +121,9 @@ public class HomeController {
         } else if (projectId != null && !projectId.isEmpty()) {
             targetProjectId = Integer.parseInt(projectId);
         }
+        List<Integer> userIds = (taskUserIds != null) ? taskUserIds : new ArrayList<>();
 
-        // 引数の最後から2番目を targetProjectId に変
-        TaskItem taskItem = new TaskItem(id, task, taskUserId, targetProjectId, "", description, deadline, done);
+        TaskItem taskItem = new TaskItem(id, task, userIds, targetProjectId, "", description, deadline, done);
 
         dao.update(taskItem);
         return "redirect:/list";
