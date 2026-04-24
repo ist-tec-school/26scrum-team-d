@@ -87,7 +87,7 @@ public class HomeController {
     String addItem(@Validated @ModelAttribute("taskItem") TaskItem item, // 1. 引数をRecordに変更してバリデーション
                    BindingResult result,
                    Model model,
-                   @RequestParam(value="projectId", required=false) String projectId,
+                   @RequestParam(value="projectId", required=false) Integer projectId,
                    @RequestParam(value="newProjectName", required=false) String newProjectName,
                    @RequestParam(value="status", defaultValue="all") String status,
                    @RequestParam(value="keyword", defaultValue="") String keyword) {
@@ -106,10 +106,10 @@ public class HomeController {
 
         // 3. 正常系のプロジェクト登録ロジック
         Integer targetProjectId = null;
-        if ("new".equals(projectId) && newProjectName != null && !newProjectName.isEmpty()) {
+        if (Integer.valueOf(0).equals(projectId) && newProjectName != null && !newProjectName.isEmpty()) {
             targetProjectId = dao.addProject(newProjectName);
-        } else if (projectId != null && !projectId.isEmpty()&& !"new".equals(projectId)) {
-            targetProjectId = Integer.parseInt(projectId);
+        } else if (projectId != null && !Integer.valueOf(0).equals(projectId)) {
+            targetProjectId = projectId;
         }
 
         String id = UUID.randomUUID().toString().substring(0, 8);
@@ -166,10 +166,7 @@ public class HomeController {
             targetProjectId = projectId;
         }
 
-//        List<Integer> userIds = (taskUserIds != null) ? taskUserIds : new ArrayList<>();
-//
-//        TaskItem taskItem = new TaskItem(id, task, userIds, targetProjectId, "", description, deadline, done);
-        // 更新用データの作成
+     // 更新用データの作成
         TaskItem updateData = new TaskItem(
                 item.id(),
                 item.task(),
