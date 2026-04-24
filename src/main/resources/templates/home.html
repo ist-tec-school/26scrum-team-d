@@ -50,32 +50,21 @@
     </form>
 </div>
 
-<div class="list_header">
-    <h2>タスク一覧</h2>
-    <div class="filter_area">
-        <form action="/list" method="get">
-            <input type="hidden" name="projectId" th:value="${selectedProject}">
-            <input type="hidden" name="deptId" th:value="${selectedDept}">
-            <input type="hidden" name="sectionId" th:value="${selectedSection}">
+<form action="/list" method="get" id="mainFilterForm">
 
+    <div class="list_header">
+        <h2>タスク一覧</h2>
+        <div class="filter_area">
             <select name="status" id="status-filter" onchange="this.form.submit()">
                 <option value="working_group" th:selected="${selectedStatus == 'working_group'}">未完了のタスク</option>
                 <option value="3" th:selected="${selectedStatus == '3'}">完了済みのタスク</option>
                 <option value="all" th:selected="${selectedStatus == 'all'}">すべてのタスク</option>
             </select>
-        </form>
+        </div>
     </div>
-</div>
 
-<div class="filter_container">
-
-    <div class="filter_item">
-        <form action="/list" method="get">
-            <input type="hidden" name="status" th:value="${selectedStatus}">
-            <input type="hidden" name="projectId" th:value="${selectedProject}">
-            <input type="hidden" name="keyword" th:value="${keyword}">
-            <input type="hidden" name="sectionId" value="all">
-
+    <div class="filter_container">
+        <div class="filter_item">
             <select name="deptId" onchange="this.form.submit()">
                 <option value="all" th:selected="${selectedDept == 'all'}">すべての部署</option>
                 <option th:each="dept : ${deptList}"
@@ -84,16 +73,9 @@
                         th:selected="${selectedDept == dept.DEPT_ID.toString()}">
                 </option>
             </select>
-        </form>
-    </div>
+        </div>
 
-    <div class="filter_item">
-        <form action="/list" method="get">
-            <input type="hidden" name="status" th:value="${selectedStatus}">
-            <input type="hidden" name="deptId" th:value="${selectedDept}">
-            <input type="hidden" name="projectId" th:value="${selectedProject}">
-            <input type="hidden" name="keyword" th:value="${keyword}">
-
+        <div class="filter_item">
             <select name="sectionId" onchange="this.form.submit()">
                 <option value="all" th:selected="${selectedSection == 'all'}">すべての課</option>
                 <option th:each="sec : ${sectionList}"
@@ -103,25 +85,19 @@
                         th:selected="${selectedSection == sec.SECTION_ID.toString()}">
                 </option>
             </select>
-        </form>
-    </div>
+        </div>
 
-    <div class="filter_item">
-        <form action="/list" method="get">
-            <input type="hidden" name="status" th:value="${selectedStatus}"> <input type="hidden" name="deptId" th:value="${selectedDept}">
-            <input type="hidden" name="sectionId" th:value="${selectedSection}">
-            <select name="projectId" onchange ="this.form.submit()">
-                <option value="all">すべてのプロジェクト</option>
+        <div class="filter_item">
+            <select name="projectId" onchange="this.form.submit()">
+                <option value="all" th:selected="${selectedProject == 'all'}">すべてのプロジェクト</option>
                 <option th:each="project : ${projectList}"
                         th:value="${project.id}"
                         th:text="${project.name}"
                         th:selected="${selectedProject == project.id.toString()}">
                 </option>
             </select>
-            <input type="hidden" name="keyword" th:value="${keyword}">
-        </form>
+        </div>
     </div>
-</div>
 
 <div class="search_area">
     <form action="/list" method="get">
@@ -129,10 +105,12 @@
         <input type="text" name="keyword" th:value="${keyword}" placeholder="検索ワード タスクを検索できます。"><button type="submit" class="search-button">検索</button>
     </form>
 
-    <div th:if="${#lists.isEmpty(taskList) and (keyword != null and keyword != '')}" class="no-result-message">
-        <p> 「<span th:text="${keyword}"></span>」での検索結果  — 0件です —</p>
+        <div th:if="${#lists.isEmpty(taskList) and (keyword != null and keyword != '')}" class="no-result-message">
+            <p> 「<span th:text="${keyword}"></span>」での検索結果 — 0件です —</p>
+        </div>
     </div>
-</div>
+
+</form>
 
 <div class="tasklist" th:if="${!#lists.isEmpty(taskList)}">
     <table>
