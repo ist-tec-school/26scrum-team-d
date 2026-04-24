@@ -57,14 +57,14 @@ function handleProjectChange(selectElement, hiddenInputId) {
     const selectedValue = selectElement.value;
     const hiddenInput = document.getElementById(hiddenInputId);
 
-    if (selectedValue === 'new') {
+    if (selectedValue === '0') {
         const newProjectName = prompt("新しいプロジェクト名を入力してください");
 
         if (newProjectName && newProjectName.trim() !== "") {
             hiddenInput.value = newProjectName;
 
             // 画面上の選択肢に一時的に追加
-            const newOption = new Option(newProjectName, "new");
+            const newOption = new Option(newProjectName, "0");
             selectElement.add(newOption, selectElement.options[2]);
             newOption.selected = true;
         } else {
