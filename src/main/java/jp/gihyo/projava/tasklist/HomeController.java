@@ -73,7 +73,7 @@ public class HomeController {
         model.addAttribute("selectedDept", deptId);
         model.addAttribute("selectedSection", sectionId);
         model.addAttribute("keyword", keyword);
-        model.addAttribute("taskItem", new TaskItem(null, null, null, null, null, null, null, null));
+        model.addAttribute("taskItem", new TaskItem("", "", List.of(), null, "", "", "", 0));
 
         return "home";
     }
@@ -84,9 +84,6 @@ public class HomeController {
                    Model model,
                    @RequestParam(value="projectId", required=false) String projectId,
                    @RequestParam(value="newProjectName", required=false) String newProjectName,
-                   @RequestParam(value="taskUserIds",required = false) List<Integer> taskUserIds,
-                   @RequestParam("description") String description,
-                   @RequestParam("deadline") String deadline,
                    @RequestParam(value="status", defaultValue="all") String status,
                    @RequestParam(value="keyword", defaultValue="") String keyword) {
 
@@ -111,9 +108,7 @@ public class HomeController {
         }
 
         String id = UUID.randomUUID().toString().substring(0, 8);
-        // 担当者が一人も選択されていない場合は空のリストをセットする
-        List<Integer> userIds = (taskUserIds != null) ? taskUserIds : new ArrayList<>();
-        // itemから値を取り出して新規作成（doneは固定で0）
+
         TaskItem newItem = new TaskItem(
                 id, item.task(),
                 item.taskUserIds(),
@@ -123,9 +118,6 @@ public class HomeController {
                 item.deadline(),
                 0
         );
-//
-//        // ★ここを修正：nullの代わりに targetProjectId を渡す
-//        TaskItem newItem = new TaskItem(id, task, userIds, targetProjectId, "", description, deadline, 0);
 
         dao.add(newItem);
         return "redirect:/list";
@@ -138,16 +130,11 @@ public class HomeController {
     }
 
     @PostMapping("/update")
-    String updateItem(@Validated @ModelAttribute("updateItem") TaskItem item,
+    String updateItem(@Validated @ModelAttribute("taskItem") TaskItem item,
+                      BindingResult result,
                       Model model,
-                      @RequestParam("id") String id,
-                      @RequestParam("task") String task,
-                      @RequestParam(value="taskUserIds",required=false) List<Integer> taskUserIds,
                       @RequestParam(value="projectId", required=false) String projectId,
                       @RequestParam(value="newProjectName", required=false) String newProjectName,
-                      @RequestParam("deadline") String deadline,
-                      @RequestParam("done") int done,
-                      @RequestParam("description") String description,
                       @RequestParam(value="status", defaultValue="all") String status,
                       @RequestParam(value="keyword", defaultValue="") String keyword) {
 
@@ -167,7 +154,6 @@ public class HomeController {
             return "home"; // redirectせずhomeを返す
         }
 
-        // 6. 正常時のロジック（プロジェクトの新規登録判定など）
         Integer targetProjectId = null;
         if ("new".equals(projectId) && newProjectName != null && !newProjectName.isEmpty()) {
             targetProjectId = dao.addProject(newProjectName);
@@ -175,9 +161,9 @@ public class HomeController {
             targetProjectId = Integer.parseInt(projectId);
         }
 
-        List<Integer> userIds = (taskUserIds != null) ? taskUserIds : new ArrayList<>();
-
-        TaskItem taskItem = new TaskItem(id, task, userIds, targetProjectId, "", description, deadline, done);
+//        List<Integer> userIds = (taskUserIds != null) ? taskUserIds : new ArrayList<>();
+//
+//        TaskItem taskItem = new TaskItem(id, task, userIds, targetProjectId, "", description, deadline, done);
         // 更新用データの作成
         TaskItem updateData = new TaskItem(
                 item.id(),
@@ -193,4 +179,3 @@ public class HomeController {
         return "redirect:/list";
     }
 }
-//taskItemかも

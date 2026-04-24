@@ -38,7 +38,6 @@ function showUpdateDialog(button) {
     document.getElementById('update_status').value = statusMap[statusText] ?? 0;
 
     dialog.style.left = ((window.innerWidth - 500) / 2) + 'px';
-    // ダイアログを表示
     dialog.style.display = 'block';
 }
 
@@ -77,44 +76,51 @@ function handleProjectChange(selectElement, hiddenInputId) {
         hiddenInput.value = "";
     }
 }
-
 // --- ページ読み込み時の初期化 ---
-let updateChoice;
+    let updateChoice;
 
-document.addEventListener('DOMContentLoaded', function() {
-    // 1. 登録フォームの担当者初期化
-    new Choices('#add_task_user', {
-        searchEnabled: true,
-        searchPlaceholderValue: '名前で検索...',
-        itemSelectText: '',
-        shouldSort: false,
-        searchFloor: 0,
-        renderChoiceLimit: -1,
-        removeItemButton:true,
-    });
-
-    // 2. 更新フォームの担当者初期化
-    const updateEl = document.getElementById('update_user');
-    if (updateEl) {
-        updateChoice = new Choices(updateEl, {
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. 登録フォーム初期化
+        new Choices('#add_task_user', {
             searchEnabled: true,
-            itemSelectText: '',
-            shouldSort: false,
             removeItemButton: true,
         });
-    }
 
-    // 3. エラー時のダイアログ自動再表示（初期化の後に実行）
-    const isUpdateError = document.getElementById('isUpdateError');
-    if (isUpdateError && isUpdateError.value === 'true') {
-        const dialog = document.getElementById('updateDialog');
-        if (dialog) {
-            dialog.style.display = 'block';
+        // 2. 更新フォーム初期化
+        const updateEl = document.getElementById('update_user');
+        if (updateEl) {
+            updateChoice = new Choices(updateEl, {
+                searchEnabled: true,
+                removeItemButton: true,
+            });
+        }
 
-            // Choices.jsの表示をサーバーから戻った値に同期
-            if (updateEl && updateChoice) {
-                updateChoice.setChoiceByValue(updateEl.value);
+// 3. エラー時の自動再表示とスクロール
+        const isUpdateError = document.getElementById('isUpdateError');
+        if (isUpdateError && isUpdateError.value === 'true') {
+            const dialog = document.getElementById('updateDialog');
+            if (dialog) {
+                dialog.style.display = 'block';
+
+                // Choicesの同期（選択状態を戻す）
+                if (updateChoice && updateEl) {
+                    // セレクトボックスに元々ある選択済みの値を取得してセット
+                    const selectedValues = Array.from(updateEl.options)
+                        .filter(opt => opt.selected)
+                        .map(opt => opt.value);
+                    if (selectedValues.length > 0) {
+                        updateChoice.setChoiceByValue(selectedValues);
+                    }
+                }
+
+                // --- スクロール処理 (独立) ---
+                setTimeout(() => {
+                    const target = document.getElementById('task-list-section');
+                    if (target) {
+                        console.log("Scrolling to task list section...");
+                        target.scrollIntoView({ behavior: 'auto', block: 'start' });
+                    }
+                }, 100); // 描画を待つため少し長めに設定
             }
         }
-    }
-});
+    });

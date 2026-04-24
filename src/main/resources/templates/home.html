@@ -54,7 +54,7 @@
     </form>
 </div>
 
-<div class="list_header">
+<div id="task-list-section" class="list_header">
     <h2>タスク一覧</h2>
     <div class="filter_area">
         <form action="/list" method="get">
@@ -202,9 +202,9 @@
         <p class="error-text"
            th:if="${updateErrorMessage}"
            th:text="${updateErrorMessage}"></p>
-        <form action="/update" method="post" th:object="${updateItem}">
+        <form action="/update" method="post" th:object="${taskItem}">
             <input id="update_id" name="id" type="hidden"
-                   th:value="${updateItem?.id}"/>
+                   th:value="${taskItem?.id}"/>
             <label>プロジェクト</label>
             <select id="update_project" name="projectId" onchange="handleProjectChange(this, 'update_newProjectName_hidden')">
                 <option value=""></option>
@@ -219,7 +219,7 @@
             <input id="update_task" name="task" type="text"
                    th:value="${updateItem?.task}" required/>
             <label>担当者</label>
-            <select id="update_user" name="taskUserIds" multiple>
+            <select id="update_user" name="taskUserIds" th:selected multiple>
                 <option th:each="user : ${userList}"
                         th:value="${user.USER_ID}"
                         th:text="${user.NAME}">
