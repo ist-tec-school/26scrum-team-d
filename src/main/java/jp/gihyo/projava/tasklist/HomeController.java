@@ -69,7 +69,12 @@ public class HomeController {
         model.addAttribute("selectedDept", deptId);
         model.addAttribute("selectedSection", sectionId);
         model.addAttribute("keyword", keyword);
+        // listItems メソッド内
+        String today = java.time.LocalDate.now().toString();
+        String twoDaysLater = java.time.LocalDate.now().plusDays(2).toString();
 
+        model.addAttribute("today", today);
+        model.addAttribute("twoDaysLater", twoDaysLater);
         return "home";
     }
 
