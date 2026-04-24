@@ -138,7 +138,7 @@ public class HomeController {
     String updateItem(@Validated @ModelAttribute("taskItem") TaskItem item,
                       BindingResult result,
                       Model model,
-                      @RequestParam(value="projectId", required=false) String projectId,
+                      @RequestParam(value="projectId", required=false) Integer projectId,
                       @RequestParam(value="newProjectName", required=false) String newProjectName,
                       @RequestParam(value="status", defaultValue="all") String status,
                       @RequestParam(value="keyword", defaultValue="") String keyword) {
@@ -160,10 +160,10 @@ public class HomeController {
         }
 
         Integer targetProjectId = null;
-        if ("new".equals(projectId) && newProjectName != null && !newProjectName.isEmpty()) {
+        if (Integer.valueOf(0).equals(projectId) && newProjectName != null && !newProjectName.isEmpty()) {
             targetProjectId = dao.addProject(newProjectName);
-        } else if (projectId != null && !projectId.isEmpty() && !"new".equals(projectId)) {
-            targetProjectId = Integer.parseInt(projectId);
+        } else if (projectId != null && !Integer.valueOf(0).equals(projectId)) {
+            targetProjectId = projectId;
         }
 
 //        List<Integer> userIds = (taskUserIds != null) ? taskUserIds : new ArrayList<>();
