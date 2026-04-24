@@ -101,6 +101,7 @@
                 <option th:each="sec : ${sectionList}"
                         th:value="${sec.SECTION_ID}"
                         th:text="${sec.SECTION_NAME}"
+                        th:data-dept="${sec.DEPT_ID}"
                         th:selected="${selectedSection == sec.SECTION_ID.toString()}">
                 </option>
             </select>
