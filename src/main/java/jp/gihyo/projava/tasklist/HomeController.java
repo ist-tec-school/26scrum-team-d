@@ -108,14 +108,23 @@ public class HomeController {
         Integer targetProjectId = null;
         if ("new".equals(projectId) && newProjectName != null && !newProjectName.isEmpty()) {
             targetProjectId = dao.addProject(newProjectName);
-        } else if (projectId != null && !projectId.isEmpty()) {
-        } else if (projectId != null && !projectId.isEmpty() && !"new".equals(projectId)) {
+        } else if (projectId != null && !projectId.isEmpty()&& !"new".equals(projectId)) {
             targetProjectId = Integer.parseInt(projectId);
         }
 
         String id = UUID.randomUUID().toString().substring(0, 8);
+        TaskItem newItem = new TaskItem(
+                id,                 // 生成したID
+                item.task(),
+                item.taskUserIds(),
+                targetProjectId,    // 判定したプロジェクトID
+                "",
+                item.description(),
+                item.deadline(),
+                0
+        );
 
-        dao.add(item);
+        dao.add(newItem);
         return "redirect:/list";
     }
 
