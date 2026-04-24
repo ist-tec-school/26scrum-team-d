@@ -77,7 +77,7 @@ function handleProjectChange(selectElement, hiddenInputId) {
     }
 }
 // --- ページ読み込み時の初期化 ---
-    let updateChoice;
+let updateChoice = null;
 
     document.addEventListener('DOMContentLoaded', function() {
         // 1. 登録フォーム初期化
@@ -121,6 +121,26 @@ function handleProjectChange(selectElement, hiddenInputId) {
                         target.scrollIntoView({ behavior: 'auto', block: 'start' });
                     }
                 }, 100); // 描画を待つため少し長めに設定
+
+                /** 矢印エリアの開閉スイッチ */
+                function setupToggle(selector, instance) {
+                    const el = document.querySelector(selector);
+                    if (!el) return;
+                    const container = el.closest('.choices');
+
+                    const hitBox = document.createElement('div');
+                    hitBox.className = 'toggle-hit-box';
+                    container.appendChild(hitBox);
+
+                    hitBox.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        if (container.classList.contains('is-open')) {
+                            instance.hideDropdown();
+                        } else {
+                            instance.showDropdown();
+                        }
+                    });
+                }
             }
         }
     });

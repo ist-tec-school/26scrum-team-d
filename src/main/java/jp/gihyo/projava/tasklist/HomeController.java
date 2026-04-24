@@ -74,7 +74,12 @@ public class HomeController {
         model.addAttribute("selectedSection", sectionId);
         model.addAttribute("keyword", keyword);
         model.addAttribute("taskItem", new TaskItem("", "", List.of(), null, "", "", "", 0));
+        // listItems メソッド内
+        String today = java.time.LocalDate.now().toString();
+        String twoDaysLater = java.time.LocalDate.now().plusDays(2).toString();
 
+        model.addAttribute("today", today);
+        model.addAttribute("twoDaysLater", twoDaysLater);
         return "home";
     }
 
@@ -104,22 +109,13 @@ public class HomeController {
         if ("new".equals(projectId) && newProjectName != null && !newProjectName.isEmpty()) {
             targetProjectId = dao.addProject(newProjectName);
         } else if (projectId != null && !projectId.isEmpty()) {
+        } else if (projectId != null && !projectId.isEmpty() && !"new".equals(projectId)) {
             targetProjectId = Integer.parseInt(projectId);
         }
 
         String id = UUID.randomUUID().toString().substring(0, 8);
 
-        TaskItem newItem = new TaskItem(
-                id, item.task(),
-                item.taskUserIds(),
-                targetProjectId,
-                "",
-                item.description(),
-                item.deadline(),
-                0
-        );
-
-        dao.add(newItem);
+        dao.add(item);
         return "redirect:/list";
     }
 
@@ -157,7 +153,7 @@ public class HomeController {
         Integer targetProjectId = null;
         if ("new".equals(projectId) && newProjectName != null && !newProjectName.isEmpty()) {
             targetProjectId = dao.addProject(newProjectName);
-        } else if (projectId != null && !projectId.isEmpty()) {
+        } else if (projectId != null && !projectId.isEmpty() && !"new".equals(projectId)) {
             targetProjectId = Integer.parseInt(projectId);
         }
 

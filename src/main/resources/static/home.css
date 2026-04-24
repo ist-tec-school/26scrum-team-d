@@ -211,7 +211,6 @@ input:invalid:focus {
     text-align: center;
 }
 
-
 .choices {
     width: 100% !important;
     max-width: 400px;
@@ -221,21 +220,45 @@ input:invalid:focus {
 }
 
 .choices__inner {
-    height: 30px !important;
-    min-height: 30px !important;
-    padding: 0 10px !important;
+    position: relative;
+    min-height: 38px !important;
+    padding: 0 40px 0 10px !important;
     border: 1px solid #000 !important;
     border-radius: 0 !important;
     background-color: #fff !important;
     display: flex !important;
     align-items: center !important;
+    flex-wrap: wrap;
     box-sizing: border-box !important;
+    cursor: pointer !important;
 }
 
 .is-focused .choices__inner,
 .is-open .choices__inner {
     border: 1px solid #000 !important;
     z-index: 1;
+}
+
+
+.choices__input {
+    background-color: transparent !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 14px !important;
+    min-width: 150px !important;
+    height: 100% !important;
+    display: inline-block !important;
+}
+.choices__input::placeholder {
+    line-height: 36px !important;
+    color: #888;
+}
+
+.choices__list--multiple .choices__item {
+    background-color: #4D648D !important;
+    border: 1px solid #4D648D !important;
+    border-radius: 3px !important;
+    cursor: pointer !important;
 }
 
 .choices__list--dropdown {
@@ -247,24 +270,85 @@ input:invalid:focus {
 }
 
 .choices__list--dropdown .choices__input {
-    border: 1px solid #ccc !important;
-    border-radius: 0 !important;
-    margin: 5px !important;
-    padding: 4px 8px !important;
-    width: calc(100% - 10px) !important;
+    display: block !important;
+    width: 100% !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    margin: 0 !important;
+    padding: 0 15px !important;
+    border: none !important;
+    border-bottom: 1px solid #ccc !important;
     box-sizing: border-box !important;
+    cursor: text !important;
 }
 
-.choices[data-type*="select-one"]::after {
-    border-color: #000 transparent transparent transparent !important;
-    border-width: 5px !important;
-    right: 12px !important;
-    margin-top: -2.5px !important;
+.choices__list--dropdown .choices__item--choice {
+    height: 35px !important;
+    min-height: 35px !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 15px !important;
+    cursor: pointer !important;
 }
 
-.choices[data-type*="select-one"].is-open::after {
-    border-color: transparent transparent #000 transparent !important;
-    margin-top: -7.5px !important;
+.choices::after {
+    content: "";
+    height: 0;
+    width: 0;
+    border-style: solid;
+    border-width: 5px 5px 0 5px;
+    border-color: #333 transparent transparent transparent;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 3;
+}
+
+.choices.is-open::after {
+    border-width: 0 5px 5px 5px;
+    border-color: transparent transparent #333 transparent;
+}
+
+.toggle-hit-box {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 40px;
+    height: 100%;
+    cursor: pointer !important;
+    z-index: 2;
+    /* background: rgba(0,0,0,0.05); /* デバッグ時はここを外すと範囲が見えます */
+}
+
+
+
+.task-warning {
+    background-color: rgba(242, 231, 0, 0.8);
+}
+
+.task-overdue {
+    position: relative;
+    color: #999 !important;
+}
+
+.task-overdue::after {
+    content: "";
+    position: absolute;
+    left: 2%;
+    right: 2%;
+    top: 50%;
+    width: 95%;
+    height: 3px;
+    background-color: #333;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 10;
+}
+
+.task-overdue td {
+    text-decoration: none !important;
 }
 
 #task-list-section {
