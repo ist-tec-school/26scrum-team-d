@@ -44,7 +44,7 @@ public class HomeController {
 
     @GetMapping("/list")
     String listItems(Model model,
-                     @RequestParam(value = "status", defaultValue = "all") String status,
+                     @RequestParam(value = "status", defaultValue = "working_group") String status,
                      @RequestParam(value = "projectId", defaultValue = "all") String projectId,
                      @RequestParam(value = "deptId", defaultValue = "all") String deptId,
                      @RequestParam(value = "sectionId", defaultValue = "all") String sectionId,
