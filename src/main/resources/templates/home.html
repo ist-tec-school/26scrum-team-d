@@ -32,7 +32,8 @@
         </select>
         <input type="hidden" name="newProjectName" id="add_newProjectName_hidden">
         <label>タスク</label>
-        <textarea name="task" rows="2" required th:text="${taskItem?.task}"></textarea>
+        <input name="task" type="text"
+               th:value="${taskItem?.task}" required/>
         <label>担当者</label>
         <select name="taskUserIds" id="add_task_user" multiple>
             <option value=""></option>
@@ -45,7 +46,8 @@
         <input name="deadline" type="date"
                th:value="${taskItem?.deadline}" required/>
         <label>説明</label>
-        <textarea name="description" rows="4" th:text="${taskItem?.description}"></textarea>
+        <textarea name="description" rows="4"></textarea>
+
         <input type="submit" value="登録" class="btn-register"/>
     </form>
 </div>
@@ -99,11 +101,9 @@
         </div>
     </div>
 
-<div class="search_area">
-    <form action="/list" method="get">
-        <input type="hidden" name="status" th:value="${selectedStatus}">
-        <input type="text" name="keyword" th:value="${keyword}" placeholder="検索ワード タスクを検索できます。"><button type="submit" class="search-button">検索</button>
-    </form>
+    <div class="search_area">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="検索ワード タスクを検索できます。">
+        <button type="submit" class="search-button">検索</button>
 
         <div th:if="${#lists.isEmpty(taskList) and (keyword != null and keyword != '')}" class="no-result-message">
             <p> 「<span th:text="${keyword}"></span>」での検索結果 — 0件です —</p>
