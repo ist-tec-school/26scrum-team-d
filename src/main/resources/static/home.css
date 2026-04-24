@@ -321,3 +321,32 @@ input:invalid:focus {
     z-index: 2;
     /* background: rgba(0,0,0,0.05); /* デバッグ時はここを外すと範囲が見えます */
 }
+
+
+
+.task-warning {
+    background-color: rgba(242, 231, 0, 0.8);
+}
+
+.task-overdue {
+    position: relative;
+    color: #999 !important;
+}
+
+.task-overdue::after {
+    content: "";
+    position: absolute;
+    left: 2%;
+    right: 2%;
+    top: 50%;
+    width: 95%;
+    height: 3px;
+    background-color: #333;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 10;
+}
+
+.task-overdue td {
+    text-decoration: none !important;
+}
