@@ -2,43 +2,43 @@
  * 更新ダイアログを表示する
  */
 function showUpdateDialog(button) {
-    // ボタンが属する行(tr)を取得
+    // 1. ボタンが属する行(tr)を取得
     const row = button.closest('tr');
     const dialog = document.getElementById('updateDialog');
 
-    // 各セルのデータを取得（セルの位置に注意）
+    // 2. 各セルのデータ属性やテキストからデータを取得
     const id = row.cells[0].innerText;                // ID (hidden)
     const projectId = row.cells[1].dataset.projectId;  // プロジェクトID
     const task = row.cells[2].innerText;               // タスク名
-    const userIds = JSON.parse(row.cells[3].dataset.userIds || "[]");// 担当者ID
+    const userIds = JSON.parse(row.cells[3].dataset.userIds || "[]"); // 担当者ID
     const deadline = row.cells[4].innerText;           // 期限
     const description = row.cells[5].innerText;        // 説明
 
-    // ダイアログの各入力欄に値をセット
+    // 3. ダイアログの各入力欄に値をセット
     document.getElementById('update_id').value = id;
     document.getElementById('update_task').value = task;
     document.getElementById('update_deadline').value = deadline;
     document.getElementById('update_description').value = description;
 
-    // プロジェクトのセレクトボックスをセット
+    // 4. プロジェクトのセレクトボックスをセット
     const projectSelect = document.getElementById('update_project');
     if (projectSelect) {
         projectSelect.value = projectId || '';
     }
 
-    // Choices.js を使用している担当者セレクトボックスをセット
+    // 5. Choices.js を使用している担当者セレクトボックスをセット
     if (updateChoice) {
         updateChoice.removeActiveItems();
         updateChoice.setChoiceByValue(userIds.map(id => id.toString()));
     }
 
-    // 状態（テキストから数値へ変換）
+    // 6. 状態（テキストから数値へ変換）
     const statusMap = {'未着手': 0, '対応中': 1, '完了': 3};
     const statusText = row.cells[6].innerText.trim();
     document.getElementById('update_status').value = statusMap[statusText] ?? 0;
 
+    // 7. ダイアログの位置調整と表示
     dialog.style.left = ((window.innerWidth - 500) / 2) + 'px';
-    // ダイアログを表示
     dialog.style.display = 'block';
 }
 
@@ -51,10 +51,7 @@ function closeUpdateDialog() {
 
 /**
  * プロジェクト選択が「新規」になった時の入力処理
- * @param selectElement - 選択されたselect要素
- * @param hiddenInputId - プロジェクト名を格納するhiddenのID
  */
-// home.js の handleProjectChange を以下に差し替えてください
 function handleProjectChange(selectElement, hiddenInputId) {
     const selectedValue = selectElement.value;
     const hiddenInput = document.getElementById(hiddenInputId);
@@ -66,36 +63,63 @@ function handleProjectChange(selectElement, hiddenInputId) {
             const trimmedName = newProjectName.trim();
             hiddenInput.value = trimmedName;
 
-            // --- 【ここから追加：表示を更新する処理】 ---
-            // 1. すでに「一時的な新規名称」が表示されていたら削除する（二重表示防止）
+            // 以前追加した一時的な選択肢があれば削除
             const oldTemp = selectElement.querySelector('.temp-option');
             if (oldTemp) oldTemp.remove();
 
-            // 2. 新しい選択肢（option）を作成して追加する
+            // 新しい選択肢を作成して「新規で登録」の下に追加
             const newOption = document.createElement('option');
-            newOption.value = "new"; // Valueは"new"のまま（Java側が"new"を期待しているため）
-            newOption.text = "新規: " + trimmedName; // 表示だけ入力された名前にする
-            newOption.className = 'temp-option'; // 削除しやすくするためにクラスを付与
+            newOption.value = "new";
+            newOption.text = "新規: " + trimmedName;
+            newOption.className = 'temp-option';
 
-            selectElement.add(newOption, selectElement.options[1]); // 「新規で登録」の下あたりに追加
-            selectElement.value = "new"; // 今作った選択肢を選んだ状態にする
-            // -------------------------------------------
-
+            selectElement.add(newOption, selectElement.options[1]);
+            selectElement.value = "new";
         } else {
-            // キャンセルされた場合は未選択に戻す
             selectElement.value = "";
             hiddenInput.value = "";
         }
     } else {
-        // 既存のプロジェクトが選ばれたら、一時的な表示は消す
         hiddenInput.value = "";
         const oldTemp = selectElement.querySelector('.temp-option');
         if (oldTemp) oldTemp.remove();
     }
 }
 
+/**
+ * 部署の選択状態に合わせて、課の選択肢をフィルタリングする
+ */
+function syncSectionFilter() {
+    // 部署と課のセレクトボックスを取得（name属性で特定）
+    const deptSelect = document.querySelector('select[name="deptId"]');
+    const sectionSelect = document.querySelector('select[name="sectionId"]');
+
+    if (!deptSelect || !sectionSelect) return;
+
+    const selectedDeptId = deptSelect.value;
+    const options = sectionSelect.options;
+
+    // 各「課」の選択肢をチェック
+    for (let i = 0; i < options.length; i++) {
+        const opt = options[i];
+        const parentDeptId = opt.getAttribute('data-dept');
+
+        // 条件： 「すべて」である、または親部署IDが一致する
+        if (opt.value === 'all' || selectedDeptId === 'all' || parentDeptId === selectedDeptId) {
+            opt.style.display = 'block';
+            opt.disabled = false;
+        } else {
+            opt.style.display = 'none';
+            opt.disabled = true;
+        }
+    }
+}
+
 let updateChoice = null;
 
+/**
+ * メインの初期化処理
+ */
 document.addEventListener('DOMContentLoaded', function() {
     const commonOptions = {
         removeItemButton: true,
@@ -106,32 +130,38 @@ document.addEventListener('DOMContentLoaded', function() {
         shouldSort: false,
     };
 
-    // --- 登録フォーム ---
+    // --- 登録フォームの Choices.js 初期化 ---
     const addChoice = new Choices('#add_task_user', commonOptions);
     setupToggle('#add_task_user', addChoice);
 
-    // --- 更新フォーム（初期化のみ） ---
+    // --- 更新フォームの Choices.js 初期化 ---
     const updateEl = document.getElementById('update_user');
     if (updateEl) {
         updateChoice = new Choices(updateEl, commonOptions);
         setupToggle('#update_user', updateChoice);
     }
+
+    // --- 部署・課の連動初期化 ---
+    syncSectionFilter();
+    const deptSelect = document.querySelector('select[name="deptId"]');
+    if (deptSelect) {
+        deptSelect.addEventListener('change', syncSectionFilter);
+    }
 });
 
 /**
- * 更新ボタンが押された時に呼ばれる関数（既存の処理に組み込んでください）
- * @param {Array} selectedIds - DBから取得した担当者のID配列 e.g. [1, 5]
+ * 担当者選択用の Choices.js インスタンスに値を反映
  */
 function reflectSelectedUsers(selectedIds) {
     if (updateChoice) {
-        // 1. 一旦現在の選択をクリア
         updateChoice.removeActiveItems();
-        // 2. HTMLのoptionではなく、Choicesのメソッドで値をセット
         updateChoice.setChoiceByValue(selectedIds.map(String));
     }
 }
 
-/** 矢印エリアの開閉スイッチ */
+/**
+ * Choices.js の右端クリックでドロップダウンを開閉するための設定
+ */
 function setupToggle(selector, instance) {
     const el = document.querySelector(selector);
     if (!el) return;
