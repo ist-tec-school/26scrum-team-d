@@ -63,16 +63,34 @@ function handleProjectChange(selectElement, hiddenInputId) {
         const newProjectName = prompt("新しいプロジェクト名を入力してください");
 
         if (newProjectName && newProjectName.trim() !== "") {
-            hiddenInput.value = newProjectName.trim();
-            // 「新規で登録」の option のテキストを一時的に変更して、何を入力したかわかるようにする（任意）
-            // selectElement.options[selectElement.selectedIndex].text = "+ 新規: " + newProjectName;
+            const trimmedName = newProjectName.trim();
+            hiddenInput.value = trimmedName;
+
+            // --- 【ここから追加：表示を更新する処理】 ---
+            // 1. すでに「一時的な新規名称」が表示されていたら削除する（二重表示防止）
+            const oldTemp = selectElement.querySelector('.temp-option');
+            if (oldTemp) oldTemp.remove();
+
+            // 2. 新しい選択肢（option）を作成して追加する
+            const newOption = document.createElement('option');
+            newOption.value = "new"; // Valueは"new"のまま（Java側が"new"を期待しているため）
+            newOption.text = "新規: " + trimmedName; // 表示だけ入力された名前にする
+            newOption.className = 'temp-option'; // 削除しやすくするためにクラスを付与
+
+            selectElement.add(newOption, selectElement.options[1]); // 「新規で登録」の下あたりに追加
+            selectElement.value = "new"; // 今作った選択肢を選んだ状態にする
+            // -------------------------------------------
+
         } else {
-            // キャンセル時は選択をリセット
+            // キャンセルされた場合は未選択に戻す
             selectElement.value = "";
             hiddenInput.value = "";
         }
     } else {
+        // 既存のプロジェクトが選ばれたら、一時的な表示は消す
         hiddenInput.value = "";
+        const oldTemp = selectElement.querySelector('.temp-option');
+        if (oldTemp) oldTemp.remove();
     }
 }
 
