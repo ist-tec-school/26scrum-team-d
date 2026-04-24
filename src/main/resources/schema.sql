@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS users(
 CREATE TABLE IF NOT EXISTS projects (
     project_id INT PRIMARY KEY AUTO_INCREMENT,
     project_name VARCHAR(100) NOT NULL
-    );
+);
 
 CREATE TABLE IF NOT EXISTS tasklist (
     id   VARCHAR(8)  PRIMARY KEY,
@@ -38,5 +38,5 @@ CREATE TABLE IF NOT EXISTS task_assignments(
     PRIMARY KEY (task_id, user_id),
     FOREIGN KEY (task_id) REFERENCES tasklist(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-)
+);
 

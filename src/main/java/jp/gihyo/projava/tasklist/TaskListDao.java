@@ -31,27 +31,27 @@ public class TaskListDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-@Transactional
-public void add(TaskItem taskItem) {
-    jdbcTemplate.update(
-            "INSERT INTO tasklist (id, task, project_id, description, deadline, done) VALUES (?, ?, ?, ?, ?, ?)",
-            taskItem.id(), taskItem.task(), taskItem.projectId(),
-            taskItem.description(), taskItem.deadline(), taskItem.done()
-    );
+    @Transactional
+    public void add(TaskItem taskItem) {
+        jdbcTemplate.update(
+                "INSERT INTO tasklist (id, task, project_id, description, deadline, done) VALUES (?, ?, ?, ?, ?, ?)",
+                taskItem.id(), taskItem.task(), taskItem.projectId(),
+                taskItem.description(), taskItem.deadline(), taskItem.done()
+        );
 
-    // 2. 中間テーブルへの担当者登録
-    if (taskItem.taskUserIds() != null) {
-        for (Integer userId : taskItem.taskUserIds()) {
-            jdbcTemplate.update(
-                    "INSERT INTO task_assignments (task_id, user_id) VALUES (?, ?)",
-                    taskItem.id(), userId
-            );
+        // 2. 中間テーブルへの担当者登録
+        if (taskItem.taskUserIds() != null) {
+            for (Integer userId : taskItem.taskUserIds()) {
+                jdbcTemplate.update(
+                        "INSERT INTO task_assignments (task_id, user_id) VALUES (?, ?)",
+                        taskItem.id(), userId
+                );
+            }
         }
     }
-}
 
     // --- フィルタリング用メソッド ---
-    public List<TaskItem> findByCondition(String status, String projectId, String deptId, String sectionId,String keyword) {
+    public List<TaskItem> findByCondition(String status, String projectId, String deptId, String sectionId, String keyword) {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT DISTINCT t.*, p.project_name ");
         sql.append("FROM tasklist t ");
@@ -63,9 +63,16 @@ public void add(TaskItem taskItem) {
 
         List<Object> params = new ArrayList<>();
 
+        // findByCondition メソッド内の status 判定部分を修正
         if (!"all".equals(status)) {
-            sql.append(" AND t.done = ?");
-            params.add("working".equals(status) ? 1 : Integer.parseInt(status));
+            if ("working_group".equals(status)) {
+                // 未着手(0) または 対応中(1) を検索
+                sql.append(" AND (t.done = 0 OR t.done = 1)");
+            } else {
+                // それ以外（完了:3 など）は数値として処理
+                sql.append(" AND t.done = ?");
+                params.add(Integer.parseInt(status));
+            }
         }
 
         if (!"all".equals(projectId) && projectId != null && !projectId.isEmpty()) {
@@ -82,12 +89,13 @@ public void add(TaskItem taskItem) {
             sql.append(" AND s.section_id = ?");
             params.add(Integer.parseInt(sectionId));
         }
-      
-      if (keyword != null && !keyword.isBlank()) {
-            sql.append(" AND (LOWER(t.task) LIKE LOWER(?) OR LOWER(u.name) LIKE LOWER(?))");
-          String wildcardKeyword = "%" + keyword + "%";
-          params.add(wildcardKeyword); // task 用
-          params.add(wildcardKeyword); // u.name 用
+
+        if (keyword != null && !keyword.isBlank()) {
+            sql.append(" AND (LOWER(t.task) LIKE LOWER(?) OR LOWER(p.project_name) LIKE LOWER(?) OR LOWER(u.name) LIKE LOWER(?))");
+            String wildcardKeyword = "%" + keyword + "%";
+            params.add(wildcardKeyword); // task 用
+            params.add(wildcardKeyword); // u.name 用
+            params.add(wildcardKeyword);
         }
 
         sql.append(" ORDER BY t.deadline ASC");

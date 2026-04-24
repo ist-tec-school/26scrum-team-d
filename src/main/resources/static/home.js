@@ -54,6 +54,7 @@ function closeUpdateDialog() {
  * @param selectElement - 選択されたselect要素
  * @param hiddenInputId - プロジェクト名を格納するhiddenのID
  */
+// home.js の handleProjectChange を以下に差し替えてください
 function handleProjectChange(selectElement, hiddenInputId) {
     const selectedValue = selectElement.value;
     const hiddenInput = document.getElementById(hiddenInputId);
@@ -62,45 +63,90 @@ function handleProjectChange(selectElement, hiddenInputId) {
         const newProjectName = prompt("新しいプロジェクト名を入力してください");
 
         if (newProjectName && newProjectName.trim() !== "") {
-            hiddenInput.value = newProjectName;
+            const trimmedName = newProjectName.trim();
+            hiddenInput.value = trimmedName;
 
-            // 画面上の選択肢に一時的に追加
-            const newOption = new Option(newProjectName, "new");
-            selectElement.add(newOption, selectElement.options[2]);
-            newOption.selected = true;
+            // --- 【ここから追加：表示を更新する処理】 ---
+            // 1. すでに「一時的な新規名称」が表示されていたら削除する（二重表示防止）
+            const oldTemp = selectElement.querySelector('.temp-option');
+            if (oldTemp) oldTemp.remove();
+
+            // 2. 新しい選択肢（option）を作成して追加する
+            const newOption = document.createElement('option');
+            newOption.value = "new"; // Valueは"new"のまま（Java側が"new"を期待しているため）
+            newOption.text = "新規: " + trimmedName; // 表示だけ入力された名前にする
+            newOption.className = 'temp-option'; // 削除しやすくするためにクラスを付与
+
+            selectElement.add(newOption, selectElement.options[1]); // 「新規で登録」の下あたりに追加
+            selectElement.value = "new"; // 今作った選択肢を選んだ状態にする
+            // -------------------------------------------
+
         } else {
-            // キャンセル時は選択をリセット
+            // キャンセルされた場合は未選択に戻す
             selectElement.value = "";
             hiddenInput.value = "";
         }
     } else {
+        // 既存のプロジェクトが選ばれたら、一時的な表示は消す
         hiddenInput.value = "";
+        const oldTemp = selectElement.querySelector('.temp-option');
+        if (oldTemp) oldTemp.remove();
     }
 }
 
-// --- ページ読み込み時の初期化 ---
-let updateChoice;
+let updateChoice = null;
 
 document.addEventListener('DOMContentLoaded', function() {
-    // 登録フォームの担当者（Choices.js）
-    new Choices('#add_task_user', {
+    const commonOptions = {
+        removeItemButton: true,
         searchEnabled: true,
-        searchPlaceholderValue: '名前で検索...',
+        placeholder: true,
+        placeholderValue: '担当者を選択...',
         itemSelectText: '',
         shouldSort: false,
-        searchFloor: 0,
-        renderChoiceLimit: -1,
-        removeItemButton:true,
-    });
+    };
 
-    // 更新フォームの担当者（Choices.js）
+    // --- 登録フォーム ---
+    const addChoice = new Choices('#add_task_user', commonOptions);
+    setupToggle('#add_task_user', addChoice);
+
+    // --- 更新フォーム（初期化のみ） ---
     const updateEl = document.getElementById('update_user');
     if (updateEl) {
-        updateChoice = new Choices(updateEl, {
-            searchEnabled: true,
-            itemSelectText: '',
-            shouldSort: false,
-            removeItemButton: true,
-        });
+        updateChoice = new Choices(updateEl, commonOptions);
+        setupToggle('#update_user', updateChoice);
     }
 });
+
+/**
+ * 更新ボタンが押された時に呼ばれる関数（既存の処理に組み込んでください）
+ * @param {Array} selectedIds - DBから取得した担当者のID配列 e.g. [1, 5]
+ */
+function reflectSelectedUsers(selectedIds) {
+    if (updateChoice) {
+        // 1. 一旦現在の選択をクリア
+        updateChoice.removeActiveItems();
+        // 2. HTMLのoptionではなく、Choicesのメソッドで値をセット
+        updateChoice.setChoiceByValue(selectedIds.map(String));
+    }
+}
+
+/** 矢印エリアの開閉スイッチ */
+function setupToggle(selector, instance) {
+    const el = document.querySelector(selector);
+    if (!el) return;
+    const container = el.closest('.choices');
+
+    const hitBox = document.createElement('div');
+    hitBox.className = 'toggle-hit-box';
+    container.appendChild(hitBox);
+
+    hitBox.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (container.classList.contains('is-open')) {
+            instance.hideDropdown();
+        } else {
+            instance.showDropdown();
+        }
+    });
+}

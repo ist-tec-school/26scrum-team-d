@@ -34,7 +34,7 @@ public class HomeController {
             int done
     ) {}
 
-//    private List<TaskItem> taskItems = new ArrayList<>();
+    //    private List<TaskItem> taskItems = new ArrayList<>();
     private final TaskListDao dao;
 
     @Autowired
@@ -44,7 +44,7 @@ public class HomeController {
 
     @GetMapping("/list")
     String listItems(Model model,
-                     @RequestParam(value = "status", defaultValue = "all") String status,
+                     @RequestParam(value = "status", defaultValue = "working_group") String status,
                      @RequestParam(value = "projectId", defaultValue = "all") String projectId,
                      @RequestParam(value = "deptId", defaultValue = "all") String deptId,
                      @RequestParam(value = "sectionId", defaultValue = "all") String sectionId,
@@ -69,7 +69,12 @@ public class HomeController {
         model.addAttribute("selectedDept", deptId);
         model.addAttribute("selectedSection", sectionId);
         model.addAttribute("keyword", keyword);
+        // listItems メソッド内
+        String today = java.time.LocalDate.now().toString();
+        String twoDaysLater = java.time.LocalDate.now().plusDays(2).toString();
 
+        model.addAttribute("today", today);
+        model.addAttribute("twoDaysLater", twoDaysLater);
         return "home";
     }
 
@@ -82,11 +87,9 @@ public class HomeController {
                    @RequestParam("deadline") String deadline) {
 
         Integer targetProjectId = null;
-        if ("new".equals(projectId) && newProjectName != null) {
-            // 新規登録して新しいIDを取得
+        if ("new".equals(projectId) && newProjectName != null && !newProjectName.isEmpty()) {
             targetProjectId = dao.addProject(newProjectName);
-        } else if (projectId != null && !projectId.isEmpty()) {
-            // 既存のIDを数値に変換
+        } else if (projectId != null && !projectId.isEmpty() && !"new".equals(projectId)) {
             targetProjectId = Integer.parseInt(projectId);
         }
 
@@ -116,12 +119,15 @@ public class HomeController {
                       @RequestParam("deadline") String deadline,
                       @RequestParam("done") int done) {
 
+
         Integer targetProjectId = null;
+        // 修正箇所ここから 👇
         if ("new".equals(projectId) && newProjectName != null && !newProjectName.isEmpty()) {
             targetProjectId = dao.addProject(newProjectName);
-        } else if (projectId != null && !projectId.isEmpty()) {
+        } else if (projectId != null && !projectId.isEmpty() && !"new".equals(projectId)) {
             targetProjectId = Integer.parseInt(projectId);
         }
+        // 修正箇所ここまで 👆
 
         List<Integer> userIds = (taskUserIds != null) ? taskUserIds : new ArrayList<>();
 
