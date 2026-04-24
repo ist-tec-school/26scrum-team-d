@@ -32,8 +32,7 @@
         </select>
         <input type="hidden" name="newProjectName" id="add_newProjectName_hidden">
         <label>タスク</label>
-        <input name="task" type="text"
-               th:value="${taskItem?.task}" required/>
+        <textarea name="task" rows="2" required th:text="${taskItem?.task}"></textarea>
         <label>担当者</label>
         <select name="taskUserIds" id="add_task_user" multiple>
             <option value=""></option>
@@ -47,8 +46,7 @@
         <input name="deadline" type="date"
                th:value="${taskItem?.deadline}" required/>
         <label>説明</label>
-        <textarea name="description" rows="4"></textarea>
-
+        <textarea name="description" rows="4" th:text="${taskItem?.description}"></textarea>
         <input type="submit" value="登録" class="btn-register"/>
     </form>
 </div>

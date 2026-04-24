@@ -11,13 +11,17 @@ input {
     display: none;
 }
 
-/* タスク入力フォーム */
+/* タスク入力フォーム全体 */
 .task_form {
-    padding: 0 10px 10px 10px;
-    border: 2px solid #333;
+    padding: 20px; /* 余白を広げて窮屈さを解消 */
+    border: 1px solid #ddd; /* 濃い#333から薄いグレーへ変更 */
     max-width: 1200px;
     margin: 0 auto 20px;
+    background-color: #f9f9f9; /* フォームに薄い背景色をつけて視認性アップ */
+    border-radius: 12px; /* ★昨日話していた「角丸」の適用 */
 }
+
+/* フォーム内のレイアウト */
 .task_form form {
     display: grid;
     grid-template-columns: 120px 1fr;
@@ -25,16 +29,67 @@ input {
     align-items: center;
 }
 
-.task_form input[type="date"], select {
+/* 入力項目（日付・セレクトボックス・テキスト・テキストエリア）の共通設定 */
+.task_form input[type="date"],
+.task_form input[type="text"],
+.task_form select,
+.task_form textarea {
+    width: 100%; /* 基本は横幅いっぱい */
+    max-width: 400px; /* でも広がりすぎないように制限 */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px; /* ★ここも角丸に */
+    box-sizing: border-box;
+}
+
+/* 日付とセレクトボックスだけ少し短めにする設定（昨日のコードの意志を継承） */
+.task_form input[type="date"],
+.task_form select {
     width: 180px;
 }
 
+/* 登録ボタンの改善 */
 .btn-register {
-    background-color: #000;
+    background-color: #283655; /* 真っ黒から少しネイビー寄りに（昨日の提案カラー） */
     color: #fff;
-    margin-top: 10px;
-    font-weight: bold
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px; /* ★ボタンを丸っこくしてモダンに */
+    cursor: pointer;
+    font-weight: bold;
+    grid-column: 2; /* ラベルの横（2列目）に配置 */
+    width: fit-content; /* 文字の長さに合わせる */
+    transition: background-color 0.3s; /* ホバー時にふわっと色を変える */
 }
+
+.btn-register:hover {
+    background-color: #4d648d; /* マウスを乗せた時に明るく */
+}
+
+/*!* タスク入力フォーム *!*/
+/*.task_form {*/
+/*    padding: 0 10px 10px 10px;*/
+/*    border: 2px solid #333;*/
+/*    max-width: 1200px;*/
+/*    margin: 0 auto 20px;*/
+/*}*/
+/*.task_form form {*/
+/*    display: grid;*/
+/*    grid-template-columns: 120px 1fr;*/
+/*    gap: 15px 10px;*/
+/*    align-items: center;*/
+/*}*/
+
+/*.task_form input[type="date"], select {*/
+/*    width: 180px;*/
+/*}*/
+
+/*.btn-register {*/
+/*    background-color: #000;*/
+/*    color: #fff;*/
+/*    margin-top: 10px;*/
+/*    font-weight: bold*/
+/*}*/
 
 /* タスク一覧 */
 .tasklist table{
