@@ -3,6 +3,7 @@ body {
     margin: 30px;
     color: #333;
 }
+
 input {
     border: 1px solid;
 }
@@ -11,25 +12,59 @@ input {
     display: none;
 }
 
-/* タスク入力フォーム */
+/* タスク入力フォーム全体 */
 .task_form {
-    padding: 0 10px 10px 10px;
-    border: 2px solid #333;
-}
-.task_form form {
-    display: grid;
-    grid-template-columns: 100px 1fr;
-}
-.task_form input[type="date"], select {
-    width: 150px;
+    padding: 10px; /* 余白を広げて窮屈さを解消 */
+    border: 1px solid #333;
+    max-width: 1300px;
+    margin: 0 auto;
+    background-color: #f9f9f9; /* フォームに薄い背景色をつけて視認性アップ */
+    border-radius: 5px; /* ★昨日話していた「角丸」の適用 */
 }
 
-.btn-register {
-    background-color: #000;
-    color: #fff;
-    margin-top: 10px;
-    font-weight: bold
+/* フォーム内のレイアウト */
+.task_form form {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 15px 10px;
+    align-items: center;
 }
+
+/* 入力項目（日付・セレクトボックス・テキスト・テキストエリア）の共通設定 */
+.task_form input[type="date"],
+.task_form input[type="text"],
+.task_form select,
+.task_form textarea {
+    width: 100%; /* 基本は横幅いっぱい */
+    max-width: 800px; /* でも広がりすぎないように制限 */
+    padding: 8px;
+    border: 1px solid #333;
+    box-sizing: border-box;
+}
+
+/* 日付とセレクトボックスだけ少し短めにする設定（昨日のコードの意志を継承） */
+.task_form input[type="date"],
+.task_form select {
+    width: 180px;
+}
+
+/* 登録ボタンの改善 */
+.btn-register {
+    background-color: black;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    grid-column: 2;
+    width: fit-content;
+    transition: background-color 0.2s;
+}
+
+.btn-register:hover {
+    background-color: #4d648d; /* マウスを乗せた時に明るく */
+}
+
 
 /* タスク一覧 */
 .tasklist table{
@@ -49,7 +84,6 @@ input {
 #updateDialog {
     display: none;
     background-color: #FFFFFF;
-    border: 2px double;
     width: 500px;
     position: fixed;
     top: 120px;
@@ -84,7 +118,7 @@ input {
     margin-bottom: 20px;          /* 下にあるテーブルとの間に余白を作ります */
     padding: 15px;                /* 内側の余白です */
     background-color: #f4f7f6;    /* 背景色を薄いグレーにして「フィルターエリア」であることを強調します */
-    border-radius: 8px;           /* 角を少し丸くしておしゃれにします */
+    border-radius: 5px;           /* 角を少し丸くしておしゃれにします */
 }
 
 /* 各フィルター項目（プロジェクト、部署、課） */
@@ -121,23 +155,32 @@ input {
     align-items: center;
 }
 
-/* 入力フィールド：画像の枠線の太さに合わせる */
+/* 入力フィールド */
 .search_area input[type="text"] {
     width: 300px;
-    padding: 8px;
-    border: 2px solid #333; /* 少し太めの枠線 */
-    border-right: none;    /* ボタンと連結させる */
+    height: 36px;
+    padding: 0 12px;
+    border: 2px solid black;
     outline: none;
+    border-radius: 5px 0 0 5px;
+    border-right: none;
+    margin: 0;
 }
 
-/* 検索ボタン：画像通りの真っ黒な背景 */
+/* 検索ボタン */
 .search-button {
     background-color: #000;
     color: #fff;
-    padding: 8px;
+    height: 40px;
+    padding: 0 12px;
     cursor: pointer;
     font-weight: bold;
-    transition: opacity 0.2s;
+    border: 2px solid black;
+    border-radius: 0 5px 5px 0;
+    margin: 0;
+    /* ボタン特有の立体感を消してフラットにする */
+    appearance: none;
+    -webkit-appearance: none;
 }
 
 .search-submit-button:hover {
@@ -291,25 +334,39 @@ input:invalid:focus {
     cursor: pointer !important;
 }
 
-.choices::after {
+.choices[data-type*="select-one"].is-open::after {
+    border-color: transparent transparent #000 transparent !important;
+    margin-top: -7.5px !important;
+}
+
+/* 複数選択（multiple）の時も右側に矢印を強制的に表示させる（担当者） */
+.choices__inner {
+    position: relative;
+    padding-right: 30px !important;
+}
+
+/* 複数選択用の擬似要素で矢印を作成 */
+.choices[data-type*="select-multiple"]::after {
+
     content: "";
     height: 0;
     width: 0;
     border-style: solid;
-    border-width: 5px 5px 0 5px;
-    border-color: #333 transparent transparent transparent;
+    border-color: #000 transparent transparent transparent; /* 下向き矢印の色 */
+    border-width: 5px;
     position: absolute;
     right: 12px;
     top: 50%;
-    transform: translateY(-50%);
+    margin-top: -2.5px;
     pointer-events: none;
-    z-index: 3;
 }
 
-.choices.is-open::after {
-    border-width: 0 5px 5px 5px;
-    border-color: transparent transparent #333 transparent;
+/* 展開している時は矢印を上向きにする */
+.choices[data-type*="select-multiple"].is-open::after {
+    border-color: transparent transparent #000 transparent;
+    margin-top: -7.5px;
 }
+
 
 .toggle-hit-box {
     position: absolute;
