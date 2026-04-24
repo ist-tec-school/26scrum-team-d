@@ -3,6 +3,7 @@ body {
     margin: 30px;
     color: #333;
 }
+
 input {
     border: 1px solid;
 }
@@ -13,12 +14,12 @@ input {
 
 /* タスク入力フォーム全体 */
 .task_form {
-    padding: 20px; /* 余白を広げて窮屈さを解消 */
-    border: 1px solid #ddd; /* 濃い#333から薄いグレーへ変更 */
-    max-width: 1200px;
+    padding: 10px; /* 余白を広げて窮屈さを解消 */
+    border: 1px solid #333;
+    max-width: 1300px;
     margin: 0 auto 20px;
     background-color: #f9f9f9; /* フォームに薄い背景色をつけて視認性アップ */
-    border-radius: 12px; /* ★昨日話していた「角丸」の適用 */
+    border-radius: 5px; /* ★昨日話していた「角丸」の適用 */
 }
 
 /* フォーム内のレイアウト */
@@ -35,10 +36,9 @@ input {
 .task_form select,
 .task_form textarea {
     width: 100%; /* 基本は横幅いっぱい */
-    max-width: 400px; /* でも広がりすぎないように制限 */
+    max-width: 800px; /* でも広がりすぎないように制限 */
     padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 6px; /* ★ここも角丸に */
+    border: 1px solid #333;
     box-sizing: border-box;
 }
 
@@ -50,16 +50,15 @@ input {
 
 /* 登録ボタンの改善 */
 .btn-register {
-    background-color: #283655; /* 真っ黒から少しネイビー寄りに（昨日の提案カラー） */
+    background-color: black;
     color: #fff;
     padding: 10px 20px;
-    border: none;
-    border-radius: 20px; /* ★ボタンを丸っこくしてモダンに */
+    border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
-    grid-column: 2; /* ラベルの横（2列目）に配置 */
-    width: fit-content; /* 文字の長さに合わせる */
-    transition: background-color 0.3s; /* ホバー時にふわっと色を変える */
+    grid-column: 2;
+    width: fit-content;
+    transition: background-color 0.2s;
 }
 
 .btn-register:hover {
@@ -144,7 +143,7 @@ input {
     margin-bottom: 20px;          /* 下にあるテーブルとの間に余白を作ります */
     padding: 15px;                /* 内側の余白です */
     background-color: #f4f7f6;    /* 背景色を薄いグレーにして「フィルターエリア」であることを強調します */
-    border-radius: 8px;           /* 角を少し丸くしておしゃれにします */
+    border-radius: 5px;           /* 角を少し丸くしておしゃれにします */
 }
 
 /* 各フィルター項目（プロジェクト、部署、課） */
@@ -181,23 +180,32 @@ input {
     align-items: center;
 }
 
-/* 入力フィールド：画像の枠線の太さに合わせる */
+/* 入力フィールド */
 .search_area input[type="text"] {
     width: 300px;
-    padding: 8px;
-    border: 2px solid #333; /* 少し太めの枠線 */
-    border-right: none;    /* ボタンと連結させる */
+    height: 36px;
+    padding: 0 12px;
+    border: 2px solid black;
     outline: none;
+    border-radius: 5px 0 0 5px;
+    border-right: none;
+    margin: 0;
 }
 
-/* 検索ボタン：画像通りの真っ黒な背景 */
+/* 検索ボタン */
 .search-button {
     background-color: #000;
     color: #fff;
-    padding: 8px;
+    height: 40px;
+    padding: 0 12px;
     cursor: pointer;
     font-weight: bold;
-    transition: opacity 0.2s;
+    border: 2px solid black;
+    border-radius: 0 5px 5px 0;
+    margin: 0;
+    /* ボタン特有の立体感を消してフラットにする */
+    appearance: none;
+    -webkit-appearance: none;
 }
 
 .search-submit-button:hover {
