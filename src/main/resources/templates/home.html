@@ -99,6 +99,7 @@
                 <option th:each="sec : ${sectionList}"
                         th:value="${sec.SECTION_ID}"
                         th:text="${sec.SECTION_NAME}"
+                        th:data-dept="${sec.DEPT_ID}"
                         th:selected="${selectedSection == sec.SECTION_ID.toString()}">
                 </option>
             </select>
@@ -149,9 +150,12 @@
         </thead>
         <tbody>
         <tr th:each="task : ${taskList}"
-            th:classappend="${task.done != 3 && task.deadline != null} ?
-                (${task.deadline < today} ? 'task-overdue-urgent' :
-                (${task.deadline <= twoDaysLater} ? 'task-warning' : '')) : ''">
+            th:classappend="${task.done == 3} ? 'task-completed':(
+                ${task.deadline != null} ? (
+                    ${task.deadline < today} ? 'task-overdue-urgent' :
+                    (${task.deadline <= twoDaysLater} ? 'task-warning' : '')
+                ) : ''
+            )">
             <td class="hidden" th:text="${task.id}"></td>
             <td th:text="${task.projectName}" th:data-project-id="${task.projectId}">プロジェクト名</td>
             <td th:text="${task.task}"></td>
