@@ -54,6 +54,7 @@ function closeUpdateDialog() {
  * @param selectElement - 選択されたselect要素
  * @param hiddenInputId - プロジェクト名を格納するhiddenのID
  */
+// home.js の handleProjectChange を以下に差し替えてください
 function handleProjectChange(selectElement, hiddenInputId) {
     const selectedValue = selectElement.value;
     const hiddenInput = document.getElementById(hiddenInputId);
@@ -62,12 +63,9 @@ function handleProjectChange(selectElement, hiddenInputId) {
         const newProjectName = prompt("新しいプロジェクト名を入力してください");
 
         if (newProjectName && newProjectName.trim() !== "") {
-            hiddenInput.value = newProjectName;
-
-            // 画面上の選択肢に一時的に追加
-            const newOption = new Option(newProjectName, "new");
-            selectElement.add(newOption, selectElement.options[2]);
-            newOption.selected = true;
+            hiddenInput.value = newProjectName.trim();
+            // 「新規で登録」の option のテキストを一時的に変更して、何を入力したかわかるようにする（任意）
+            // selectElement.options[selectElement.selectedIndex].text = "+ 新規: " + newProjectName;
         } else {
             // キャンセル時は選択をリセット
             selectElement.value = "";

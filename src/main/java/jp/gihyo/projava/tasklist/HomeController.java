@@ -82,11 +82,9 @@ public class HomeController {
                    @RequestParam("deadline") String deadline) {
 
         Integer targetProjectId = null;
-        if ("new".equals(projectId) && newProjectName != null) {
-            // 新規登録して新しいIDを取得
+        if ("new".equals(projectId) && newProjectName != null && !newProjectName.isEmpty()) {
             targetProjectId = dao.addProject(newProjectName);
-        } else if (projectId != null && !projectId.isEmpty()) {
-            // 既存のIDを数値に変換
+        } else if (projectId != null && !projectId.isEmpty() && !"new".equals(projectId)) {
             targetProjectId = Integer.parseInt(projectId);
         }
 
@@ -116,12 +114,15 @@ public class HomeController {
                       @RequestParam("deadline") String deadline,
                       @RequestParam("done") int done) {
 
+
         Integer targetProjectId = null;
+        // 修正箇所ここから 👇
         if ("new".equals(projectId) && newProjectName != null && !newProjectName.isEmpty()) {
             targetProjectId = dao.addProject(newProjectName);
-        } else if (projectId != null && !projectId.isEmpty()) {
+        } else if (projectId != null && !projectId.isEmpty() && !"new".equals(projectId)) {
             targetProjectId = Integer.parseInt(projectId);
         }
+        // 修正箇所ここまで 👆
 
         List<Integer> userIds = (taskUserIds != null) ? taskUserIds : new ArrayList<>();
 
