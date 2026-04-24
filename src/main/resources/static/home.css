@@ -334,3 +334,30 @@ input:invalid:focus {
     border-color: transparent transparent #000 transparent !important;
     margin-top: -7.5px !important;
 }
+
+/* 複数選択（multiple）の時も右側に矢印を強制的に表示させる（担当者） */
+.choices__inner {
+    position: relative;
+    padding-right: 30px !important;
+}
+
+/* 複数選択用の擬似要素で矢印を作成 */
+.choices[data-type*="select-multiple"]::after {
+    content: "";
+    height: 0;
+    width: 0;
+    border-style: solid;
+    border-color: #000 transparent transparent transparent; /* 下向き矢印の色 */
+    border-width: 5px;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    margin-top: -2.5px;
+    pointer-events: none;
+}
+
+/* 展開している時は矢印を上向きにする */
+.choices[data-type*="select-multiple"].is-open::after {
+    border-color: transparent transparent #000 transparent;
+    margin-top: -7.5px;
+}
