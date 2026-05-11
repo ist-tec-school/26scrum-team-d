@@ -60,9 +60,9 @@
     </form>
 </div>
 
-<form action="/list" method="get" id="mainFilterForm">
+<form action="/list#task-list-top" method="get" id="mainFilterForm">
 
-    <div class="list_header">
+    <div class="list_header" id="task-list-top">
         <h2>タスク一覧</h2>
         <div class="filter_area">
             <select name="status" id="status-filter" onchange="this.form.submit()">
@@ -83,7 +83,6 @@
                         th:selected="${selectedDept == dept.DEPT_ID.toString()}">
                 </option>
             </select>
-        </form>
         </div>
 
         <div class="filter_item">
