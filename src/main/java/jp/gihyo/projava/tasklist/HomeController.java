@@ -50,8 +50,6 @@ public class HomeController {
                      @RequestParam(value = "sectionId", defaultValue = "all") String sectionId,
                      @RequestParam(value = "keyword", defaultValue = "") String keyword) {
 
-        // 1. DAOの新しいメソッド「findFiltered」だけで検索を完結させます。
-        // これにより、statusもprojectIdもdeptIdもすべて組み合わされた結果が返ってきます。
         List<TaskItem> taskItems = dao.findByCondition(status, projectId, deptId, sectionId,keyword);
 
         // 2. 画面（Thymeleaf）に渡すデータをセット
