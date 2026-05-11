@@ -50,6 +50,12 @@
         <label>説明</label>
         <textarea name="description" rows="4"></textarea>
 
+        <label>状態</label>
+        <select name="done">
+            <option value="0" selected>未着手</option>
+            <option value="1">対応中</option>
+            <option value="3">完了</option>
+        </select>
         <input type="submit" value="登録" class="btn-register"/>
     </form>
 </div>
@@ -67,15 +73,8 @@
         </div>
     </div>
 
-<div class="filter_container">
-
-    <div class="filter_item">
-        <form action="/list" method="get">
-            <input type="hidden" name="status" th:value="${selectedStatus}">
-            <input type="hidden" name="projectId" th:value="${selectedProject}">
-            <input type="hidden" name="keyword" th:value="${keyword}">
-            <input type="hidden" name="sectionId" value="all">
-
+    <div class="filter_container">
+        <div class="filter_item">
             <select name="deptId" onchange="this.form.submit()">
                 <option value="all" th:selected="${selectedDept == 'all'}">すべての部署</option>
                 <option th:each="dept : ${deptList}"
@@ -207,10 +206,7 @@
             <input id="update_task" name="task" type="text"
                    th:value="${updateItem?.task}" required/>
             <label>担当者</label>
-
-            <select id="update_user" name="taskUserIds" th:selected multiple>
-                <option value=""></option>
-
+            <select id="update_user" name="taskUserIds" multiple>
                 <option th:each="user : ${userList}"
                         th:value="${user.USER_ID}"
                         th:text="${user.NAME}"

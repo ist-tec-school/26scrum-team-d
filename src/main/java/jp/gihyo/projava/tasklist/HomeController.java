@@ -127,7 +127,7 @@ public class HomeController {
                 "",
                 item.description(),
                 item.deadline(),
-                0
+                item.done()
         );
 
         dao.add(newItem);
