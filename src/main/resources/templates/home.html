@@ -36,7 +36,6 @@
                th:value="${taskItem?.task}" required/>
         <label>担当者</label>
         <select name="taskUserIds" id="add_task_user" multiple>
-            <option value=""></option>
             <option th:each="user : ${userList}"
                     th:value="${user.USER_ID}"
                     th:text="${user.NAME}">
@@ -190,7 +189,6 @@
             <input id="update_task" name="task" type="text"/>
             <label>担当者</label>
             <select id="update_user" name="taskUserIds" multiple>
-                <option value=""></option>
                 <option th:each="user : ${userList}"
                         th:value="${user.USER_ID}"
                         th:text="${user.NAME}"
