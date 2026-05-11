@@ -74,7 +74,6 @@
 <div class="filter_container">
 
     <div class="filter_item">
-        <form action="/list" method="get">
             <input type="hidden" name="status" th:value="${selectedStatus}">
             <input type="hidden" name="projectId" th:value="${selectedProject}">
             <input type="hidden" name="keyword" th:value="${keyword}">
@@ -210,12 +209,7 @@
             <input id="update_task" name="task" type="text"
                    th:value="${updateItem?.task}" required/>
             <label>担当者</label>
-<<<<<<< feature/TEAMD-20_TEAMD-63
-            <select id="update_user" name="taskUserIds" th:selected multiple>
-                <option value=""></option>
-=======
             <select id="update_user" name="taskUserIds" multiple>
->>>>>>> development
                 <option th:each="user : ${userList}"
                         th:value="${user.USER_ID}"
                         th:text="${user.NAME}"
