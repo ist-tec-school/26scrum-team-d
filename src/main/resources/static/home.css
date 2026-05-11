@@ -21,7 +21,7 @@ input {
     grid-template-columns: 100px 1fr;
 }
 .task_form input[type="date"], select {
-    width: 150px;
+    width: 200px;
 }
 
 .btn-register {
