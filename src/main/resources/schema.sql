@@ -13,6 +13,8 @@ CREATE TABLE IF NOT EXISTS sections (
 CREATE TABLE IF NOT EXISTS users(
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100),
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(100) NOT NULL,
     section_id INT,
     FOREIGN KEY(section_id) REFERENCES sections(section_id)
 );
