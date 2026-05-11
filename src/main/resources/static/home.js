@@ -180,3 +180,33 @@ function setupToggle(selector, instance) {
         }
     });
 }
+document.addEventListener('DOMContentLoaded', () => {
+    // 登録用と更新用、それぞれ個別に設定
+    const textAreas = [
+        { inputId: 'add_description', countId: 'add_count' },
+        { inputId: 'update_description', countId: 'update_count' }
+    ];
+
+    textAreas.forEach(item => {
+        const area = document.getElementById(item.inputId);
+        const countLabel = document.getElementById(item.countId);
+
+        if (area && countLabel) {
+            // 入力されるたびに実行
+            area.addEventListener('input', () => {
+                const currentLength = area.value.length;
+                countLabel.textContent = `${currentLength} / 200`;
+
+                if (currentLength >= 199) {
+                    // 200文字に到達
+                    countLabel.style.color = 'red';
+                    area.style.border = '2px solid red';
+                } else {
+                    // 200文字未満
+                    countLabel.style.color = 'black';
+                    area.style.border = '1px solid #ccc'; // 元の枠線色
+                }
+            });
+        }
+    });
+});

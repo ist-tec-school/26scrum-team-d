@@ -45,7 +45,8 @@
         <input name="deadline" type="date"
                th:value="${taskItem?.deadline}" required/>
         <label>説明</label>
-        <textarea name="description" rows="4"></textarea>
+        <textarea name="description" id="add_description" rows="4" maxlength="200"></textarea>
+        <div id="add_count" style="font-size: 0.8em; text-align: right;">0 / 200</div>
 
         <input type="submit" value="登録" class="btn-register"/>
     </form>
@@ -199,7 +200,8 @@
             <input id="update_deadline" name="deadline" type="date"/>
 
             <label>説明</label>
-            <input id="update_description" name="description" type="text"/>
+            <textarea id="update_description" name="description" rows="4" maxlength="200"></textarea>
+            <div id="update_count" style="font-size: 0.8em; text-align: right;">0 / 200</div>
             <label>状態</label>
             <select id="update_status" name="done">
                 <option value="0">未着手</option>
