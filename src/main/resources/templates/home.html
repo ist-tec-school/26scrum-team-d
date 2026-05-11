@@ -71,14 +71,8 @@
         </div>
     </div>
 
-<div class="filter_container">
-
-    <div class="filter_item">
-            <input type="hidden" name="status" th:value="${selectedStatus}">
-            <input type="hidden" name="projectId" th:value="${selectedProject}">
-            <input type="hidden" name="keyword" th:value="${keyword}">
-            <input type="hidden" name="sectionId" value="all">
-
+    <div class="filter_container">
+        <div class="filter_item">
             <select name="deptId" onchange="this.form.submit()">
                 <option value="all" th:selected="${selectedDept == 'all'}">すべての部署</option>
                 <option th:each="dept : ${deptList}"
@@ -218,7 +212,7 @@
             </select>
             <label>期限</label>
             <input id="update_deadline" name="deadline" type="date"
-                th:value="${updateItem?.deadline}" required/>
+                   th:value="${updateItem?.deadline}" required/>
 
             <label>説明</label>
             <input id="update_description" name="description" type="text"
