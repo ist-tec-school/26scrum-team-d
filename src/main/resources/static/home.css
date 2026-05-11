@@ -324,27 +324,12 @@ input:invalid:focus {
 
 
 
-.task-warning {
-    background-color: rgba(242, 231, 0, 0.8);
+.task-warning td:nth-child(5){
+    background-color: rgba(244, 255, 79, 0.9);
 }
 
-.task-overdue {
-    position: relative;
-    color: #999 !important;
-}
-
-.task-overdue::after {
-    content: "";
-    position: absolute;
-    left: 2%;
-    right: 2%;
-    top: 50%;
-    width: 95%;
-    height: 3px;
-    background-color: #333;
-    transform: translateY(-50%);
-    pointer-events: none;
-    z-index: 10;
+.task-overdue-urgent td:nth-child(5){
+    background-color: rgba(255,99,71,0.9);
 }
 
 .task-overdue td {

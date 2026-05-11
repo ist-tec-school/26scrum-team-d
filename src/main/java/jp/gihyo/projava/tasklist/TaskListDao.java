@@ -63,9 +63,16 @@ public class TaskListDao {
 
         List<Object> params = new ArrayList<>();
 
+        // findByCondition メソッド内の status 判定部分を修正
         if (!"all".equals(status)) {
-            sql.append(" AND t.done = ?");
-            params.add("working".equals(status) ? 1 : Integer.parseInt(status));
+            if ("working_group".equals(status)) {
+                // 未着手(0) または 対応中(1) を検索
+                sql.append(" AND (t.done = 0 OR t.done = 1)");
+            } else {
+                // それ以外（完了:3 など）は数値として処理
+                sql.append(" AND t.done = ?");
+                params.add(Integer.parseInt(status));
+            }
         }
 
         if (!"all".equals(projectId) && projectId != null && !projectId.isEmpty()) {
