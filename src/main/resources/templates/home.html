@@ -44,7 +44,9 @@
         </select>
         <label>期限</label>
         <input name="deadline" type="date"
-               th:value="${taskItem?.deadline}" required/>
+               th:value="${taskItem?.deadline}"
+               th:min="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
+               required/>
         <label>説明</label>
         <textarea name="description" rows="4"></textarea>
 
@@ -213,7 +215,9 @@
             </select>
             <label>期限</label>
             <input id="update_deadline" name="deadline" type="date"
-                   th:value="${updateItem?.deadline}" required/>
+                   th:value="${updateItem?.deadline}"
+                   th:min="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
+                   required/>
 
             <label>説明</label>
             <input id="update_description" name="description" type="text"
