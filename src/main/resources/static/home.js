@@ -1,12 +1,19 @@
 /**
  * 更新ダイアログを表示する
  */
+// --- 追加した箇所 ---
+const commonOptions = {
+    searchEnabled: true,
+    removeItemButton: true,
+};
+let updateChoice = null;
+
 function showUpdateDialog(button) {
-    // 1. ボタンが属する行(tr)を取得
+
     const row = button.closest('tr');
     const dialog = document.getElementById('updateDialog');
 
-    // 2. 各セルのデータ属性やテキストからデータを取得
+
     const id = row.cells[0].innerText;                // ID (hidden)
     const projectId = row.cells[1].dataset.projectId;  // プロジェクトID
     const task = row.cells[2].innerText;               // タスク名
@@ -14,30 +21,29 @@ function showUpdateDialog(button) {
     const deadline = row.cells[4].innerText;           // 期限
     const description = row.cells[5].innerText;        // 説明
 
-    // 3. ダイアログの各入力欄に値をセット
+
     document.getElementById('update_id').value = id;
     document.getElementById('update_task').value = task;
     document.getElementById('update_deadline').value = deadline;
     document.getElementById('update_description').value = description;
 
-    // 4. プロジェクトのセレクトボックスをセット
+
     const projectSelect = document.getElementById('update_project');
     if (projectSelect) {
         projectSelect.value = projectId || '';
     }
 
-    // 5. Choices.js を使用している担当者セレクトボックスをセット
+
     if (updateChoice) {
         updateChoice.removeActiveItems();
         updateChoice.setChoiceByValue(userIds.map(id => id.toString()));
     }
 
-    // 6. 状態（テキストから数値へ変換）
+
     const statusMap = {'未着手': 0, '対応中': 1, '完了': 3};
     const statusText = row.cells[6].innerText.trim();
     document.getElementById('update_status').value = statusMap[statusText] ?? 0;
 
-    // 7. ダイアログの位置調整と表示
     dialog.style.left = ((window.innerWidth - 500) / 2) + 'px';
     dialog.style.display = 'block';
 }
@@ -56,7 +62,7 @@ function handleProjectChange(selectElement, hiddenInputId) {
     const selectedValue = selectElement.value;
     const hiddenInput = document.getElementById(hiddenInputId);
 
-    if (selectedValue === 'new') {
+    if (selectedValue === '0') {
         const newProjectName = prompt("新しいプロジェクト名を入力してください");
 
         if (newProjectName && newProjectName.trim() !== "") {
@@ -68,13 +74,9 @@ function handleProjectChange(selectElement, hiddenInputId) {
             if (oldTemp) oldTemp.remove();
 
             // 新しい選択肢を作成して「新規で登録」の下に追加
-            const newOption = document.createElement('option');
-            newOption.value = "new";
-            newOption.text = "新規: " + trimmedName;
-            newOption.className = 'temp-option';
-
-            selectElement.add(newOption, selectElement.options[1]);
-            selectElement.value = "new";
+            const newOption = new Option(newProjectName, "0");
+            selectElement.add(newOption, selectElement.options[2]);
+            newOption.selected = true;
         } else {
             selectElement.value = "";
             hiddenInput.value = "";
@@ -115,53 +117,6 @@ function syncSectionFilter() {
     }
 }
 
-let updateChoice = null;
-
-/**
- * メインの初期化処理
- */
-document.addEventListener('DOMContentLoaded', function() {
-    const commonOptions = {
-        removeItemButton: true,
-        searchEnabled: true,
-        placeholder: true,
-        placeholderValue: '担当者を選択...',
-        itemSelectText: '',
-        shouldSort: false,
-    };
-
-    // --- 登録フォームの Choices.js 初期化 ---
-    const addChoice = new Choices('#add_task_user', commonOptions);
-    setupToggle('#add_task_user', addChoice);
-
-    // --- 更新フォームの Choices.js 初期化 ---
-    const updateEl = document.getElementById('update_user');
-    if (updateEl) {
-        updateChoice = new Choices(updateEl, commonOptions);
-        setupToggle('#update_user', updateChoice);
-    }
-
-    // --- 部署・課の連動初期化 ---
-    syncSectionFilter();
-    const deptSelect = document.querySelector('select[name="deptId"]');
-    if (deptSelect) {
-        deptSelect.addEventListener('change', syncSectionFilter);
-    }
-});
-
-/**
- * 担当者選択用の Choices.js インスタンスに値を反映
- */
-function reflectSelectedUsers(selectedIds) {
-    if (updateChoice) {
-        updateChoice.removeActiveItems();
-        updateChoice.setChoiceByValue(selectedIds.map(String));
-    }
-}
-
-/**
- * Choices.js の右端クリックでドロップダウンを開閉するための設定
- */
 function setupToggle(selector, instance) {
     const el = document.querySelector(selector);
     if (!el) return;
@@ -180,3 +135,65 @@ function setupToggle(selector, instance) {
         }
     });
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    // 1. 登録フォームの Choices.js 初期化
+    const addChoice = new Choices('#add_task_user', commonOptions);
+    setupToggle('#add_task_user', addChoice);
+
+    // 2. 更新フォームの Choices.js 初期化
+    const updateEl = document.getElementById('update_user');
+    if (updateEl) {
+        updateChoice = new Choices(updateEl, commonOptions);
+        setupToggle('#update_user', updateChoice);
+    }
+
+    // 3. 部署・課の連動初期化
+    syncSectionFilter();
+    const deptSelect = document.querySelector('select[name="deptId"]');
+    if (deptSelect) {
+        deptSelect.addEventListener('change', syncSectionFilter);
+    }
+
+// 3. エラー時の自動再表示とスクロール
+        const isUpdateError = document.getElementById('isUpdateError');
+        if (isUpdateError && isUpdateError.value === 'true') {
+            const dialog = document.getElementById('updateDialog');
+            if (dialog) {
+                dialog.style.display = 'block';
+
+                // Choicesの同期（選択状態を戻す）
+                if (updateChoice && updateEl) {
+                    // セレクトボックスに元々ある選択済みの値を取得してセット
+                    const selectedValues = Array.from(updateEl.options)
+                        .filter(opt => opt.selected)
+                        .map(opt => opt.value);
+                    if (selectedValues.length > 0) {
+                        updateChoice.setChoiceByValue(selectedValues);
+                    }
+                }
+
+                // --- スクロール処理 (独立) ---
+                setTimeout(() => {
+                    const target = document.getElementById('task-list-section');
+                    if (target) {
+                        console.log("Scrolling to task list section...");
+                        target.scrollIntoView({ behavior: 'auto', block: 'start' });
+                    }
+                }, 100); // 描画を待つため少し長めに設定
+/**
+ * 担当者選択用の Choices.js インスタンスに値を反映
+ */
+function reflectSelectedUsers(selectedIds) {
+    if (updateChoice) {
+        updateChoice.removeActiveItems();
+        updateChoice.setChoiceByValue(selectedIds.map(String));
+    }
+}
+
+                /** 矢印エリアの開閉スイッチ */
+
+            }
+        }
+    });
