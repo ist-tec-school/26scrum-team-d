@@ -331,3 +331,11 @@ input:invalid:focus {
 .task-overdue-urgent td:nth-child(5){
     background-color: rgba(255,99,71,0.9);
 }
+
+.task-overdue td {
+    text-decoration: none !important;
+}
+
+#task-list-section {
+    scroll-margin-top: 50px; /* スクロールが止まる位置を50px分上にずらす */
+}
