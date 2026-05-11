@@ -44,7 +44,9 @@
         </select>
         <label>期限</label>
         <input name="deadline" type="date"
-               th:value="${taskItem?.deadline}" required/>
+               th:value="${taskItem?.deadline}"
+               th:min="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
+               required/>
         <label>説明</label>
         <textarea name="description" rows="4"></textarea>
 
@@ -82,6 +84,7 @@
                         th:selected="${selectedDept == dept.DEPT_ID.toString()}">
                 </option>
             </select>
+        </form>
         </div>
 
         <div class="filter_item">
@@ -204,12 +207,10 @@
             <input id="update_task" name="task" type="text"
                    th:value="${updateItem?.task}" required/>
             <label>担当者</label>
-<<<<<<< feature/TEAMD-20_TEAMD-63
+
             <select id="update_user" name="taskUserIds" th:selected multiple>
                 <option value=""></option>
-=======
-            <select id="update_user" name="taskUserIds" multiple>
->>>>>>> development
+
                 <option th:each="user : ${userList}"
                         th:value="${user.USER_ID}"
                         th:text="${user.NAME}"
@@ -218,7 +219,9 @@
             </select>
             <label>期限</label>
             <input id="update_deadline" name="deadline" type="date"
-                th:value="${updateItem?.deadline}" required/>
+                   th:value="${updateItem?.deadline}"
+                   th:min="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
+                   required/>
 
             <label>説明</label>
             <input id="update_description" name="description" type="text"

@@ -54,8 +54,6 @@ public class HomeController {
                      @RequestParam(value = "sectionId", defaultValue = "all") String sectionId,
                      @RequestParam(value = "keyword", defaultValue = "") String keyword) {
 
-        // 1. DAOの新しいメソッド「findFiltered」だけで検索を完結させます。
-        // これにより、statusもprojectIdもdeptIdもすべて組み合わされた結果が返ってきます。
         List<TaskItem> taskItems = dao.findByCondition(status, projectId, deptId, sectionId,keyword);
 
         // 2. 画面（Thymeleaf）に渡すデータをセット
@@ -93,14 +91,22 @@ public class HomeController {
                    @RequestParam(value="keyword", defaultValue="") String keyword) {
 
         // 2. エラー判定を追加
-        if (result.hasErrors()) {
+        boolean isPastDate = false;
+        if (item.deadline() != null && !item.deadline().isEmpty()) {
+            java.time.LocalDate deadlineDate = java.time.LocalDate.parse(item.deadline());
+            if (deadlineDate.isBefore(java.time.LocalDate.now())) {
+                isPastDate = true;
+            }
+        }
+        if (result.hasErrors()|| isPastDate) {
             List<TaskItem> taskItems = dao.findByCondition(status, "all", "all", "all", keyword);
             model.addAttribute("taskList", taskItems);
             model.addAttribute("userList", dao.findAllUsers());
             model.addAttribute("projectList", dao.findAllProjects());
             model.addAttribute("selectedStatus", status);
             model.addAttribute("keyword", keyword);
-            model.addAttribute("errorMessage", "必須事項が未入力です");
+            String msg = isPastDate ? "過去の日付は入力できません" : "必須事項が未入力です";
+            model.addAttribute("errorMessage", msg);
             return "home";
         }
 
@@ -144,7 +150,14 @@ public class HomeController {
                       @RequestParam(value="keyword", defaultValue="") String keyword) {
 
         // 4. バリデーションエラーの判定
-        if (result.hasErrors()) {
+        boolean isPastDate = false;
+        if (item.deadline() != null && !item.deadline().isEmpty()) {
+            java.time.LocalDate deadlineDate = java.time.LocalDate.parse(item.deadline());
+            if (deadlineDate.isBefore(java.time.LocalDate.now())) {
+                isPastDate = true;
+            }
+        }
+        if (result.hasErrors()|| isPastDate) {
             // リストの再取得（画面表示を維持するため）
             List<TaskItem> taskItems = dao.findByCondition(status, "all", "all", "all", keyword);
             model.addAttribute("taskList", taskItems);
@@ -152,10 +165,11 @@ public class HomeController {
             model.addAttribute("projectList", dao.findAllProjects());
             model.addAttribute("selectedStatus", status);
             model.addAttribute("keyword", keyword);
-            model.addAttribute("errorMessage", "必須事項を入力してください。");
+            String msg = isPastDate ? "過去の日付は指定できません。" : "必須事項を入力してください。";
+            model.addAttribute("errorMessage", msg);
             // 5. ダイアログ制御用のフラグとメッセージ
             model.addAttribute("isUpdateError", true);
-            model.addAttribute("updateErrorMessage", "更新に失敗しました。必須事項を入力してください。");
+            model.addAttribute("updateErrorMessage", "更新に失敗しました。" + msg);
             return "home"; // redirectせずhomeを返す
         }
 
