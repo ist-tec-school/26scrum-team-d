@@ -50,13 +50,45 @@ label {
     color: #555;
 }
 
+
+/* 親要素：ボタンを配置する際の基準点になります */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
 input[type="email"],
-input[type="password"] {
+input[type="password"],
+input[type="text"] {
     width: 100%;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
     box-sizing: border-box; /* paddingを含めたサイズ設定 */
+}
+
+input[type="password"] {
+    padding-right: 50px;
+}
+
+/* 切り替えボタン */
+.btn-toggle {
+    position: absolute;
+    right: 5px;
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px;
+    z-index: 10;
+}
+
+.btn-toggle:hover {
+    text-decoration: underline;
 }
 
 /* ログインボタン（home.htmlの登録ボタンと同じクラスを使用） */
@@ -85,4 +117,16 @@ input[type="password"] {
     margin-bottom: 20px;
     font-size: 14px;
     text-align: center;
+}
+
+/* ログアウトメッセージ（成功時）の装飾 */
+.success-text {
+    color: #3c763d;
+    background-color: #dff0d8;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    text-align: center;
+    border: 1px solid #d6e9c6;
 }

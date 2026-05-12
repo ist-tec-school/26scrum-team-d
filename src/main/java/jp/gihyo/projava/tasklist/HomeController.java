@@ -194,4 +194,8 @@ public class HomeController {
         dao.update(updateData);
         return "redirect:/list#task-list-top";
     }
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
 }
