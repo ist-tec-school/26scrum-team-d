@@ -1,51 +1,72 @@
 /**
- * 更新ダイアログを表示する
+ * グローバル設定・変数
  */
-// --- 追加した箇所 ---
 const commonOptions = {
     searchEnabled: true,
     removeItemButton: true,
 };
 let updateChoice = null;
 
-function showUpdateDialog(button) {
+/**
+ * 文字数カウントの更新ロジック (共通関数)
+ */
+function updateCountLabel(areaId, countId) {
+    const area = document.getElementById(areaId);
+    const countLabel = document.getElementById(countId);
+    if (!area || !countLabel) return;
 
+    if (area.value.length > 200) {
+        area.value = area.value.substring(0, 200);
+    }
+    const len = area.value.length;
+    countLabel.textContent = `${len} / 200`;
+    countLabel.style.color = (len >= 200) ? 'red' : 'black';
+}
+
+/**
+ * 更新ダイアログを表示する
+ */
+function showUpdateDialog(button) {
     const row = button.closest('tr');
     const dialog = document.getElementById('updateDialog');
 
-
-    const id = row.cells[0].innerText;                // ID (hidden)
+    // 1. データの取得
+    const id = row.cells[0].innerText;                // ID
     const projectId = row.cells[1].dataset.projectId;  // プロジェクトID
     const task = row.cells[2].innerText;               // タスク名
     const userIds = JSON.parse(row.cells[3].dataset.userIds || "[]"); // 担当者ID
     const deadline = row.cells[4].innerText;           // 期限
     const description = row.cells[5].innerText;        // 説明
 
+    const statusMap = { '未着手': 0, '対応中': 1, '完了': 3 };
+    const statusText = row.cells[6].innerText.trim();
 
+    // 2. フォームへの値セット
     document.getElementById('update_id').value = id;
     document.getElementById('update_task').value = task;
     document.getElementById('update_deadline').value = deadline;
-    document.getElementById('update_description').value = description;
+    document.getElementById('update_status').value = statusMap[statusText] ?? 0;
 
+    const textArea = document.getElementById('update_description');
+    textArea.value = description;
 
     const projectSelect = document.getElementById('update_project');
     if (projectSelect) {
         projectSelect.value = projectId || '';
     }
 
-
+    // 3. Choices.js の担当者セット
     if (updateChoice) {
         updateChoice.removeActiveItems();
         updateChoice.setChoiceByValue(userIds.map(id => id.toString()));
     }
 
+    // 4. 文字数カウントの初期表示
+    updateCountLabel('update_description', 'update_count');
 
-    const statusMap = {'未着手': 0, '対応中': 1, '完了': 3};
-    const statusText = row.cells[6].innerText.trim();
-    document.getElementById('update_status').value = statusMap[statusText] ?? 0;
-
+    // 5. ダイアログを表示
     dialog.style.left = ((window.innerWidth - 500) / 2) + 'px';
-    dialog.style.display = 'block';
+    dialog.style.display = 'block'; // 元のCSSに合わせて flex か block を選択してください
 }
 
 /**
@@ -69,12 +90,11 @@ function handleProjectChange(selectElement, hiddenInputId) {
             const trimmedName = newProjectName.trim();
             hiddenInput.value = trimmedName;
 
-            // 以前追加した一時的な選択肢があれば削除
             const oldTemp = selectElement.querySelector('.temp-option');
             if (oldTemp) oldTemp.remove();
 
-            // 新しい選択肢を作成して「新規で登録」の下に追加
             const newOption = new Option(newProjectName, "0");
+            newOption.classList.add('temp-option');
             selectElement.add(newOption, selectElement.options[2]);
             newOption.selected = true;
         } else {
@@ -89,10 +109,9 @@ function handleProjectChange(selectElement, hiddenInputId) {
 }
 
 /**
- * 部署の選択状態に合わせて、課の選択肢をフィルタリングする
+ * 部署の選択状態に合わせて、課の選択肢をフィルタリング
  */
 function syncSectionFilter() {
-    // 部署と課のセレクトボックスを取得（name属性で特定）
     const deptSelect = document.querySelector('select[name="deptId"]');
     const sectionSelect = document.querySelector('select[name="sectionId"]');
 
@@ -101,12 +120,10 @@ function syncSectionFilter() {
     const selectedDeptId = deptSelect.value;
     const options = sectionSelect.options;
 
-    // 各「課」の選択肢をチェック
     for (let i = 0; i < options.length; i++) {
         const opt = options[i];
         const parentDeptId = opt.getAttribute('data-dept');
 
-        // 条件： 「すべて」である、または親部署IDが一致する
         if (opt.value === 'all' || selectedDeptId === 'all' || parentDeptId === selectedDeptId) {
             opt.style.display = 'block';
             opt.disabled = false;
@@ -117,6 +134,9 @@ function syncSectionFilter() {
     }
 }
 
+/**
+ * Choices.js のドロップダウン開閉補助
+ */
 function setupToggle(selector, instance) {
     const el = document.querySelector(selector);
     if (!el) return;
@@ -136,64 +156,65 @@ function setupToggle(selector, instance) {
     });
 }
 
+/**
+ * 初期化処理
+ */
 document.addEventListener('DOMContentLoaded', function() {
 
-    // 1. 登録フォームの Choices.js 初期化
+    // 1. Choices.js 初期化
     const addChoice = new Choices('#add_task_user', commonOptions);
     setupToggle('#add_task_user', addChoice);
 
-    // 2. 更新フォームの Choices.js 初期化
     const updateEl = document.getElementById('update_user');
     if (updateEl) {
         updateChoice = new Choices(updateEl, commonOptions);
         setupToggle('#update_user', updateChoice);
     }
 
-    // 3. 部署・課の連動初期化
+    // 2. 部署・課の連動
     syncSectionFilter();
     const deptSelect = document.querySelector('select[name="deptId"]');
     if (deptSelect) {
         deptSelect.addEventListener('change', syncSectionFilter);
     }
 
-// 3. エラー時の自動再表示とスクロール
-        const isUpdateError = document.getElementById('isUpdateError');
-        if (isUpdateError && isUpdateError.value === 'true') {
-            const dialog = document.getElementById('updateDialog');
-            if (dialog) {
-                dialog.style.display = 'block';
+    // 3. 文字数カウントのイベント登録
+    const textAreas = [
+        { inputId: 'add_description', countId: 'add_count' },
+        { inputId: 'update_description', countId: 'update_count' }
+    ];
 
-                // Choicesの同期（選択状態を戻す）
-                if (updateChoice && updateEl) {
-                    // セレクトボックスに元々ある選択済みの値を取得してセット
-                    const selectedValues = Array.from(updateEl.options)
-                        .filter(opt => opt.selected)
-                        .map(opt => opt.value);
-                    if (selectedValues.length > 0) {
-                        updateChoice.setChoiceByValue(selectedValues);
-                    }
-                }
-
-                // --- スクロール処理 (独立) ---
-                setTimeout(() => {
-                    const target = document.getElementById('task-list-section');
-                    if (target) {
-                        console.log("Scrolling to task list section...");
-                        target.scrollIntoView({ behavior: 'auto', block: 'start' });
-                    }
-                }, 100); // 描画を待つため少し長めに設定
-/**
- * 担当者選択用の Choices.js インスタンスに値を反映
- */
-function reflectSelectedUsers(selectedIds) {
-    if (updateChoice) {
-        updateChoice.removeActiveItems();
-        updateChoice.setChoiceByValue(selectedIds.map(String));
-    }
-}
-
-                /** 矢印エリアの開閉スイッチ */
-
-            }
+    textAreas.forEach(item => {
+        const area = document.getElementById(item.inputId);
+        if (area) {
+            area.addEventListener('input', () => updateCountLabel(item.inputId, item.countId));
         }
     });
+
+    // 4. エラー時の自動再表示とスクロール
+    const isUpdateError = document.getElementById('isUpdateError');
+    if (isUpdateError && isUpdateError.value === 'true') {
+        const dialog = document.getElementById('updateDialog');
+        if (dialog) {
+            dialog.style.display = 'block';
+
+            // Choicesの同期（選択状態を戻す）
+            if (updateChoice && updateEl) {
+                const selectedValues = Array.from(updateEl.options)
+                    .filter(opt => opt.selected)
+                    .map(opt => opt.value);
+                if (selectedValues.length > 0) {
+                    updateChoice.setChoiceByValue(selectedValues);
+                }
+            }
+
+            // スクロール処理
+            setTimeout(() => {
+                const target = document.getElementById('task-list-section');
+                if (target) {
+                    target.scrollIntoView({ behavior: 'auto', block: 'start' });
+                }
+            }, 100);
+        }
+    }
+});
