@@ -1,8 +1,19 @@
 /* 共通項目 */
+.header {
+    background-color: #B0E0E6;
+    padding: 10px;
+}
+
 body {
-    margin: 30px;
+    margin: 0;
+    padding: 0;
     color: #333;
 }
+
+ .wrapper {
+     margin: 30px;
+ }
+
 input {
     border: 1px solid;
 }
@@ -25,14 +36,15 @@ input {
 }
 
 .btn-register {
-    background-color: #000;
-    color: #fff;
+    background-color: #B0E0E6;
+    border: 2px solid #30575c;
+    color: black;
     margin-top: 10px;
     font-weight: bold
 }
 
 .btn-register:hover {
-    background-color: #333;
+    background-color: #8fc1c7;
     opacity: 0.8;
     transition: opacity 0.5s;
 }
@@ -42,7 +54,7 @@ input {
     width: 100%;
 }
 .tasklist table, .tasklist th, .tasklist td {
-    border: 1px solid #283655; /* 枠線を引く */
+    border: 1px solid black; /* 枠線を引く */
     border-collapse: collapse; /* 重なる線を一本にする */
     padding: 8px;              /* 文字の周りに隙間を作る */}
 
@@ -140,18 +152,18 @@ input {
 
 /* 検索ボタン*/
 .search-button {
-    background-color: #000;
-    color: #fff;
-    padding: 8px 16px;
+    background-color: #B0E0E6;
+    border: 2px solid #30575c;
+    color: black;
+    padding: 6px 16px;
     cursor: pointer;
     font-weight: bold;
     transition: opacity 0.5s;
     white-space: nowrap;
-    border: 0;
 }
 
 .search-button:hover {
-    background-color: #333;
+    background-color: #8fc1c7;
     opacity: 0.8;
     transition: opacity 0.5s;
 }
@@ -171,12 +183,13 @@ input {
     gap: 10px;
 }
 
-
+/*リセットボタン*/
 .search_area a.reset-button{
-    padding: 8px;
+    padding: 6px 8px;
     text-decoration: none;
-    background-color: #000;
-    color: #fff;
+    background-color: #B0E0E6;
+    border: 2px solid #30575c;
+    color: black;
     margin-left: auto;
     font-weight: bold;
     font-size: 14px;
@@ -185,7 +198,7 @@ input {
 }
 
 .search_area a.reset-button:hover {
-    background-color: #333;
+    background-color: #8fc1c7;
     opacity: 0.8;
     transition: opacity 0.5s;
 }

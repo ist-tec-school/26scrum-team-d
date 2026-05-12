@@ -9,9 +9,12 @@
     <script th:src="@{/home.js}" defer></script>
 </head>
 <body>
-<input type="hidden" id="isUpdateError" th:value="${isUpdateError}">
-<h1>タスク管理アプリケーション</h1>
+<div class="header">
+    <input type="hidden" id="isUpdateError" th:value="${isUpdateError}">
+    <h1>タスク管理アプリケーション</h1>
+</div>
 
+<div class="wrapper">
 <div class="task_form">
     <h2>タスクの登録</h2>
     <p class="error-text"
@@ -240,6 +243,7 @@
             </div>
         </form>
     </div>
+</div>
 </div>
 </body>
 </html>
