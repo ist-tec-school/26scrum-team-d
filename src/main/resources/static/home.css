@@ -31,16 +31,17 @@ div.header-container {
     z-index: 9999; /* 他のどの要素よりも手前に表示させる */
 }
 
-/* button.btn-logout の箇所を書き換え */
+/* ログアウトボタン */
 button.btn-logout {
     background-color: #000 !important; /* 他のボタンと同じ黒色に変更 */
     color: white !important;
     padding: 8px 16px !important;
     border: none !important;
+    border-radius: 5px;
     cursor: pointer !important;
     font-size: 14px !important;
-    font-weight: bold !important;    /* 登録ボタン(btn-register)に合わせて太字に */
-    transition: opacity 0.3s;       /* 検索ボタンのような滑らかな変化を追加 */
+    font-weight: bold !important;
+    transition: opacity 0.3s;
 }
 
 .btn-logout:hover {
@@ -51,7 +52,7 @@ button.btn-logout {
 /* タスク入力フォーム */
 .task_form {
     padding: 0 10px 10px 10px;
-    border: 2px solid #333;
+    border: 2px solid #30575c;
 }
 .task_form form {
     display: grid;
@@ -64,6 +65,7 @@ button.btn-logout {
 .btn-register {
     background-color: #B0E0E6;
     border: 2px solid #30575c;
+    border-radius: 5px;
     color: black;
     margin-top: 10px;
     font-weight: bold
@@ -167,12 +169,13 @@ button.btn-logout {
     align-items: center;
 }
 
-/* 入力フィールド：画像の枠線の太さに合わせる */
+/* キーワード検索：画像の枠線の太さに合わせる */
 .search_area input[type="text"] {
     width: 300px;
     padding: 8px;
-    border: 2px solid #333; /* 少し太めの枠線 */
-    border-right: none;    /* ボタンと連結させる */
+    border: 2px solid #30575c;
+    border-radius: 5px 0 0 5px;
+    border-right: none;
     outline: none;
 }
 
@@ -180,6 +183,7 @@ button.btn-logout {
 .search-button {
     background-color: #B0E0E6;
     border: 2px solid #30575c;
+    border-radius: 0 5px 5px 0;
     color: black;
     padding: 6px 16px;
     cursor: pointer;
@@ -215,6 +219,7 @@ button.btn-logout {
     text-decoration: none;
     background-color: #B0E0E6;
     border: 2px solid #30575c;
+    border-radius: 5px;
     color: black;
     margin-left: auto;
     font-weight: bold;
@@ -293,7 +298,7 @@ input:invalid:focus {
     position: relative;
     min-height: 38px !important;
     padding: 0 40px 0 10px !important;
-    border: 1px solid #000 !important;
+    border: 2px solid #30575c;!important;
     border-radius: 0 !important;
     background-color: #fff !important;
     display: flex !important;
@@ -414,25 +419,25 @@ input:invalid:focus {
     border-radius: 8px;
 }
 
-/* 共通のボタン基本スタイル（未選択時はグレーで「背景」っぽく見せる） */
+/* 共通のタスクボタン基本スタイル */
 .scope-btn {
     text-decoration: none;
     padding: 6px 16px;
     font-size: 13px;
     font-weight: bold;
-    color: #888;              /* 未選択時は文字を薄く */
-    background-color: #eee;   /* 未選択時は薄いグレー */
+    color: #888;
+    background-color: #eee;
     border-radius: 5px;
     transition: all 0.2s;
-    border: 2px solid #ccc;   /* 未選択時は薄い枠線 */
+    border: 2px solid #ccc;
 }
 
 /* ★選択中（active）のスタイル：指定色 + 濃い枠線で強調 */
 .scope-btn.active {
-    background-color: #B0E0E6 !important; /* 指定の明るい水色 */
-    color: black !important;              /* 文字をハッキリ黒に */
-    border: 2px solid #30575c !important; /* 登録ボタンと同じ濃い枠線 */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* 浮き出させて「選択中」を強調 */
+    background-color: #B0E0E6;
+    color: black;
+    border: 2px solid #30575c;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 /* 未選択ボタンをホバーした時 */
