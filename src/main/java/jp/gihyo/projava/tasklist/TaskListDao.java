@@ -193,4 +193,14 @@ public class TaskListDao {
                 })
                 .toList();
     }
+    public boolean isUserAssignedToTask(String taskId, Integer userId) {
+        String sql = "SELECT COUNT(*) FROM task_assignments WHERE task_id = ? AND user_id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, taskId, userId);
+        return count != null && count > 0;
+    }
+
+    public Integer getUserIdByEmail(String email) {
+        String sql = "SELECT user_id FROM users WHERE email = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, email);
+    }
 }

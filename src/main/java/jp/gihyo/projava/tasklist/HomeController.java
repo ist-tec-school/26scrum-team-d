@@ -7,7 +7,7 @@ License: CC0 1.0 Universal
 */
 package jp.gihyo.projava.tasklist;
 
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,7 +23,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -41,6 +43,7 @@ public class HomeController {
 
     private List<TaskItem> taskItems = new ArrayList<>();
     private final TaskListDao dao;
+    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
     @Autowired
     HomeController(TaskListDao dao) {
@@ -136,8 +139,22 @@ public class HomeController {
     }
 
     @GetMapping("/delete")
-    String deleteItem(@RequestParam("id") String id) {
-        dao.delete(id);
+    String deleteItem(@RequestParam("id") String id, Authentication authentication, RedirectAttributes redirectAttributes) {
+        String email = authentication.getName();
+        Integer currentUserId = dao.getUserIdByEmail(email);
+
+
+        if(!dao.isUserAssignedToTask(id,currentUserId)){
+            redirectAttributes.addFlashAttribute("errorMessage", "自分で担当しているタスク以外は削除できません。");
+            return "redirect:/list?error=nopermission";
+        }
+
+        try{
+            dao.delete(id);
+        }catch(Exception e){
+            redirectAttributes.addFlashAttribute("errorMessage", "削除中にエラーが発生しました。");
+            return "redirect:/list?error=deletefailed";
+        }
         return "redirect:/list#task-list-top";
     }
 
