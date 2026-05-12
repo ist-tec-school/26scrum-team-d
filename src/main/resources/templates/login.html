@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>ログイン - タスク管理アプリケーション</title>
-    <link href="../static/login.css" rel="stylesheet">
+    <link th:href="@{/login.css}" rel="stylesheet">
 </head>
 <body>
 <div class="login-container">
@@ -41,6 +41,6 @@
     </div>
 </div>
 
-<script src="../static/login.js" th:src="@{/login.js}"></script>
+<script th:src="@{/login.js}"></script>
 </body>
 </html>
