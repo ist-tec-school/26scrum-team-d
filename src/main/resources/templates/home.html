@@ -10,8 +10,17 @@
 </head>
 <body>
 <div class="header">
-    <input type="hidden" id="isUpdateError" th:value="${isUpdateError}">
-    <h1>タスク管理アプリケーション</h1>
+<input type="hidden" id="isUpdateError" th:value="${isUpdateError}">
+<div class="header-container">
+
+    <div class="logout-area">
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn-logout">ログアウト</button>
+        </form>
+    </div>
+</div>
+
+<h1>タスク管理アプリケーション</h1>
 </div>
 
 <div class="wrapper">

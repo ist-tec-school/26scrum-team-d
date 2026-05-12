@@ -22,6 +22,32 @@ input {
     display: none;
 }
 
+/* --- ログアウトボタンを右上に固定する設定 --- */
+
+div.header-container {
+    position: absolute !important; /* !important をつけると、他の設定を無視して最優先されます */
+    top: 35px !important;
+    right: 20px !important;
+    z-index: 9999; /* 他のどの要素よりも手前に表示させる */
+}
+
+/* button.btn-logout の箇所を書き換え */
+button.btn-logout {
+    background-color: #000 !important; /* 他のボタンと同じ黒色に変更 */
+    color: white !important;
+    padding: 8px 16px !important;
+    border: none !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+    font-weight: bold !important;    /* 登録ボタン(btn-register)に合わせて太字に */
+    transition: opacity 0.3s;       /* 検索ボタンのような滑らかな変化を追加 */
+}
+
+.btn-logout:hover {
+    background-color: #333 !important; /* ホバー時は少し明るい黒に */
+    opacity: 0.8 !important;          /* 検索ボタンと同じ透明度の変化を追加 */
+}
+
 /* タスク入力フォーム */
 .task_form {
     padding: 0 10px 10px 10px;
