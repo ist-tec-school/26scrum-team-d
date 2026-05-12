@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>ログイン - タスク管理アプリケーション</title>
+    <link th:href="@{/login.css}" rel="stylesheet">
+</head>
+<body>
+<div class="login-container">
+    <h1>タスク管理アプリケーション</h1>
+
+    <div class="task_form">
+        <h2>ログイン</h2>
+
+        <p th:if="${param.error}" class="error-text">
+            IDまたはパスワードが正しくありません。
+        </p>
+
+        <p th:if="${param.logout}" class="success-text">
+            ログアウトしました。
+        </p>
+
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label for="username">ID（メールアドレス）</label>
+                <input type="email" id="username" name="username" required
+                       placeholder="example@mail.com" />
+            </div>
+
+            <div class="form-group">
+                <label for="password">パスワード</label>
+                <input type="password" id="password" name="password" required
+                       placeholder="パスワードを入力" />
+            </div>
+
+            <input type="submit" value="ログイン" class="btn-register" />
+        </form>
+    </div>
+</div>
+
+<script th:src="@{/login.js}"></script>
+</body>
+</html>

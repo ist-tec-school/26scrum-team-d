@@ -11,6 +11,32 @@ input {
     display: none;
 }
 
+/* --- ログアウトボタンを右上に固定する設定 --- */
+
+div.header-container {
+    position: absolute !important; /* !important をつけると、他の設定を無視して最優先されます */
+    top: 35px !important;
+    right: 20px !important;
+    z-index: 9999; /* 他のどの要素よりも手前に表示させる */
+}
+
+/* button.btn-logout の箇所を書き換え */
+button.btn-logout {
+    background-color: #000 !important; /* 他のボタンと同じ黒色に変更 */
+    color: white !important;
+    padding: 8px 16px !important;
+    border: none !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+    font-weight: bold !important;    /* 登録ボタン(btn-register)に合わせて太字に */
+    transition: opacity 0.3s;       /* 検索ボタンのような滑らかな変化を追加 */
+}
+
+.btn-logout:hover {
+    background-color: #333 !important; /* ホバー時は少し明るい黒に */
+    opacity: 0.8 !important;          /* 検索ボタンと同じ透明度の変化を追加 */
+}
+
 /* タスク入力フォーム */
 .task_form {
     padding: 0 10px 10px 10px;
@@ -30,6 +56,11 @@ input {
     margin-top: 10px;
     font-weight: bold
 }
+
+.btn-register:hover {
+    background-color: #333;
+}
+
 /* 1. テーブルを包んでいる親要素の設定 */
 .tasklist {
     display: flex;           /* 子要素を自由に配置できるモード（Flexbox）にします */
@@ -37,8 +68,9 @@ input {
     width: 100%;             /* 親要素自体は画面いっぱいに広げておきます */
 }
 
-/* 2. テーブル自体の設定 */
-.tasklist table {
+
+/* タスク一覧 */
+.tasklist table{
     width: 100%;
     table-layout: fixed;
     border-collapse: collapse;
@@ -204,8 +236,11 @@ th:nth-child(3) { width: 17%;
 
 /* 検索エリアの配置 */
 .search_area {
+    display: flex;
+    align-items: center;
     padding: 5px 10px;
     margin-bottom: 20px;
+    gap: 10px;
 }
 
 .search-container {
@@ -226,18 +261,20 @@ th:nth-child(3) { width: 17%;
     outline: none;
 }
 
-/* 検索ボタン：画像通りの真っ黒な背景 */
+/* 検索ボタン*/
 .search-button {
     background-color: #000;
     color: #fff;
     padding: 8px;
     cursor: pointer;
     font-weight: bold;
-    transition: opacity 0.2s;
+    transition: opacity 0.5s;
 }
 
-.search-submit-button:hover {
+.search-button:hover {
+    background-color: #333;
     opacity: 0.8;
+    transition: opacity 0.5s;
 }
 
 /* 0件メッセージ：画像のように細い線で区切る */
@@ -253,6 +290,23 @@ th:nth-child(3) { width: 17%;
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+
+.search_area a.reset-button{
+    padding: 8px;
+    text-decoration: none;
+    background-color: #000;
+    color: #fff;
+    margin-left: auto;
+    font-weight: bold;
+    font-size: 14px;
+    display: inline-block;
+}
+
+.search_area a.reset-button:hover {
+    transition: opacity 0.5s;
+    background-color: #333; /* ホバー時に少し明るくしてクリック感を出します */
 }
 
 /* エラーメッセージのスタイル */
@@ -300,6 +354,7 @@ input:invalid:focus {
 .status-common {
     font-weight: bold;
 }
+
 
 
 .choices {
