@@ -4,6 +4,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.Map;
@@ -22,10 +24,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("ユーザーが見つかりません: " + email);
         }
+        String dbEmail = (String) user.get("EMAIL");
+        String dbPassword = (String) user.get("PASSWORD");
 
         return new User(
-                (String) user.get("email"),
-                (String) user.get("password"),
+                dbEmail,
+                dbPassword,
                 Collections.emptyList()
         );
     }

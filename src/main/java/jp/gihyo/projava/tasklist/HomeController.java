@@ -180,4 +180,8 @@ public class HomeController {
         dao.update(updateData);
         return "redirect:/list";
     }
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
 }
