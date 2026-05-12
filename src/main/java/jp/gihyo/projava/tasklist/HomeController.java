@@ -131,13 +131,13 @@ public class HomeController {
         );
 
         dao.add(newItem);
-        return "redirect:/list";
+        return "redirect:/list#task-list-top";
     }
 
     @GetMapping("/delete")
     String deleteItem(@RequestParam("id") String id) {
         dao.delete(id);
-        return "redirect:/list";
+        return "redirect:/list#task-list-top";
     }
 
     @PostMapping("/update")
@@ -192,7 +192,7 @@ public class HomeController {
                 item.done());
 
         dao.update(updateData);
-        return "redirect:/list";
+        return "redirect:/list#task-list-top";
     }
     @GetMapping("/login")
     public String login() {
