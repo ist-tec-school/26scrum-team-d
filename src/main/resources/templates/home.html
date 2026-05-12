@@ -46,7 +46,7 @@
                th:value="${taskItem?.deadline}" required/>
         <label>説明</label>
         <textarea name="description" id="add_description" rows="4" maxlength="200"></textarea>
-        <div id="add_count" style="font-size: 0.8em; text-align: right;">0 / 200</div>
+        <div id="add_count" >0 / 200</div>
 
         <input type="submit" value="登録" class="btn-register"/>
     </form>
@@ -174,7 +174,7 @@
 </div>
 
 
-<div id="updateDialog" style="display: none;">
+ <div id="updateDialog">
     <div class="task_form">
         <h2>タスクの更新</h2>
         <form action="/update">
@@ -182,7 +182,7 @@
             <label>プロジェクト</label>
             <select id="update_project" name="projectId" onchange="handleProjectChange(this, 'update_newProjectName_hidden')">
                 <option value=""></option>
-                <option value="new">+ 新規で登録</option>
+                <option value="new">+ 登録</option>
                 <option th:each="project : ${projectList}" th:value="${project.id}" th:text="${project.name}"></option>
             </select>
             <input type="hidden" name="newProjectName" id="update_newProjectName_hidden">
@@ -192,23 +192,23 @@
             <select id="update_user" name="taskUserIds" multiple>
                 <option th:each="user : ${userList}"
                         th:value="${user.USER_ID}"
-                        th:text="${user.NAME}"
-                        th:selected="${selectedUserIds != null && selectedUserIds.contains(user.USER_ID)}">
+                        th:text="${user.NAME}">
                 </option>
             </select>
             <label>期限</label>
             <input id="update_deadline" name="deadline" type="date"/>
 
             <label>説明</label>
-            <textarea id="update_description" name="description" rows="4" maxlength="200"></textarea>
-            <div id="update_count" style="font-size: 0.8em; text-align: right;">0 / 200</div>
+            <textarea name="description" id="update_description" rows="4" maxlength="200"></textarea>
+            <div id="update_count">0 / 200</div>
+
             <label>状態</label>
             <select id="update_status" name="done">
                 <option value="0">未着手</option>
                 <option value="1">対応中</option>
                 <option value="3">完了</option>
             </select>
-            <div>
+            <div class="dialog-buttons">
                 <button type="submit">更新</button>
                 <button type="button" onclick="closeUpdateDialog()">キャンセル</button>
             </div>

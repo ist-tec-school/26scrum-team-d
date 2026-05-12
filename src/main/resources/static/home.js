@@ -1,47 +1,81 @@
 /**
  * 更新ダイアログを表示する
  */
+/**
+ * 更新ダイアログを表示する
+ */
+/**
+ * 更新ダイアログを表示する
+ */
 function showUpdateDialog(button) {
-    // 1. ボタンが属する行(tr)を取得
     const row = button.closest('tr');
     const dialog = document.getElementById('updateDialog');
 
-    // 2. 各セルのデータ属性やテキストからデータを取得
-    const id = row.cells[0].innerText;                // ID (hidden)
-    const projectId = row.cells[1].dataset.projectId;  // プロジェクトID
-    const task = row.cells[2].innerText;               // タスク名
-    const userIds = JSON.parse(row.cells[3].dataset.userIds || "[]"); // 担当者ID
-    const deadline = row.cells[4].innerText;           // 期限
-    const description = row.cells[5].innerText;        // 説明
+    // 1. 各セルからデータを取得
+    const id = row.cells[0].innerText;
+    const projectId = row.cells[1].dataset.projectId;
+    const task = row.cells[2].innerText;
+    const userIds = JSON.parse(row.cells[3].dataset.userIds || "[]");
+    const deadline = row.cells[4].innerText;
+    const description = row.cells[5].innerText;
 
-    // 3. ダイアログの各入力欄に値をセット
+    const statusMap = {'未着手': 0, '対応中': 1, '完了': 3};
+    const statusText = row.cells[6].innerText.trim();
+
+    // 2. 入力欄に値をセット
     document.getElementById('update_id').value = id;
     document.getElementById('update_task').value = task;
     document.getElementById('update_deadline').value = deadline;
-    document.getElementById('update_description').value = description;
+    document.getElementById('update_status').value = statusMap[statusText] ?? 0;
 
-    // 4. プロジェクトのセレクトボックスをセット
-    const projectSelect = document.getElementById('update_project');
-    if (projectSelect) {
-        projectSelect.value = projectId || '';
-    }
+    const textArea = document.getElementById('update_description');
+    const countLabel = document.getElementById('update_count');
+    textArea.value = description;
 
-    // 5. Choices.js を使用している担当者セレクトボックスをセット
+    // 3. プロジェクトと担当者のセット
+    document.getElementById('update_project').value = projectId || '';
     if (updateChoice) {
         updateChoice.removeActiveItems();
         updateChoice.setChoiceByValue(userIds.map(id => id.toString()));
     }
 
-    // 6. 状態（テキストから数値へ変換）
-    const statusMap = {'未着手': 0, '対応中': 1, '完了': 3};
-    const statusText = row.cells[6].innerText.trim();
-    document.getElementById('update_status').value = statusMap[statusText] ?? 0;
+    // 4. 文字数カウント処理（数字のみ赤くする）
+    const updateCount = () => {
+        if (textArea.value.length > 200) {
+            textArea.value = textArea.value.substring(0, 200);
+        }
+        const len = textArea.value.length;
+        countLabel.textContent = `${len} / 200`;
+        countLabel.style.color = (len >= 200) ? 'red' : 'black';
+    };
 
-    // 7. ダイアログの位置調整と表示
-    dialog.style.left = ((window.innerWidth - 500) / 2) + 'px';
-    dialog.style.display = 'block';
+    // 初期表示
+    updateCount();
+    // 入力時
+    textArea.oninput = updateCount;
+
+    // 5. ダイアログを表示
+    dialog.style.display = 'flex';
 }
 
+/**
+ * 登録時の文字数制限
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    const addArea = document.getElementById('add_description');
+    const addLabel = document.getElementById('add_count');
+
+    if (addArea && addLabel) {
+        addArea.addEventListener('input', () => {
+            if (addArea.value.length > 200) {
+                addArea.value = addArea.value.substring(0, 200);
+            }
+            const len = addArea.value.length;
+            addLabel.textContent = `${len} / 200`;
+            addLabel.style.color = (len >= 200) ? 'red' : 'black';
+        });
+    }
+});
 /**
  * 更新ダイアログを閉じる
  */
@@ -197,14 +231,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const currentLength = area.value.length;
                 countLabel.textContent = `${currentLength} / 200`;
 
-                if (currentLength >= 199) {
+                if (currentLength >= 200) {
                     // 200文字に到達
                     countLabel.style.color = 'red';
-                    area.style.border = '2px solid red';
                 } else {
                     // 200文字未満
                     countLabel.style.color = 'black';
-                    area.style.border = '1px solid #ccc'; // 元の枠線色
                 }
             });
         }
