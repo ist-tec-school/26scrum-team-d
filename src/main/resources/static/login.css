@@ -86,3 +86,14 @@ input[type="password"] {
     font-size: 14px;
     text-align: center;
 }
+
+/* ログアウトボタン */
+.success-text {
+    color: #2e7d32;      /* 濃い緑色（成功の色） */
+    background-color: #e8f5e9; /* 薄い緑の背景 */
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    text-align: center;
+    border: 1px solid #c8e6c9;
+}
