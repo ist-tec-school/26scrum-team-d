@@ -7,12 +7,17 @@ License: CC0 1.0 Universal
 */
 package jp.gihyo.projava.tasklist;
 
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import javax.validation.constraints.NotBlank;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,16 +30,16 @@ import java.util.UUID;
 public class HomeController {
     record TaskItem(
             String id,
-            String task,
+            @NotBlank String task,
             List<Integer> taskUserIds,
             Integer projectId,
             String projectName,
             String description,
-            String deadline,
-            int done
+            @NotBlank String deadline,
+            Integer done
     ) {}
 
-    //    private List<TaskItem> taskItems = new ArrayList<>();
+    private List<TaskItem> taskItems = new ArrayList<>();
     private final TaskListDao dao;
 
     @Autowired
@@ -50,8 +55,6 @@ public class HomeController {
                      @RequestParam(value = "sectionId", defaultValue = "all") String sectionId,
                      @RequestParam(value = "keyword", defaultValue = "") String keyword) {
 
-        // 1. DAOの新しいメソッド「findFiltered」だけで検索を完結させます。
-        // これにより、statusもprojectIdもdeptIdもすべて組み合わされた結果が返ってきます。
         List<TaskItem> taskItems = dao.findByCondition(status, projectId, deptId, sectionId,keyword);
 
         // 2. 画面（Thymeleaf）に渡すデータをセット
@@ -69,6 +72,7 @@ public class HomeController {
         model.addAttribute("selectedDept", deptId);
         model.addAttribute("selectedSection", sectionId);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("taskItem", new TaskItem("", "", List.of(), null, "", "", "", 0));
         // listItems メソッド内
         String today = java.time.LocalDate.now().toString();
         String twoDaysLater = java.time.LocalDate.now().plusDays(2).toString();
@@ -79,61 +83,120 @@ public class HomeController {
     }
 
     @PostMapping("/add")
-    String addItem(@RequestParam("task") String task,
-                   @RequestParam(value="projectId", required=false) String projectId,
+    String addItem(@Validated @ModelAttribute("taskItem") TaskItem item, // 1. 引数をRecordに変更してバリデーション
+                   BindingResult result,
+                   Model model,
+                   @RequestParam(value="projectId", required=false) Integer projectId,
                    @RequestParam(value="newProjectName", required=false) String newProjectName,
-                   @RequestParam(value="taskUserIds",required = false) List<Integer> taskUserIds,
-                   @RequestParam("description") String description,
-                   @RequestParam("deadline") String deadline) {
+                   @RequestParam(value="status", defaultValue="all") String status,
+                   @RequestParam(value="keyword", defaultValue="") String keyword) {
 
+        // 2. エラー判定を追加
+        boolean isPastDate = false;
+        if (item.deadline() != null && !item.deadline().isEmpty()) {
+            java.time.LocalDate deadlineDate = java.time.LocalDate.parse(item.deadline());
+            if (deadlineDate.isBefore(java.time.LocalDate.now())) {
+                isPastDate = true;
+            }
+        }
+        if (result.hasErrors()|| isPastDate) {
+            List<TaskItem> taskItems = dao.findByCondition(status, "all", "all", "all", keyword);
+            model.addAttribute("taskList", taskItems);
+            model.addAttribute("userList", dao.findAllUsers());
+            model.addAttribute("projectList", dao.findAllProjects());
+            model.addAttribute("selectedStatus", status);
+            model.addAttribute("keyword", keyword);
+            String msg = isPastDate ? "過去の日付は入力できません" : "必須事項が未入力です";
+            model.addAttribute("errorMessage", msg);
+            return "home";
+        }
+
+        // 3. 正常系のプロジェクト登録ロジック
         Integer targetProjectId = null;
-        if ("new".equals(projectId) && newProjectName != null && !newProjectName.isEmpty()) {
+        if (Integer.valueOf(0).equals(projectId) && newProjectName != null && !newProjectName.isEmpty()) {
             targetProjectId = dao.addProject(newProjectName);
-        } else if (projectId != null && !projectId.isEmpty() && !"new".equals(projectId)) {
-            targetProjectId = Integer.parseInt(projectId);
+        } else if (projectId != null && !Integer.valueOf(0).equals(projectId)) {
+            targetProjectId = projectId;
         }
 
         String id = UUID.randomUUID().toString().substring(0, 8);
-        // 担当者が一人も選択されていない場合は空のリストをセットする
-        List<Integer> userIds = (taskUserIds != null) ? taskUserIds : new ArrayList<>();
-        // ★ここを修正：nullの代わりに targetProjectId を渡す
-        TaskItem item = new TaskItem(id, task, userIds, targetProjectId, "", description, deadline, 0);
+        TaskItem newItem = new TaskItem(
+                id,                 // 生成したID
+                item.task(),
+                item.taskUserIds(),
+                targetProjectId,    // 判定したプロジェクトID
+                "",
+                item.description(),
+                item.deadline(),
+                item.done()
+        );
 
-        dao.add(item);
-        return "redirect:/list";
+        dao.add(newItem);
+        return "redirect:/list#task-list-top";
     }
 
     @GetMapping("/delete")
     String deleteItem(@RequestParam("id") String id) {
         dao.delete(id);
-        return "redirect:/list";
+        return "redirect:/list#task-list-top";
     }
 
-    @GetMapping("/update")
-    String updateItem(@RequestParam("id") String id,
-                      @RequestParam("task") String task,
-                      @RequestParam(value="taskUserIds",required=false)  List<Integer> taskUserIds,
-                      @RequestParam(value="projectId",required=false) String projectId, // Stringで受け取る
-                      @RequestParam(value="newProjectName",required=false) String newProjectName, // 追加
-                      @RequestParam("description") String description,
-                      @RequestParam("deadline") String deadline,
-                      @RequestParam("done") int done) {
+    @PostMapping("/update")
+    String updateItem(@Validated @ModelAttribute("taskItem") TaskItem item,
+                      BindingResult result,
+                      Model model,
+                      @RequestParam(value="projectId", required=false) Integer projectId,
+                      @RequestParam(value="newProjectName", required=false) String newProjectName,
+                      @RequestParam(value="status", defaultValue="all") String status,
+                      @RequestParam(value="keyword", defaultValue="") String keyword) {
 
+        // 4. バリデーションエラーの判定
+        boolean isPastDate = false;
+        if (item.deadline() != null && !item.deadline().isEmpty()) {
+            java.time.LocalDate deadlineDate = java.time.LocalDate.parse(item.deadline());
+            if (deadlineDate.isBefore(java.time.LocalDate.now())) {
+                isPastDate = true;
+            }
+        }
+        if (result.hasErrors()|| isPastDate) {
+            // リストの再取得（画面表示を維持するため）
+            List<TaskItem> taskItems = dao.findByCondition(status, "all", "all", "all", keyword);
+            model.addAttribute("taskList", taskItems);
+            model.addAttribute("userList", dao.findAllUsers());
+            model.addAttribute("projectList", dao.findAllProjects());
+            model.addAttribute("selectedStatus", status);
+            model.addAttribute("keyword", keyword);
+            String msg = isPastDate ? "過去の日付は指定できません。" : "必須事項を入力してください。";
+            model.addAttribute("errorMessage", msg);
+            // 5. ダイアログ制御用のフラグとメッセージ
+            model.addAttribute("isUpdateError", true);
+            model.addAttribute("updateErrorMessage", "更新に失敗しました。" + msg);
+            return "home"; // redirectせずhomeを返す
+        }
 
         Integer targetProjectId = null;
-        // 修正箇所ここから 👇
-        if ("new".equals(projectId) && newProjectName != null && !newProjectName.isEmpty()) {
+        if (Integer.valueOf(0).equals(projectId) && newProjectName != null && !newProjectName.isEmpty()) {
             targetProjectId = dao.addProject(newProjectName);
-        } else if (projectId != null && !projectId.isEmpty() && !"new".equals(projectId)) {
-            targetProjectId = Integer.parseInt(projectId);
+        } else if (projectId != null && !Integer.valueOf(0).equals(projectId)) {
+            targetProjectId = projectId;
         }
-        // 修正箇所ここまで 👆
 
-        List<Integer> userIds = (taskUserIds != null) ? taskUserIds : new ArrayList<>();
+     // 更新用データの作成
+        TaskItem updateData = new TaskItem(
+                item.id(),
+                item.task(),
+                item.taskUserIds(),
+                targetProjectId, // projectId
+                "",              // projectName (更新時は空文字またはDAOで取得)
+                item.description(),
+                item.deadline(),
+                item.done());
 
-        TaskItem taskItem = new TaskItem(id, task, userIds, targetProjectId, "", description, deadline, done);
-
-        dao.update(taskItem);
-        return "redirect:/list";
+        dao.update(updateData);
+        return "redirect:/list#task-list-top";
+    }
+    @GetMapping("/login")
+    public String login() {
+        return "login";
     }
 }

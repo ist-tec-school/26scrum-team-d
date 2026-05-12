@@ -11,6 +11,32 @@ input {
     display: none;
 }
 
+/* --- ログアウトボタンを右上に固定する設定 --- */
+
+div.header-container {
+    position: absolute !important; /* !important をつけると、他の設定を無視して最優先されます */
+    top: 35px !important;
+    right: 20px !important;
+    z-index: 9999; /* 他のどの要素よりも手前に表示させる */
+}
+
+/* button.btn-logout の箇所を書き換え */
+button.btn-logout {
+    background-color: #000 !important; /* 他のボタンと同じ黒色に変更 */
+    color: white !important;
+    padding: 8px 16px !important;
+    border: none !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+    font-weight: bold !important;    /* 登録ボタン(btn-register)に合わせて太字に */
+    transition: opacity 0.3s;       /* 検索ボタンのような滑らかな変化を追加 */
+}
+
+.btn-logout:hover {
+    background-color: #333 !important; /* ホバー時は少し明るい黒に */
+    opacity: 0.8 !important;          /* 検索ボタンと同じ透明度の変化を追加 */
+}
+
 /* タスク入力フォーム */
 .task_form {
     padding: 0 10px 10px 10px;
@@ -21,7 +47,7 @@ input {
     grid-template-columns: 100px 1fr;
 }
 .task_form input[type="date"], select {
-    width: 150px;
+    width: 200px;
 }
 
 .btn-register {
@@ -33,6 +59,10 @@ input {
     margin:15px 0 0;
     cursor: pointer;
     border:none;
+}
+
+.btn-register:hover {
+    background-color: #333;
 }
 
 /* タスク一覧 */
@@ -50,9 +80,6 @@ input {
 
 
 /* タスク更新ダイアログ (第18章のサンプルで使用) */
-/* 文字数表示が状態（label）と重ならないように調整 */
-/* --- ダイアログ背景：画面中央に固定 --- */
-/* --- ダイアログ背景：画面中央に固定 --- */
 #updateDialog {
     display: none; /* JSで表示する際に display: flex; に切り替えます */
     position: fixed;
@@ -155,8 +182,11 @@ input {
 
 /* 検索エリアの配置 */
 .search_area {
+    display: flex;
+    align-items: center;
     padding: 5px 10px;
     margin-bottom: 20px;
+    gap: 10px;
 }
 
 .search-container {
@@ -177,18 +207,20 @@ input {
     outline: none;
 }
 
-/* 検索ボタン：画像通りの真っ黒な背景 */
+/* 検索ボタン*/
 .search-button {
     background-color: #000;
     color: #fff;
     padding: 8px;
     cursor: pointer;
     font-weight: bold;
-    transition: opacity 0.2s;
+    transition: opacity 0.5s;
 }
 
-.search-submit-button:hover {
+.search-button:hover {
+    background-color: #333;
     opacity: 0.8;
+    transition: opacity 0.5s;
 }
 
 /* 0件メッセージ：画像のように細い線で区切る */
@@ -204,6 +236,23 @@ input {
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+
+.search_area a.reset-button{
+    padding: 8px;
+    text-decoration: none;
+    background-color: #000;
+    color: #fff;
+    margin-left: auto;
+    font-weight: bold;
+    font-size: 14px;
+    display: inline-block;
+}
+
+.search_area a.reset-button:hover {
+    transition: opacity 0.5s;
+    background-color: #333; /* ホバー時に少し明るくしてクリック感を出します */
 }
 
 /* エラーメッセージのスタイル */
@@ -377,6 +426,14 @@ input:invalid:focus {
 
 .task-overdue-urgent td:nth-child(5){
     background-color: rgba(255,99,71,0.9);
+}
+
+.task-overdue td {
+    text-decoration: none !important;
+}
+
+#task-list-section {
+    scroll-margin-top: 50px; /* スクロールが止まる位置を50px分上にずらす */
 }
 #add_count {
     grid-column: 2;      /* 2列目（入力欄側）に配置 */
