@@ -406,6 +406,50 @@ input:invalid:focus {
     text-decoration: none !important;
 }
 
-#task-list-section {
-    scroll-margin-top: 50px; /* スクロールが止まる位置を50px分上にずらす */
+/* 切り替えボタン全体のコンテナ */
+.scope-toggle {
+    display: inline-flex;
+    margin-right: 15px;
+    background-color: #f4f7f6; /* 背景に馴染む薄いグレー */
+    border-radius: 8px;
+}
+
+/* 共通のボタン基本スタイル（未選択時はグレーで「背景」っぽく見せる） */
+.scope-btn {
+    text-decoration: none;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #888;              /* 未選択時は文字を薄く */
+    background-color: #eee;   /* 未選択時は薄いグレー */
+    border-radius: 5px;
+    transition: all 0.2s;
+    border: 2px solid #ccc;   /* 未選択時は薄い枠線 */
+}
+
+/* ★選択中（active）のスタイル：指定色 + 濃い枠線で強調 */
+.scope-btn.active {
+    background-color: #B0E0E6 !important; /* 指定の明るい水色 */
+    color: black !important;              /* 文字をハッキリ黒に */
+    border: 2px solid #30575c !important; /* 登録ボタンと同じ濃い枠線 */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* 浮き出させて「選択中」を強調 */
+}
+
+/* 未選択ボタンをホバーした時 */
+.scope-btn:hover:not(.active) {
+    background-color: #8fc1c7;
+    color: black;
+    border-color: #30575c;
+}
+
+/* 選択されていないボタンのホバー時 */
+.scope-btn:hover:not(.active) {
+    background-color: #8fc1c7;
+    color: black;
+}
+
+.filter_area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }

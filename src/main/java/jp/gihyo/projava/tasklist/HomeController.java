@@ -76,6 +76,7 @@ public class HomeController {
         model.addAttribute("sectionList", dao.findAllSections());
 
         // 現在選ばれている値を保持（HTML側の th:selected や hidden で使用）
+        model.addAttribute("selectedScope", scope);
         model.addAttribute("selectedStatus", status);
         model.addAttribute("selectedProject", projectId);
         model.addAttribute("selectedDept", deptId);
