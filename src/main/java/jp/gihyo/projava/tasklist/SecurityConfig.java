@@ -24,7 +24,7 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/home.css", "/login.css", "/home.js", "/h2-console/**", "/favicon.ico").permitAll()
+                .antMatchers("/home.css", "/login.css", "/home.js", "/login.js", "/h2-console/**", "/favicon.ico").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
