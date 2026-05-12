@@ -18,6 +18,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import javax.validation.constraints.NotBlank;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import java.util.Map;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -49,13 +52,19 @@ public class HomeController {
 
     @GetMapping("/list")
     String listItems(Model model,
+                     @AuthenticationPrincipal UserDetails userDetails, // ★ログイン情報を取得
+                     @RequestParam(value = "scope", defaultValue = "mine") String scope, // ★デフォルトはmine
                      @RequestParam(value = "status", defaultValue = "working_group") String status,
                      @RequestParam(value = "projectId", defaultValue = "all") String projectId,
                      @RequestParam(value = "deptId", defaultValue = "all") String deptId,
                      @RequestParam(value = "sectionId", defaultValue = "all") String sectionId,
                      @RequestParam(value = "keyword", defaultValue = "") String keyword) {
 
-        List<TaskItem> taskItems = dao.findByCondition(status, projectId, deptId, sectionId,keyword);
+        // ★ログイン中のメールアドレスから、DB上のユーザー情報を取得してIDを取り出す
+        Map<String, Object> user = dao.findUserByEmail(userDetails.getUsername());
+        Integer currentUserId = (Integer) user.get("USER_ID");
+
+        List<TaskItem> taskItems = dao.findByCondition(status, projectId, deptId, sectionId, keyword, scope, currentUserId);
 
         // 2. 画面（Thymeleaf）に渡すデータをセット
         model.addAttribute("taskList", taskItems);
@@ -100,7 +109,7 @@ public class HomeController {
             }
         }
         if (result.hasErrors()|| isPastDate) {
-            List<TaskItem> taskItems = dao.findByCondition(status, "all", "all", "all", keyword);
+            List<TaskItem> taskItems = dao.findByCondition(status, "all", "all", "all", keyword, "all", null);
             model.addAttribute("taskList", taskItems);
             model.addAttribute("userList", dao.findAllUsers());
             model.addAttribute("projectList", dao.findAllProjects());
@@ -160,7 +169,7 @@ public class HomeController {
         }
         if (result.hasErrors()|| isPastDate) {
             // リストの再取得（画面表示を維持するため）
-            List<TaskItem> taskItems = dao.findByCondition(status, "all", "all", "all", keyword);
+            List<TaskItem> taskItems = dao.findByCondition(status, "all", "all", "all", keyword, "all", null);
             model.addAttribute("taskList", taskItems);
             model.addAttribute("userList", dao.findAllUsers());
             model.addAttribute("projectList", dao.findAllProjects());

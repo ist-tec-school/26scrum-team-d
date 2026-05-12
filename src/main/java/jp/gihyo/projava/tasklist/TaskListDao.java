@@ -51,7 +51,7 @@ public class TaskListDao {
     }
 
     // --- フィルタリング用メソッド ---
-    public List<TaskItem> findByCondition(String status, String projectId, String deptId, String sectionId, String keyword) {
+    public List<TaskItem> findByCondition(String status, String projectId, String deptId, String sectionId, String keyword, String scope, Integer currentUserId) {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT DISTINCT t.*, p.project_name ");
         sql.append("FROM tasklist t ");
@@ -62,6 +62,11 @@ public class TaskListDao {
         sql.append("WHERE 1=1 ");
 
         List<Object> params = new ArrayList<>();
+
+        if ("mine".equals(scope) && currentUserId != null) {
+            sql.append(" AND t.id IN (SELECT task_id FROM task_assignments WHERE user_id = ?) ");
+            params.add(currentUserId);
+        }
 
         // findByCondition メソッド内の status 判定部分を修正
         if (!"all".equals(status)) {
@@ -165,7 +170,7 @@ public class TaskListDao {
 
     //メールアドレスでユーザーを検索するメソッド
     public Map<String, Object> findUserByEmail(String email) {
-        String sql = "SELECT * FROM users WHERE email = ?";
+        String sql = "SELECT user_id AS user_id, email AS email, password AS password FROM users WHERE email = ?";
         List<Map<String, Object>> users = jdbcTemplate.queryForList(sql, email);
         return users.isEmpty() ? null : users.get(0);
     }
