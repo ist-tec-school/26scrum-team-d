@@ -163,6 +163,12 @@ public class TaskListDao {
         return key.intValue();
     }
 
+    //メールアドレスでユーザーを検索するメソッド
+    public Map<String, Object> findUserByEmail(String email) {
+        String sql = "SELECT * FROM users WHERE email = ?";
+        List<Map<String, Object>> users = jdbcTemplate.queryForList(sql, email);
+        return users.isEmpty() ? null : users.get(0);
+    }
     // --- マッピング用 ---
     private List<TaskItem> mapToTaskItems(List<Map<String, Object>> result) {
         return result.stream()

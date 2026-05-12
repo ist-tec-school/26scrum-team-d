@@ -16,10 +16,6 @@
             IDまたはパスワードが正しくありません。
         </p>
 
-        <p th:if="${param.logout}" class="success-text">
-            ログアウトしました。
-        </p>
-
         <form th:action="@{/login}" method="post">
             <div class="form-group">
                 <label for="username">ID（メールアドレス）</label>
@@ -29,11 +25,8 @@
 
             <div class="form-group">
                 <label for="password">パスワード</label>
-                <div class="password-wrapper">
-                    <input type="password" id="password" name="password" required
-                           placeholder="パスワードを入力" />
-                    <button type="button" id="togglePassword" class="btn-toggle">表示</button>
-                </div>
+                <input type="password" id="password" name="password" required
+                       placeholder="パスワードを入力" />
             </div>
 
             <input type="submit" value="ログイン" class="btn-register" />
