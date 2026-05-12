@@ -9,6 +9,7 @@
     <script th:src="@{/home.js}" defer></script>
 </head>
 <body>
+<div class="header">
 <input type="hidden" id="isUpdateError" th:value="${isUpdateError}">
 <div class="header-container">
 
@@ -20,7 +21,9 @@
 </div>
 
 <h1>タスク管理アプリケーション</h1>
+</div>
 
+<div class="wrapper">
 <div class="task_form">
     <h2>タスクの登録</h2>
     <p class="error-text"
@@ -57,7 +60,8 @@
                th:min="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
                required/>
         <label>説明</label>
-        <textarea name="description" rows="4"></textarea>
+        <textarea name="description" id="add_description" rows="4" maxlength="200"></textarea>
+        <div id="add_count" >0 / 200</div>
 
         <label>状態</label>
         <select name="done">
@@ -201,7 +205,7 @@
 </div>
 
 
-<div id="updateDialog" style="display: none;">
+ <div id="updateDialog">
     <div class="task_form">
         <h2>タスクの更新</h2>
         <p class="error-text"
@@ -213,6 +217,8 @@
             <label>プロジェクト</label>
             <select id="update_project" name="projectId" onchange="handleProjectChange(this, 'update_newProjectName_hidden')">
                 <option value=""></option>
+                <option value="new">+ 登録</option>
+                <option th:each="project : ${projectList}" th:value="${project.id}" th:text="${project.name}"></option>
                 <option value="0">+ 新規で登録</option>
                 <option th:each="project : ${projectList}"
                         th:value="${project.id}"
@@ -238,20 +244,23 @@
                    required/>
 
             <label>説明</label>
-            <input id="update_description" name="description" type="text"
-                   th:value="${updateItem?.description}"/>
+            <textarea name="description" id="update_description" rows="4" maxlength="200"
+                      th:value="${updateItem?.description}"/></textarea>
+            <div id="update_count">0 / 200</div>
+
             <label>状態</label>
             <select id="update_status" name="done">
                 <option value="0" th:selected="${updateItem?.done == 0}">未着手</option>
                 <option value="1" th:selected="${updateItem?.done == 1}">対応中</option>
                 <option value="3" th:selected="${updateItem?.done == 3}">完了</option>
             </select>
-            <div>
+            <div class="dialog-buttons">
                 <button type="submit">更新</button>
                 <button type="button" onclick="closeUpdateDialog()">キャンセル</button>
             </div>
         </form>
     </div>
+</div>
 </div>
 </body>
 </html>
