@@ -39,10 +39,16 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/login?logout")
                 .permitAll();
 
+
         http.userDetailsService(userDetailsService);
 
         http.headers().frameOptions().sameOrigin();
-
+        http.sessionManagement()
+                .invalidSessionUrl("/login")
+                .maximumSessions(1)
+                .expiredUrl("/login")
+                .and()
+                .sessionFixation().migrateSession();
         return http.build();
     }
 
