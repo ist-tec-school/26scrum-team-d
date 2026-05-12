@@ -51,13 +51,16 @@ label {
 }
 
 input[type="email"],
-input[type="password"] {
+input[type="password"],
+input[type="text"]{
     width: 100%;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
     box-sizing: border-box; /* paddingを含めたサイズ設定 */
 }
+
+
 
 /* ログインボタン（home.htmlの登録ボタンと同じクラスを使用） */
 .btn-register {
