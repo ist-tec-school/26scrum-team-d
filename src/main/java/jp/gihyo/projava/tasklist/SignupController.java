@@ -13,7 +13,6 @@ import java.util.Map;
 
 @Controller
 public class SignupController {
-
     private final TaskListDao dao;
     private final PasswordEncoder passwordEncoder;
 
@@ -34,13 +33,37 @@ public class SignupController {
     }
 
     @PostMapping("/signup")
-    public String registerUser(@RequestParam("name") String name,
-                               @RequestParam("username") String email,
-                               @RequestParam("password") String password,
-                               Model model) {
+    public String signup(@RequestParam String name,
+                         @RequestParam("username") String email,
+                         @RequestParam String password,
+                         @RequestParam Integer deptId,
+                         @RequestParam(required = false)String newDepartmentName,
+                         @RequestParam Integer sectionId,
+                         @RequestParam(required = false)String newSectionName,
+                         Model model) {
+        if (Integer.valueOf(0).equals(deptId) && !newDepartmentName.isBlank()) {
+            if (dao.findDeptIdByName(newDepartmentName) != null) {
+                model.addAttribute("errorMessage", "その部署は既に登録されています。");
+                return displaySignup(model);
+            }
+        }
+        Integer targetDeptId = deptId;
+        if (Integer.valueOf(0).equals(deptId) && !newDepartmentName.isBlank()) {
+            targetDeptId = dao.addDepartment(newDepartmentName);
+        }
 
+        if (Integer.valueOf(0).equals(sectionId) && !newSectionName.isBlank()) {
+            if (dao.findSectionIdByName(newSectionName, targetDeptId) != null) {
+                model.addAttribute("errorMessage", "その課は指定された部署内に既に登録されています。");
+                return displaySignup(model);
+            }
+        }
+        Integer targetSectionId = sectionId;
+        if (Integer.valueOf(0).equals(sectionId) && !newSectionName.isBlank()) {
+            targetSectionId = dao.addSection(newSectionName, targetDeptId);
+        }
+        
         boolean hasError = false;
-
         // バリデーション
         if (name.isBlank()) {
             model.addAttribute("nameError", "名前を入力してください。");
@@ -68,10 +91,10 @@ public class SignupController {
             model.addAttribute("sections", sections);
             return "signup";
         }
-
-        // 暗号化とDB保存
+        // パスワードを暗号化
         String encodedPassword = passwordEncoder.encode(password);
-        dao.createUser(name, email, encodedPassword);
+        // DBへ保存（TaskListDaoにこのメソッドがある前提です）
+        dao.createUser(name, email, encodedPassword, targetSectionId);
 
         return "redirect:/login?register_success";
     }
