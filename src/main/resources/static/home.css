@@ -150,7 +150,7 @@ th:nth-child(3) { width: 17%;
 
 /* 展開時の背景色と配置の調整 */
 .tasklist td:nth-child(4).is-expanded {
-    vertical-align: top;
+    vertical-align: center;
 }
 /* 期限列（5番目）の見出しとデータの両方を中央寄せにする */
 .tasklist th:nth-child(5),
