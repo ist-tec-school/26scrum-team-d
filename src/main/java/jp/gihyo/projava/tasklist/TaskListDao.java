@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -171,5 +172,42 @@ public class TaskListDao {
                 })
                 .toList();
     }
+
+    public Integer addDepartment(String deptName) {
+        SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("departments")
+                .usingGeneratedKeyColumns("dept_id");
+        Map<String, Object> params = new HashMap<>();
+        params.put("dept_name", deptName);
+        Number key = insert.executeAndReturnKey(params);
+        return key.intValue();
+    }
+    public Integer findDeptIdByName(String deptName) {
+        String sql = "SELECT dept_id FROM departments WHERE dept_name = ?";
+        List<Integer> ids = jdbcTemplate.queryForList(sql, Integer.class, deptName);
+        return ids.isEmpty() ? null : ids.get(0);
+    }
+
+    public Integer addSection(String sectionName, Integer deptId) {
+        SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("sections")
+                .usingGeneratedKeyColumns("section_id");
+        Map<String, Object> params = new HashMap<>();
+        params.put("section_name", sectionName);
+        params.put("dept_id", deptId);
+        Number key = insert.executeAndReturnKey(params);
+        return key.intValue();
+    }
+    public Integer findSectionIdByName(String sectionName, Integer deptId) {
+        String sql = "SELECT section_id FROM sections WHERE section_name = ? AND dept_id = ?";
+        List<Integer> ids = jdbcTemplate.queryForList(sql, Integer.class, sectionName, deptId);
+        return ids.isEmpty() ? null : ids.get(0);
+    }
+
+    public void createUser(String name, String email, String encodedPassword, Integer sectionId) {
+        String sql = "INSERT INTO users (name, email, password, section_id) VALUES (?, ?, ?, ?)";
+        jdbcTemplate.update(sql, name, email, encodedPassword, sectionId);
+    }
+
 
 }
