@@ -1,3 +1,95 @@
+body {
+    background-color: #f8fbfc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: sans-serif;
+}
+
+
+.login-container {
+    width: 100%;
+    max-width: 430px;
+    padding: 20px;
+}
+
+/* タイトルの装飾 */
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+/* home.htmlのスタイルを活かしたフォーム部分 */
+.task_form {
+    border: none;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.form_header{
+    background: #B0E0E6;
+    padding: 20px;
+}
+
+.form_body{
+    background: white;
+    padding: 30px;
+}
+
+.form_header h2 {
+    margin: 0;
+    text-align: center;
+}
+
+/* 入力項目の間隔調整 */
+.form-group {
+    margin-bottom: 20px;
+}
+
+
+.footer-links {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+.footer-links a {
+    color: #616161;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s;
+    display: inline-block;
+    padding: 5px 10px;
+}
+
+.footer-links a:hover {
+    color: black;
+    text-decoration: underline;
+    transform: translateX(-3px);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 5px;
+    background-color: #fff;
+    font-size: 14px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
 
 .error-text {
     color: #d9534f;
@@ -7,26 +99,4 @@
     margin-bottom: 15px;
     font-size: 0.9em;
     text-align: center;
-}
-
-.task_form a:hover {
-    text-decoration: underline !important;
-    color: #333 !important;
-}
-
-.footer-links {
-    margin-top: 20px;
-    text-align: center;
-    font-size: 0.9em;
-}
-
-.footer-links a {
-    color: #666;
-    text-decoration: none;
-    transition: color 0.2s;
-}
-
-.footer-links a:hover {
-    color: #333;
-    text-decoration: underline;
 }

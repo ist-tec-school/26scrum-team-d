@@ -42,20 +42,29 @@ input {
 
 /* ログアウトボタン */
 button.btn-logout {
-    background-color: #000 !important; /* 他のボタンと同じ黒色に変更 */
-    color: white !important;
-    padding: 8px 16px !important;
-    border: none !important;
+    width: 100%;
+    padding: 6px 16px;
+    color: black;
+    background-color: white;
+    border: 2px solid #30575c;
     border-radius: 5px;
-    cursor: pointer !important;
-    font-size: 14px !important;
-    font-weight: bold !important;
-    transition: opacity 0.3s;
+    font-weight: bold;
+    font-size: 13px;
+    text-decoration: none;
+    box-sizing: border-box;
+    transition: all 0.3s;
 }
 
 .btn-logout:hover {
-    background-color: #333 !important; /* ホバー時は少し明るい黒に */
-    opacity: 0.8 !important;          /* 検索ボタンと同じ透明度の変化を追加 */
+    background-color: #e0e0e0;
+    opacity: 0.8;
+    transition: 0.5s;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);     /* 検索ボタンと同じ透明度の変化を追加 */
+}
+
+.material-symbols-outlined {
+    font-size: 20px;
+    vertical-align: middle;
 }
 
 .login-name {
@@ -129,14 +138,19 @@ button.btn-logout {
 /* 各列の幅を指定（合計で100%になるように調整、またはpx指定） */
 
 /* プロジェクト列 */
-th:nth-child(2) { width: 20%;
+th:nth-child(2) { width: 15%;
 }
 
 /* タスク列 */
-th:nth-child(3) { width: 17%;
+th:nth-child(3) { width: 12%;
 }
 
-/* --- 担当者列（4番目）の折りたたみ・共通化設定 --- */
+/* ★ここを追加（例：10%に広げる場合） */
+th:nth-child(4),
+.tasklist td:nth-child(4) {
+    width: 10% !important;
+}
+
 
 /* 判定用の目印があるセルを指マークにする */
 .tasklist td:nth-child(4).has-overflow {
@@ -184,7 +198,7 @@ th:nth-child(3) { width: 17%;
 }
 
 .tasklist td:nth-child(6) {
-    width: 30%;
+    width: 40%;
     min-width: auto;
 }
 
