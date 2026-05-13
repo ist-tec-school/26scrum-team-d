@@ -63,11 +63,13 @@ public class HomeController {
 
         // ★ログイン中のメールアドレスから、DB上のユーザー情報を取得してIDを取り出す
         Map<String, Object> user = dao.findUserByEmail(userDetails.getUsername());
-        Integer currentUserId = (Integer) user.get("USER_ID");
+        Integer currentUserId = (Integer) user.get("user_id");
+        String loginUserName = (String) user.get("name");
 
         List<TaskItem> taskItems = dao.findByCondition(status, projectId, deptId, sectionId, keyword, scope, currentUserId);
 
         // 2. 画面（Thymeleaf）に渡すデータをセット
+        model.addAttribute("loginUserName", loginUserName);
         model.addAttribute("taskList", taskItems);
         model.addAttribute("userList", dao.findAllUsers());
         model.addAttribute("projectList", dao.findAllProjects());

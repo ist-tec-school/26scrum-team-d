@@ -2,6 +2,11 @@
 .header {
     background-color: #B0E0E6;
     padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 body {
@@ -22,13 +27,17 @@ input {
     display: none;
 }
 
-/* --- ログアウトボタンを右上に固定する設定 --- */
+.header h1 {
+    margin: 0;
+    white-space: nowrap;
+}
 
-div.header-container {
-    position: absolute !important; /* !important をつけると、他の設定を無視して最優先されます */
-    top: 35px !important;
-    right: 20px !important;
-    z-index: 9999; /* 他のどの要素よりも手前に表示させる */
+.logout-area {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-left: auto;
+    gap: 10px;
 }
 
 /* ログアウトボタン */
@@ -47,6 +56,14 @@ button.btn-logout {
 .btn-logout:hover {
     background-color: #333 !important; /* ホバー時は少し明るい黒に */
     opacity: 0.8 !important;          /* 検索ボタンと同じ透明度の変化を追加 */
+}
+
+.login-name {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #616161;
+    font-weight: bold;
+    white-space: nowrap;
 }
 
 /* タスク入力フォーム */
