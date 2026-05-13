@@ -50,8 +50,10 @@
         </div>
         <label>タスク</label>
         <input name="task" type="text"
-               th:value="${taskItem?.task}" required oninput="checkTaskLength(this, 'add_task_warn')"/>
-        <div id="add_task_warn" style="color: red; font-size: 0.8em; display: none;">
+               th:value="${taskItem?.task}" required
+               oninput="checkTaskLength(this, 'add_task_warn')"/>
+
+        <div id="add_task_warn">
             タスク名は255文字以内で入力してください。
         </div>
         <label>担当者</label>
@@ -243,10 +245,12 @@
                         th:selected="${project.id == updateItem?.projectId}"></option>
             </select>
             <input type="hidden" name="newProjectName" id="update_newProjectName_hidden">
-            <label>タスク</label>
+            <<label>タスク</label>
             <input id="update_task" name="task" type="text"
-                   th:value="${updateItem?.task}" required oninput="checkTaskLength(this,'update_task_warn')"/>
-            <div id="update_task_warn" style="color: red; font-size: 0.8em; display: none;">
+                   th:value="${updateItem?.task}" required
+                   oninput="checkTaskLength(this,'update_task_warn')"/>
+
+            <div id="update_task_warn">
                 タスク名は255文字以内で入力してください。
             </div>
             <label>担当者</label>

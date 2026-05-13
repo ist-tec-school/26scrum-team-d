@@ -25,15 +25,18 @@ function updateCountLabel(areaId, countId) {
     countLabel.style.color = (len >= 200) ? 'red' : 'black';
 }
 
-function checkTaskLength(input,warnId) {
+function checkTaskLength(input, warnId) {
     const warn = document.getElementById(warnId);
-    if(!warn) return;
+    if (!warn) return;
+
     if (input.value.length >= 255) {
-        warn.style.display = 'block';
-        input.style.borderColor ="red";
-    }else{
-        warn.style.display = 'none';
-        input.style.borderColor = '';
+        // 255文字以上のとき
+        input.style.borderColor = "red";
+        warn.classList.add('show');    // CSSの visibility: visible が適用される
+    } else {
+        // 255文字未満のとき（正常）
+        input.style.borderColor = "";   // ★枠線を元の色（CSSの設定）に戻す
+        warn.classList.remove('show'); // ★CSSの visibility: hidden に戻る
     }
 }
 
