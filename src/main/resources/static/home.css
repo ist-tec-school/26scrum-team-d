@@ -78,17 +78,156 @@ button.btn-logout {
     transition: opacity 0.5s;
 }
 
+/* 1. テーブルを包んでいる親要素の設定 */
+.tasklist {
+    display: flex;           /* 子要素を自由に配置できるモード（Flexbox）にします */
+    justify-content: center; /* 中身（テーブル）を左右中央に配置します */
+    width: 100%;             /* 親要素自体は画面いっぱいに広げておきます */
+}
+
+
 /* タスク一覧 */
 .tasklist table{
     width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+
 }
 .tasklist table, .tasklist th, .tasklist td {
     border: 1px solid black; /* 枠線を引く */
     border-collapse: collapse; /* 重なる線を一本にする */
-    padding: 8px;              /* 文字の周りに隙間を作る */}
+    padding: 8px;              /* 文字の周りに隙間を作る */
+    vertical-align: middle;
+    text-align: center;
+}
 
 .tasklist th {
     background-color: #f4f7f6; /* 見出しに色をつける */
+}
+
+/* 各列の幅を指定（合計で100%になるように調整、またはpx指定） */
+
+/* プロジェクト列 */
+th:nth-child(2) { width: 20%;
+}
+
+/* タスク列 */
+th:nth-child(3) { width: 17%;
+}
+
+/* --- 担当者列（4番目）の折りたたみ・共通化設定 --- */
+
+/* 判定用の目印があるセルを指マークにする */
+.tasklist td:nth-child(4).has-overflow {
+    cursor: pointer;
+}
+
+/* 青文字ラベルの基本設定（説明列と共通のデザイン） */
+.tasklist td:nth-child(4).has-overflow::after {
+    font-size: 0.8em;
+    color: #4D648D;
+    font-weight: normal;
+    display: block;
+    margin-top: 5px;
+}
+
+/* 折りたたみ時：他○名 ＋ （全文を表示） */
+.tasklist td:nth-child(4).has-overflow:not(.is-expanded)::after {
+    content: attr(data-more-text) " （全文を表示）";
+}
+
+.tasklist td:nth-child(4).has-overflow.is-expanded {
+    vertical-align: middle;
+    text-align: center;
+}
+
+/* 展開時：（一部表示に戻す） */
+.tasklist td:nth-child(4).has-overflow.is-expanded::after {
+    content: "（一部表示に戻す）";
+}
+
+/* 4人目以降のdivを非表示にする制御 */
+.tasklist td:nth-child(4).has-overflow:not(.is-expanded) div:nth-child(n+4) {
+    display: none !important;
+}
+
+/* 展開時の背景色と配置の調整 */
+.tasklist td:nth-child(4).is-expanded {
+    vertical-align: center;
+}
+/* 期限列（5番目）の見出しとデータの両方を中央寄せにする */
+.tasklist th:nth-child(5),
+.tasklist td:nth-child(5) {
+    width: 8%;
+    text-align: center;
+}
+
+.tasklist td:nth-child(6) {
+    width: 30%;
+    min-width: auto;
+}
+
+.desc-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tasklist td:nth-child(6).has-overflow:not(.is-expanded) {
+    cursor: pointer;
+}
+
+/* --- home.css の既存の場所付近を修正 --- */
+
+/* 全文表示ではない（溢れている）時：「全文を開く」を表示 */
+.tasklist td:nth-child(6).has-overflow:not(.is-expanded)::after {
+    content: " (全文を開く)";
+    font-size: 0.8em;
+    color: #4D648D;
+}
+
+/* 【追記】全文表示（展開済み）の時：「(一部表示に戻す)」を表示 */
+.tasklist td:nth-child(6).is-expanded::after {
+    content: " (一部表示に戻す)";
+    font-size: 0.8em;
+    color: #4D648D;
+    display: block;    /* テキストのすぐ下に表示させる（お好みで） */
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+.tasklist td:nth-child(6).is-expanded .desc-text {
+    white-space: normal;
+    overflow: visible;
+}
+
+.tasklist td:nth-child(4).is-expanded,
+.tasklist td:nth-child(6).is-expanded {
+    vertical-align: center !important;
+}
+
+/* 状態・更新・削除ボタン列 */
+.tasklist th:nth-child(7),
+.tasklist td:nth-child(7)  {
+    width: 5%;
+    text-align: center;}
+.tasklist th:nth-child(8),
+.tasklist td:nth-child(8) {
+    width: 5%;
+    text-align: center;}
+.tasklist th:nth-child(9),
+.tasklist td:nth-child(9)  {
+    width: 5%;
+    text-align: center;}
+
+.user-cell {
+    vertical-align: top;
+    padding: 8px;
+}
+
+.user-cell div {
+    margin-bottom: 4px;
+    line-height: 1.4;
 }
 
 
@@ -321,11 +460,7 @@ input:invalid:focus {
     font-weight: bold;
 }
 
-/* テーブルの右側から3つの列（現段階では状態・更新・削除）のセルを中央揃えにする */
-.tasklist th:nth-last-child(-n+3),
-.tasklist td:nth-last-child(-n+3) {
-    text-align: center;
-}
+
 
 .choices {
     width: 100% !important;
