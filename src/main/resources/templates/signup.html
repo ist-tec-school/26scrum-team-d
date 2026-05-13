@@ -25,8 +25,8 @@
         <form th:action="@{/signup}" method="post">
             <div class="form-group">
                 <label for="name">名前</label>
-                <input type="text" id="name" name="name" required
-                       placeholder="山田 太郎" />
+                <input type="text" id="name" name="name" required placeholder="山田 太郎" />
+                <p th:if="${nameError}" class="error-msg" th:text="${nameError}"></p>
             </div>
             <div class="form-group">
                 <label for="department">部署</label>
@@ -53,13 +53,17 @@
             <div class="form-group">
                 <label for="username">メールアドレス</label>
                 <input type="email" id="username" name="username" required
+                       pattern=".+@example\.com$"
+                       title="メールアドレスは @example.com で終わる必要があります。"
                        placeholder="example@example.com" />
+                <p th:if="${emailError}" class="error-msg" th:text="${emailError}"></p>
             </div>
 
             <div class="form-group">
                 <label for="password">パスワード</label>
                 <input type="password" id="password" name="password" required
                        placeholder="パスワードを設定してください" />
+                <p th:if="${passwordError}" class="error-msg" th:text="${passwordError}"></p>
             </div>
 
             <input type="submit" value="アカウントを作成" class="btn-register" />

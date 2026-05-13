@@ -100,3 +100,35 @@ select {
     font-size: 0.9em;
     text-align: center;
 }
+
+.task_form a:hover {
+    text-decoration: underline !important;
+    color: #333 !important;
+}
+
+.footer-links {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+.footer-links a {
+    color: #666;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: #333;
+    text-decoration: underline;
+}
+
+/* エラーメッセージ用のスタイル */
+.error-msg {
+    color: #d9534f; /* 警告用の赤色 */
+    font-size: 0.85em;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-align: left; /* 左寄せにして入力欄に合わせる */
+}

@@ -24,12 +24,11 @@ public class SignupController {
 
     @GetMapping("/signup")
     public String displaySignup(Model model) {
+        // 部署と課のリストを取得して画面に渡す（メンバーの追加機能）
         List<Map<String, Object>> departments = dao.findAllDepartments();
         List<Map<String, Object>> sections = dao.findAllSections();
-
-        model.addAttribute("departments",departments);
-        model.addAttribute("sections",sections);
-
+        model.addAttribute("departments", departments);
+        model.addAttribute("sections", sections);
         return "signup";
     }
 
@@ -63,11 +62,40 @@ public class SignupController {
         if (Integer.valueOf(0).equals(sectionId) && !newSectionName.isBlank()) {
             targetSectionId = dao.addSection(newSectionName, targetDeptId);
         }
+        
+        boolean hasError = false;
+        // バリデーション
+        if (name.isBlank()) {
+            model.addAttribute("nameError", "名前を入力してください。");
+            hasError = true;
+        }
+
+        if (!email.endsWith("@example.com")) {
+            model.addAttribute("emailError", "メールアドレスは @example.com である必要があります。");
+            hasError = true;
+        } else if (dao.findUserByEmail(email) != null) {
+            model.addAttribute("emailError", "すでに登録されているメールアドレスです。");
+            hasError = true;
+        }
+
+        if (password.isBlank()) {
+            model.addAttribute("passwordError", "パスワードを入力してください。");
+            hasError = true;
+        }
+
+        // エラーがあれば、再度リストを取得して画面に戻す
+        if (hasError) {
+            List<Map<String, Object>> departments = dao.findAllDepartments();
+            List<Map<String, Object>> sections = dao.findAllSections();
+            model.addAttribute("departments", departments);
+            model.addAttribute("sections", sections);
+            return "signup";
+        }
         // パスワードを暗号化
         String encodedPassword = passwordEncoder.encode(password);
         // DBへ保存（TaskListDaoにこのメソッドがある前提です）
         dao.createUser(name, email, encodedPassword, targetSectionId);
 
-        return "redirect:/login";
+        return "redirect:/login?register_success";
     }
 }
