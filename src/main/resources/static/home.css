@@ -369,6 +369,14 @@ th:nth-child(4),
     align-items: center;
     padding: 5px 10px;
     margin-bottom: 20px;
+    flex-wrap: wrap; /* ★ 追加：中身が入りきらない時に次の行へ送る */
+}
+
+/* メッセージのスタイルを修正・追加 */
+.search-no-result {
+    width: 100%;    /* ★ 追加：横幅を100%にして、ボタンを強制的に2行目へ下げる */
+    margin-bottom: 10px; /* ボタンとの間に少し隙間を作る */
+    font-size: 1.1em;
 }
 
 .search-container {
