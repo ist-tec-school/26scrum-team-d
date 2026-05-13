@@ -41,7 +41,7 @@ public class SignupController {
 
         boolean hasError = false;
 
-        // 1. あなたのバリデーション（入力チェック）
+        // バリデーション
         if (name.isBlank()) {
             model.addAttribute("nameError", "名前を入力してください。");
             hasError = true;
@@ -69,7 +69,7 @@ public class SignupController {
             return "signup";
         }
 
-        // 2. メンバーの暗号化とDB保存
+        // 暗号化とDB保存
         String encodedPassword = passwordEncoder.encode(password);
         dao.createUser(name, email, encodedPassword);
 

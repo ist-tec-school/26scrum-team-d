@@ -17,7 +17,6 @@
     <div class="task_form">
         <h2>新規ユーザー登録</h2>
 
-
         <p th:if="${errorMessage}" class="error-text" th:text="${errorMessage}"></p>
 
         <form th:action="@{/signup}" method="post">
