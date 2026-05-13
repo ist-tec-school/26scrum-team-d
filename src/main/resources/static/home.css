@@ -122,9 +122,6 @@ button.btn-logout {
     background-color: #f4f7f6; /* 見出しに色をつける */
 }
 
-/* 各列の幅を指定（合計で100%になるように調整、またはpx指定） */
-
-/* プロジェクト列 */
 th:nth-child(2) { width: 20%;
 }
 
@@ -132,9 +129,6 @@ th:nth-child(2) { width: 20%;
 th:nth-child(3) { width: 17%;
 }
 
-/* --- 担当者列（4番目）の折りたたみ・共通化設定 --- */
-
-/* 判定用の目印があるセルを指マークにする */
 .tasklist td:nth-child(4).has-overflow {
     cursor: pointer;
 }
