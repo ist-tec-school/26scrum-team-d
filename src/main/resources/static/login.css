@@ -126,3 +126,31 @@ input[type="text"] {
     text-align: center;
     border: 1px solid #c8e6c9;
 }
+
+/* 新規ユーザーURL */
+
+.signup-link-container {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.btn-signup {
+    display: inline-block;
+    width: 100%;
+    padding: 10px;
+    /* ボタンを枠線のみ（アウトライン）のデザインにすることで、ログインボタンと差別化 */
+    background-color: transparent;
+    color: #333;
+    border: 1px solid #333;
+    border-radius: 4px;
+    font-size: 14px;
+    text-decoration: none; /* 下線を消す */
+    box-sizing: border-box;
+    transition: all 0.3s;
+}
+
+.btn-signup:hover {
+    background-color: #f4f7f6; /* 背景を少しグレーに */
+    color: #000;
+    border-color: #000;
+}
