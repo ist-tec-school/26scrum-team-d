@@ -14,14 +14,6 @@ import java.util.Map;
 @Controller
 public class SignupController {
     private final TaskListDao dao;
-
-    @Autowired // コンストラクタでインジェクション
-    public SignupController(TaskListDao dao) {
-        this.dao = dao;
-    }
-
-    // ★ 道具（Bean）を受け取るための準備
-    private final TaskListDao dao;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -44,11 +36,37 @@ public class SignupController {
     @PostMapping("/signup")
     public String signup(@RequestParam String name,
                          @RequestParam("username") String email,
-                         @RequestParam String password) {
+                         @RequestParam String password,
+                         @RequestParam Integer deptId,
+                         @RequestParam(required = false)String newDepartmentName,
+                         @RequestParam Integer sectionId,
+                         @RequestParam(required = false)String newSectionName,
+                         Model model) {
+        if (Integer.valueOf(0).equals(deptId) && !newDepartmentName.isBlank()) {
+            if (dao.findDeptIdByName(newDepartmentName) != null) {
+                model.addAttribute("errorMessage", "その部署は既に登録されています。");
+                return displaySignup(model);
+            }
+        }
+        Integer targetDeptId = deptId;
+        if (Integer.valueOf(0).equals(deptId) && !newDepartmentName.isBlank()) {
+            targetDeptId = dao.addDepartment(newDepartmentName);
+        }
+
+        if (Integer.valueOf(0).equals(sectionId) && !newSectionName.isBlank()) {
+            if (dao.findSectionIdByName(newSectionName, targetDeptId) != null) {
+                model.addAttribute("errorMessage", "その課は指定された部署内に既に登録されています。");
+                return displaySignup(model);
+            }
+        }
+        Integer targetSectionId = sectionId;
+        if (Integer.valueOf(0).equals(sectionId) && !newSectionName.isBlank()) {
+            targetSectionId = dao.addSection(newSectionName, targetDeptId);
+        }
         // パスワードを暗号化
         String encodedPassword = passwordEncoder.encode(password);
         // DBへ保存（TaskListDaoにこのメソッドがある前提です）
-        dao.createUser(name, email, encodedPassword);
+        dao.createUser(name, email, encodedPassword, targetSectionId);
 
         return "redirect:/login";
     }
