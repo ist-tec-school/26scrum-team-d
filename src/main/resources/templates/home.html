@@ -49,10 +49,19 @@
             </option>
         </select>
         <input type="hidden" name="newProjectName" id="add_newProjectName_hidden">
+        <div id="project_name_warn" style="color: red; font-size: 0.8em; display: none;">
+            プロジェクト名は50文字以内で入力してください。
+        </div>
         <label>タスク</label>
         <input name="task" type="text"
-               th:value="${taskItem?.task}" required/>
+               th:value="${taskItem?.task}" required
+               oninput="checkTaskLength(this, 'add_task_warn')"/>
+
+        <div id="add_task_warn">
+            タスク名は255文字以内で入力してください。
+        </div>
         <label>担当者</label>
+
         <select name="taskUserIds" id="add_task_user" multiple>
             <option th:each="user : ${userList}"
                     th:value="${user.USER_ID}"
@@ -240,9 +249,14 @@
                         th:selected="${project.id == updateItem?.projectId}"></option>
             </select>
             <input type="hidden" name="newProjectName" id="update_newProjectName_hidden">
-            <label>タスク</label>
+            <<label>タスク</label>
             <input id="update_task" name="task" type="text"
-                   th:value="${updateItem?.task}" required/>
+                   th:value="${updateItem?.task}" required
+                   oninput="checkTaskLength(this,'update_task_warn')"/>
+
+            <div id="update_task_warn">
+                タスク名は255文字以内で入力してください。
+            </div>
             <label>担当者</label>
             <select id="update_user" name="taskUserIds" multiple>
                 <option th:each="user : ${userList}"
@@ -259,7 +273,7 @@
 
             <label>説明</label>
             <textarea name="description" id="update_description" rows="4" maxlength="200"
-                      th:value="${updateItem?.description}"/></textarea>
+                      th:text="${updateItem?.description}"></textarea>
             <div id="update_count">0 / 200</div>
 
             <label>状態</label>

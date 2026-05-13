@@ -62,7 +62,7 @@ public class SignupController {
         if (Integer.valueOf(0).equals(sectionId) && !newSectionName.isBlank()) {
             targetSectionId = dao.addSection(newSectionName, targetDeptId);
         }
-        
+
         boolean hasError = false;
         // バリデーション
         if (name.isBlank()) {

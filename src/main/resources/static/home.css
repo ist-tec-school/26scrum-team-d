@@ -88,6 +88,10 @@ button.btn-logout {
 .task_form input[type="date"], select {
     width: 200px;
 }
+.task_form select{
+    width:100%;
+    box-sizing: border-box;
+}
 
 .btn-register {
     background-color: #B0E0E6;
@@ -672,4 +676,33 @@ input:invalid:focus {
     color: #333;
     margin-top: 5px;    /* テキストエリアとの距離を詰める（お好みで） */
     margin-bottom: 15px; /* 下のボタンとの間隔 */
+}
+
+.error-message-space {
+    grid-column: 2;          /* 入力欄と同じ列に配置 */
+    color: red;
+    font-size: 0.8em;
+    height: 1.2em;           /* 1行分の高さを固定で確保 */
+    margin-bottom: 5px;
+    visibility: hidden;      /* ★最初は非表示（でも場所は取っておく） */
+}
+
+/* 警告が出た時 */
+.error-message-space.show {
+    visibility: visible;     /* ★表示する */
+}
+/* 警告エリアの場所をあらかじめ固定する */
+#add_task_warn, #update_task_warn {
+    grid-column: 2;          /* 入力欄と同じ列 */
+    color: red;
+    font-size: 0.8em;
+    height: 1.2em;           /* ★1行分の高さを常にキープ */
+    margin-top: 2px;
+    margin-bottom: 5px;
+    visibility: hidden;      /* ★初期状態は透明（場所は取っている） */
+}
+
+/* クラス「show」がついた時だけ見えるようにする */
+#add_task_warn.show, #update_task_warn.show {
+    visibility: visible;     /* ★表示する */
 }
