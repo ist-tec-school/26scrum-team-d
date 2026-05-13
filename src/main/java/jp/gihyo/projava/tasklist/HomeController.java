@@ -209,8 +209,4 @@ public class HomeController {
     public String login() {
         return "login";
     }
-    @GetMapping("/signup")
-    public String showSignupPage() {
-        return "signup";
-    }
 }
