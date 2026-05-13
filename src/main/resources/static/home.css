@@ -79,6 +79,10 @@ button.btn-logout {
 .task_form input[type="date"], select {
     width: 200px;
 }
+.task_form select{
+    width:100%;
+    box-sizing: border-box;
+}
 
 .btn-register {
     background-color: #B0E0E6;
