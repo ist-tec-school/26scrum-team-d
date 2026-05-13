@@ -6,6 +6,7 @@
     <link th:href="@{/login.css}" rel="stylesheet">
     <link th:href="@{/signup.css}" rel="stylesheet">
     <script th:inline="javascript">
+        /* 1行解説：Java側から渡された全ての「課」のデータをJavaScript変数に代入します。 */
         const allSections = /*[[${sections}]]*/[];
     </script>
     <script th:src="@{/signup.js}" defer></script>
@@ -14,66 +15,71 @@
 <div class="login-container">
     <h1>タスク管理アプリケーション</h1>
 
-        <div class="task_form">
-            <div class="form_header">
-                <h2>新規ユーザー登録</h2>
+    <div class="task_form">
+        <div class="form_header">
+            <h2>新規ユーザー登録</h2>
         </div>
 
         <div class="form_body">
-        <p th:if="${errorMessage}" class="error-text" th:text="${errorMessage}"></p>
+            <p th:if="${errorMessage}" class="error-text" th:text="${errorMessage}"></p>
 
-        <form th:action="@{/signup}" method="post">
-            <div class="form-group">
-                <label for="name">名前</label>
-                <input type="text" id="name" name="name" required placeholder="山田 太郎" />
-                <p th:if="${nameError}" class="error-msg" th:text="${nameError}"></p>
+            <form th:action="@{/signup}" method="post">
+                <div class="form-group">
+                    <label for="name">名前</label>
+                    <input type="text" id="name" name="name" required placeholder="山田 太郎" />
+                    <p th:if="${nameError}" class="error-msg" th:text="${nameError}"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="department">部署</label>
+                    <select id="department" name="deptId" required onchange="handleDeptChange(this)">
+                        <option value="">部署を選択してください</option>
+                        <option th:each="dept : ${departments}"
+                                th:value="${dept.DEPT_ID}"
+                                th:text="${dept.DEPT_NAME}"></option>
+                        <option value="0">+ 部署を新規で登録</option>
+                    </select>
+                    <p th:if="${deptError}" class="error-msg" th:text="${deptError}"></p>
+
+                    <input type="text" id="newDepartmentName" name="newDepartmentName"
+                           placeholder="新しい部署名を入力" style="display:none; margin-top:10px;" class="form-control" autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label for="section">課</label>
+                    <select id="section" name="sectionId" required disabled onchange="handleSectionChange(this)">
+                        <option value="">先に部署を選択してください</option>
+                    </select>
+                    <p th:if="${sectionError}" class="error-msg" th:text="${sectionError}"></p>
+
+                    <input type="text" id="newSectionName" name="newSectionName"
+                           placeholder="新しい課名を入力" style="display:none; margin-top:10px;" class="form-control" autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label for="username">メールアドレス</label>
+                    <input type="email" id="username" name="username" required
+                           pattern=".+@example\.com$"
+                           title="メールアドレスは @example.com で終わる必要があります。"
+                           placeholder="example@example.com" />
+                    <p th:if="${emailError}" class="error-msg" th:text="${emailError}"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">パスワード</label>
+                    <input type="password" id="password" name="password" required
+                           placeholder="パスワードを設定してください" />
+                    <p th:if="${passwordError}" class="error-msg" th:text="${passwordError}"></p>
+                </div>
+
+                <input type="submit" value="アカウントを作成" class="btn-register" />
+            </form>
+
+            <div class="footer-links">
+                <a th:href="@{/login}">← ログイン画面に戻る</a>
             </div>
-            <div class="form-group">
-                <label for="department">部署</label>
-                <select id="department" name="deptId" required onchange="handleDeptChange(this)">
-                    <option value="">部署を選択してください</option>
-                    <option th:each="dept : ${departments}"
-                            th:value="${dept.DEPT_ID}"
-                            th:text="${dept.DEPT_NAME}"></option>
-                    <option value="0">+ 部署を新規で登録</option>
-                </select>
-                <input type="text" id="newDepartmentName" name="newDepartmentName"
-                       placeholder="新しい部署名を入力" style="display:none; margin-top:10px;" class="form-control" autocomplete="off">
-            </div>
-
-            <div class="form-group">
-                <label for="section">課</label>
-                <select id="section" name="sectionId" required disabled onchange="handleSectionChange(this)">
-                    <option value="">先に部署を選択してください</option>
-                </select>
-                <input type="text" id="newSectionName" name="newSectionName"
-                       placeholder="新しい課名を入力" style="display:none; margin-top:10px;" class="form-control" autocomplete="off">
-            </div>
-
-            <div class="form-group">
-                <label for="username">メールアドレス</label>
-                <input type="email" id="username" name="username" required
-                       pattern=".+@example\.com$"
-                       title="メールアドレスは @example.com で終わる必要があります。"
-                       placeholder="example@example.com" />
-                <p th:if="${emailError}" class="error-msg" th:text="${emailError}"></p>
-            </div>
-
-            <div class="form-group">
-                <label for="password">パスワード</label>
-                <input type="password" id="password" name="password" required
-                       placeholder="パスワードを設定してください" />
-                <p th:if="${passwordError}" class="error-msg" th:text="${passwordError}"></p>
-            </div>
-
-            <input type="submit" value="アカウントを作成" class="btn-register" />
-        </form>
-
-        <div class="footer-links">
-            <a th:href="@{/login}">← ログイン画面に戻る</a>
         </div>
     </div>
-    </div>
-    </div>
+</div>
 </body>
 </html>

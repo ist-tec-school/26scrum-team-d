@@ -32,70 +32,71 @@ public class SignupController {
         return "signup";
     }
 
+    // SignupController.java の signup メソッドを以下のように修正・追記します
+
     @PostMapping("/signup")
     public String signup(@RequestParam String name,
                          @RequestParam("username") String email,
                          @RequestParam String password,
                          @RequestParam Integer deptId,
-                         @RequestParam(required = false)String newDepartmentName,
+                         @RequestParam(required = false) String newDepartmentName,
                          @RequestParam Integer sectionId,
-                         @RequestParam(required = false)String newSectionName,
+                         @RequestParam(required = false) String newSectionName,
                          Model model) {
-        if (Integer.valueOf(0).equals(deptId) && !newDepartmentName.isBlank()) {
-            if (dao.findDeptIdByName(newDepartmentName) != null) {
-                model.addAttribute("errorMessage", "その部署は既に登録されています。");
-                return displaySignup(model);
-            }
-        }
-        Integer targetDeptId = deptId;
-        if (Integer.valueOf(0).equals(deptId) && !newDepartmentName.isBlank()) {
-            targetDeptId = dao.addDepartment(newDepartmentName);
+
+        boolean hasError = false; // エラーがあるかどうかを判定するフラグです。
+
+        // --- 1. 部署のバリデーション ---
+        if (deptId == null) { // 1行解説：部署が選択されていない（null）場合をチェックします。
+            model.addAttribute("deptError", "部署を選択してください。"); // 1行解説：画面に表示するエラーメッセージをセットします。
+            hasError = true; // 1行解説：エラーがあったのでフラグを「真(true)」にします。
+        } else if (deptId == 0 && (newDepartmentName == null || newDepartmentName.isBlank())) { // 1行解説：「新規登録」を選んだのに名前が空の場合をチェックします。
+            model.addAttribute("deptError", "新しい部署名を入力してください。"); // 1行解説：部署名未入力のエラーメッセージをセットします。
+            hasError = true; // 1行解説：エラーフラグを立てます。
         }
 
-        if (Integer.valueOf(0).equals(sectionId) && !newSectionName.isBlank()) {
-            if (dao.findSectionIdByName(newSectionName, targetDeptId) != null) {
-                model.addAttribute("errorMessage", "その課は指定された部署内に既に登録されています。");
-                return displaySignup(model);
-            }
-        }
-        Integer targetSectionId = sectionId;
-        if (Integer.valueOf(0).equals(sectionId) && !newSectionName.isBlank()) {
-            targetSectionId = dao.addSection(newSectionName, targetDeptId);
-        }
-        
-        boolean hasError = false;
-        // バリデーション
-        if (name.isBlank()) {
-            model.addAttribute("nameError", "名前を入力してください。");
-            hasError = true;
+        // --- 2. 課のバリデーション ---
+        if (sectionId == null) { // 1行解説：課が選択されていない場合をチェックします。
+            model.addAttribute("sectionError", "課を選択してください。"); // 1行解説：課の選択を促すメッセージをセットします。
+            hasError = true; // 1行解説：エラーフラグを立てます。
+        } else if (sectionId == 0 && (newSectionName == null || newSectionName.isBlank())) { // 1行解説：「新規登録」を選んだのに課の名前が空の場合をチェックします。
+            model.addAttribute("sectionError", "新しい課名を入力してください。"); // 1行解説：課名未入力のエラーメッセージをセットします。
+            hasError = true; // 1行解説：エラーフラグを立てます。
         }
 
-        if (!email.endsWith("@example.com")) {
-            model.addAttribute("emailError", "メールアドレスは @example.com である必要があります。");
-            hasError = true;
-        } else if (dao.findUserByEmail(email) != null) {
+        // --- 3. メールアドレスのバリデーション (@example.com 限定) ---
+        if (!email.endsWith("@example.com")) { // 1行解説：入力されたメールが「@example.com」で終わっていないか判定します。
+            model.addAttribute("emailError", "メールアドレスは @example.com である必要があります。"); // 1行解説：ドメイン制限のエラーメッセージをセットします。
+            hasError = true; // 1行解説：エラーフラグを立てます。
+        }
+
+        // 1行解説：★独立したチェックにするか、上のelseとして繋げますが、保存処理との連動が重要です。
+        if (dao.findUserByEmail(email) != null) {
             model.addAttribute("emailError", "すでに登録されているメールアドレスです。");
             hasError = true;
         }
 
-        if (password.isBlank()) {
-            model.addAttribute("passwordError", "パスワードを入力してください。");
-            hasError = true;
+        // --- 4. 名前とパスワードの既存バリデーション ---
+        if (name.isBlank()) { // 1行解説：名前が空でないかチェックします。
+            model.addAttribute("nameError", "名前を入力してください。"); // 1行解説：エラーメッセージをセットします。
+            hasError = true; // 1行解説：エラーフラグを立てます。
+        }
+        if (password.isBlank()) { // 1行解説：パスワードが空でないかチェックします。
+            model.addAttribute("passwordError", "パスワードを入力してください。"); // 1行解説：エラーメッセージをセットします。
+            hasError = true; // 1行解説：エラーフラグを立てます。
         }
 
-        // エラーがあれば、再度リストを取得して画面に戻す
-        if (hasError) {
-            List<Map<String, Object>> departments = dao.findAllDepartments();
-            List<Map<String, Object>> sections = dao.findAllSections();
-            model.addAttribute("departments", departments);
-            model.addAttribute("sections", sections);
-            return "signup";
+        // エラーがある場合は、入力画面に戻す
+        if (hasError) { // 1行解説：一つでもエラーがあれば、この中に入ります。
+            List<Map<String, Object>> departments = dao.findAllDepartments(); // 1行解説：プルダウンを再表示するために部署リストを取得します。
+            List<Map<String, Object>> sections = dao.findAllSections(); // 1行解説：同様に課のリストを取得します。
+            model.addAttribute("departments", departments); // 1行解説：取得したリストを画面に渡します。
+            model.addAttribute("sections", sections); // 1行解説：取得したリストを画面に渡します。
+            return "signup"; // 1行解説：登録処理は行わず、新規登録画面を再度表示します。
         }
-        // パスワードを暗号化
-        String encodedPassword = passwordEncoder.encode(password);
-        // DBへ保存（TaskListDaoにこのメソッドがある前提です）
-        dao.createUser(name, email, encodedPassword, targetSectionId);
 
-        return "redirect:/login?register_success";
+        // --- エラーがなければ保存処理へ ---
+        // (省略：dao.addDepartment や dao.createUser などの既存処理)
+        return "redirect:/login?register"; // 1行解説：すべて成功したらログイン画面へリダイレクトします。
     }
 }
