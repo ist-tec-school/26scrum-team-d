@@ -15,6 +15,7 @@
         </div>
 
         <div class="form_body">
+            <p th:if="${signupSuccess}" class="success-text" th:text="${signupSuccess}"></p>
         <p th:if="${param.error}" class="error-text">
             IDまたはパスワードが正しくありません。
         </p>

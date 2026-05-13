@@ -17,7 +17,7 @@
 
     <div class="logout-area">
         <form th:action="@{/logout}" method="post">
-            <button type="submit" class="btn-logout">
+            <button type="submit" class="btn-base btn-white btn-logout">
                 ログアウト
                 <span class="material-symbols-outlined">exit_to_app</span>
             </button>
@@ -74,7 +74,7 @@
             <option value="1">対応中</option>
             <option value="3">完了</option>
         </select>
-        <input type="submit" value="登録" class="btn-register"/>
+        <input type="submit" value="登録" class="btn-base btn-primary btn-register"/>
     </form>
 </div>
 
@@ -138,9 +138,13 @@
 
     <div class="search_area">
         <input type="text" name="keyword" th:value="${keyword}" placeholder="検索ワード タスクを検索できます。">
-        <button type="submit" class="search-button">検索</button>
+        <button type="submit" class="btn-base btn-primary search-button">検索</button>
 
-        <a th:href="@{/list#task-list-top(scope='mine', status='working_group', projectId='all', deptId='all', sectionId='all', keyword='')}" class="reset-button">
+        <a th:href="@{/list#task-list-top(scope='mine',
+                    status='working_group',
+                    projectId='all', deptId='all',
+                    sectionId='all', keyword='')}"
+                    class="btn-base btn-primary reset-button">
             条件をリセット
         </a>
 
