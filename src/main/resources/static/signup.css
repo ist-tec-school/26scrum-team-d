@@ -30,3 +30,13 @@
     color: #333;
     text-decoration: underline;
 }
+
+/* エラーメッセージ用のスタイル */
+.error-msg {
+    color: #d9534f; /* 警告用の赤色 */
+    font-size: 0.85em;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-align: left; /* 左寄せにして入力欄に合わせる */
+}
