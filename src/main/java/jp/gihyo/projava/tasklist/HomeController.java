@@ -44,10 +44,11 @@ public class HomeController {
 
     private List<TaskItem> taskItems = new ArrayList<>();
     private final TaskListDao dao;
-
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
     @Autowired
-    HomeController(TaskListDao dao) {
+    HomeController(TaskListDao dao, org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
         this.dao = dao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/list")
@@ -205,8 +206,28 @@ public class HomeController {
         dao.update(updateData);
         return "redirect:/list#task-list-top";
     }
+    // ★ 新規登録画面を表示するメソッドを追加
+    @GetMapping("/signup")
+    public String signupForm() {
+        return "signup"; // templates/signup.html を呼び出す
+    }
+
+    // ★ 登録処理を行うメソッドを追加
+    @PostMapping("/signup")
+    public String signup(@RequestParam String name,
+                         @RequestParam String email,
+                         @RequestParam String password) {
+        // パスワードを暗号化
+        String encodedPassword = passwordEncoder.encode(password);
+        // DBへ保存
+        dao.createUser(name, email, encodedPassword);
+        // ログイン画面へリダイレクト
+        return "redirect:/login";
+    }
+
     @GetMapping("/login")
     public String login() {
         return "login";
     }
 }
+
