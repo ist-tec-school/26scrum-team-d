@@ -44,10 +44,11 @@ public class HomeController {
 
     private List<TaskItem> taskItems = new ArrayList<>();
     private final TaskListDao dao;
-
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
     @Autowired
-    HomeController(TaskListDao dao) {
+    HomeController(TaskListDao dao, org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
         this.dao = dao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/list")
@@ -62,11 +63,13 @@ public class HomeController {
 
         // ★ログイン中のメールアドレスから、DB上のユーザー情報を取得してIDを取り出す
         Map<String, Object> user = dao.findUserByEmail(userDetails.getUsername());
-        Integer currentUserId = (Integer) user.get("USER_ID");
+        Integer currentUserId = (Integer) user.get("user_id");
+        String loginUserName = (String) user.get("name");
 
         List<TaskItem> taskItems = dao.findByCondition(status, projectId, deptId, sectionId, keyword, scope, currentUserId);
 
         // 2. 画面（Thymeleaf）に渡すデータをセット
+        model.addAttribute("loginUserName", loginUserName);
         model.addAttribute("taskList", taskItems);
         model.addAttribute("userList", dao.findAllUsers());
         model.addAttribute("projectList", dao.findAllProjects());
@@ -205,8 +208,11 @@ public class HomeController {
         dao.update(updateData);
         return "redirect:/list#task-list-top";
     }
+
+
     @GetMapping("/login")
     public String login() {
         return "login";
     }
 }
+
