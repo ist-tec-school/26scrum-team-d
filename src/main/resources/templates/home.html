@@ -171,16 +171,19 @@
             <td class="hidden" th:text="${task.id}"></td>
             <td th:text="${task.projectName}" th:data-project-id="${task.projectId}">プロジェクト名</td>
             <td th:text="${task.task}"></td>
-            <td th:data-user-ids="${task.taskUserIds}">
-                <span th:each="uid,stat : ${task.taskUserIds}">
-                    <span th:each="user : ${userList}"
-                          th:if="${user.USER_ID == uid}"
-                          th:text="${user.NAME} + ${!stat.last ? ', ' : ''}">
-                    </span>
-                </span>
+            <td class="user-cell" th:data-user-ids="${task.taskUserIds}">
+                <th:block th:each="uid : ${task.taskUserIds}">
+                    <div th:each="user : ${userList}"
+                         th:if="${user.USER_ID == uid}"
+                         th:text="${user.NAME}">
+                    </div>
+                </th:block>
+                <div th:if="${#lists.isEmpty(task.taskUserIds)}">-</div>
             </td>
             <td th:text="${task.deadline}"></td>
-            <td th:text="${task.description}"></td>
+            <td>
+                <div class="desc-text" th:text="${task.description}"></div>
+            </td>
             <td th:switch="${task.done}"
                 class="status-common"
                 th:classappend="${task.done == 0} ?
