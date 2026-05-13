@@ -100,8 +100,8 @@ input[type="password"] {
 
 /* ログアウトボタン */
 .success-text {
-    color: #2e7d32;      /* 濃い緑色（成功の色） */
-    background-color: #e8f5e9; /* 薄い緑の背景 */
+    color: #2e7d32;
+    background-color: #e8f5e9;
     padding: 10px;
     border-radius: 4px;
     margin-bottom: 20px;
