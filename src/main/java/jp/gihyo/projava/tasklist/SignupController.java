@@ -14,13 +14,6 @@ import java.util.Map;
 @Controller
 public class SignupController {
     private final TaskListDao dao;
-
-    @Autowired // コンストラクタでインジェクション
-    public SignupController(TaskListDao dao) {
-        this.dao = dao;
-    }
-
-    // ★ 道具（Bean）を受け取るための準備
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -31,6 +24,7 @@ public class SignupController {
 
     @GetMapping("/signup")
     public String displaySignup(Model model) {
+        // 部署と課のリストを取得して画面に渡す（メンバーの追加機能）
         List<Map<String, Object>> departments = dao.findAllDepartments();
         List<Map<String, Object>> sections = dao.findAllSections();
         model.addAttribute("departments", departments);
