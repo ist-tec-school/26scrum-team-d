@@ -1,14 +1,46 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head><title>新規登録</title></head>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>新規登録 - タスク管理アプリケーション</title>
+    <link th:href="@{/login.css}" rel="stylesheet">
+    <link th:href="@{/signup.css}" rel="stylesheet">
+</head>
 <body>
-<h2>ユーザー新規登録</h2>
-<form th:action="@{/signup}" method="post">
-    名前: <input type="text" name="name" required><br>
-    メール: <input type="email" name="email" required><br>
-    パスワード: <input type="password" name="password" required><br>
-    <button type="submit">登録</button>
-</form>
-<a th:href="@{/login}">ログイン画面へ</a>
+<div class="login-container">
+    <h1>タスク管理アプリケーション</h1>
+
+    <div class="task_form">
+        <h2>新規ユーザー登録</h2>
+
+        <p th:if="${errorMessage}" class="error-text" th:text="${errorMessage}"></p>
+
+        <form th:action="@{/signup}" method="post">
+            <div class="form-group">
+                <label for="name">名前</label>
+                <input type="text" id="name" name="name" required
+                       placeholder="山田 太郎" />
+            </div>
+
+            <div class="form-group">
+                <label for="username">メールアドレス</label>
+                <input type="email" id="username" name="username" required
+                       placeholder="example@example.com" />
+            </div>
+
+            <div class="form-group">
+                <label for="password">パスワード</label>
+                <input type="password" id="password" name="password" required
+                       placeholder="パスワードを設定してください" />
+            </div>
+
+            <input type="submit" value="アカウントを作成" class="btn-register" />
+        </form>
+
+        <div class="footer-links">
+            <a th:href="@{/login}">← ログイン画面に戻る</a>
+        </div>
+    </div>
+</div>
 </body>
 </html>

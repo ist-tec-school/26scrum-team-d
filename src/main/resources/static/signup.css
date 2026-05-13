@@ -1,0 +1,32 @@
+
+.error-text {
+    color: #d9534f;
+    background-color: #f2dede;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: 0.9em;
+    text-align: center;
+}
+
+.task_form a:hover {
+    text-decoration: underline !important;
+    color: #333 !important;
+}
+
+.footer-links {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+.footer-links a {
+    color: #666;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: #333;
+    text-decoration: underline;
+}
