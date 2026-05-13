@@ -7,7 +7,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+<<<<<<< feature/TEAMD-7_TEAMD-123
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+=======
 import org.springframework.transaction.annotation.Transactional;
+>>>>>>> development
 
 import java.util.List;
 import java.util.Map;
@@ -42,6 +46,7 @@ public class SignupController {
                          @RequestParam(required = false)String newDepartmentName,
                          @RequestParam Integer sectionId,
                          @RequestParam(required = false)String newSectionName,
+                         RedirectAttributes redirectAttributes,
                          Model model) {
         if (Integer.valueOf(0).equals(deptId) && !newDepartmentName.isBlank()) {
             if (dao.findDeptIdByName(newDepartmentName) != null) {
@@ -98,6 +103,7 @@ public class SignupController {
         // DBへ保存（TaskListDaoにこのメソッドがある前提です）
         dao.createUser(name, email, encodedPassword, targetSectionId);
 
-        return "redirect:/login?register_success";
+        redirectAttributes.addFlashAttribute("signupSuccess", "新しいユーザーを作成しました");
+        return "redirect:/login";
     }
 }
