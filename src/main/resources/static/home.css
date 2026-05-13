@@ -125,14 +125,19 @@ button.btn-logout {
 /* 各列の幅を指定（合計で100%になるように調整、またはpx指定） */
 
 /* プロジェクト列 */
-th:nth-child(2) { width: 20%;
+th:nth-child(2) { width: 15%;
 }
 
 /* タスク列 */
-th:nth-child(3) { width: 17%;
+th:nth-child(3) { width: 12%;
 }
 
-/* --- 担当者列（4番目）の折りたたみ・共通化設定 --- */
+/* ★ここを追加（例：10%に広げる場合） */
+th:nth-child(4),
+.tasklist td:nth-child(4) {
+    width: 10% !important;
+}
+
 
 /* 判定用の目印があるセルを指マークにする */
 .tasklist td:nth-child(4).has-overflow {
@@ -180,7 +185,7 @@ th:nth-child(3) { width: 17%;
 }
 
 .tasklist td:nth-child(6) {
-    width: 30%;
+    width: 40%;
     min-width: auto;
 }
 

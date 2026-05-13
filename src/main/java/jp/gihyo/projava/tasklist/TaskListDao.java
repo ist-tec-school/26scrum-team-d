@@ -1,18 +1,8 @@
-/*
-「プロになるJava」サンプル
-https://gihyo.jp/book/2022/978-4-297-12685-8
-
-Takaaki Sugiyama 2022 copyright reserved.
-License: CC0 1.0 Universal
-*/
-
 package jp.gihyo.projava.tasklist;
 
 import jp.gihyo.projava.tasklist.HomeController.TaskItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 
 @Service
 public class TaskListDao {
@@ -39,7 +28,6 @@ public class TaskListDao {
                 taskItem.description(), taskItem.deadline(), taskItem.done()
         );
 
-        // 2. 中間テーブルへの担当者登録
         if (taskItem.taskUserIds() != null) {
             for (Integer userId : taskItem.taskUserIds()) {
                 jdbcTemplate.update(
@@ -50,7 +38,6 @@ public class TaskListDao {
         }
     }
 
-    // --- フィルタリング用メソッド ---
     public List<TaskItem> findByCondition(String status, String projectId, String deptId, String sectionId, String keyword, String scope, Integer currentUserId) {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT DISTINCT t.*, p.project_name ");
@@ -68,13 +55,10 @@ public class TaskListDao {
             params.add(currentUserId);
         }
 
-        // findByCondition メソッド内の status 判定部分を修正
         if (!"all".equals(status)) {
             if ("working_group".equals(status)) {
-                // 未着手(0) または 対応中(1) を検索
                 sql.append(" AND (t.done = 0 OR t.done = 1)");
             } else {
-                // それ以外（完了:3 など）は数値として処理
                 sql.append(" AND t.done = ?");
                 params.add(Integer.parseInt(status));
             }
@@ -98,8 +82,8 @@ public class TaskListDao {
         if (keyword != null && !keyword.isBlank()) {
             sql.append(" AND (LOWER(t.task) LIKE LOWER(?) OR LOWER(p.project_name) LIKE LOWER(?) OR LOWER(u.name) LIKE LOWER(?))");
             String wildcardKeyword = "%" + keyword + "%";
-            params.add(wildcardKeyword); // task 用
-            params.add(wildcardKeyword); // u.name 用
+            params.add(wildcardKeyword);
+            params.add(wildcardKeyword);
             params.add(wildcardKeyword);
         }
 
@@ -109,10 +93,8 @@ public class TaskListDao {
         return mapToTaskItems(result);
     }
 
-    // --- マスターデータ取得用 ---
     public List<Map<String, Object>> findAllUsers() {
-        String query = "SELECT user_id, name FROM users";
-        return jdbcTemplate.queryForList(query);
+        return jdbcTemplate.queryForList("SELECT user_id, name FROM users");
     }
 
     public List<Map<String, Object>> findAllProjects() {
@@ -127,11 +109,6 @@ public class TaskListDao {
         return jdbcTemplate.queryForList("SELECT * FROM sections");
     }
 
-    public List<Map<String, Object>> findSectionsByDeptId(int deptId) {
-        return jdbcTemplate.queryForList("SELECT * FROM sections WHERE dept_id = ?", deptId);
-    }
-
-    // --- 更新・削除 ---
     public int delete(String id) {
         return jdbcTemplate.update("DELETE FROM tasklist WHERE id = ?", id);
     }
@@ -140,20 +117,12 @@ public class TaskListDao {
     public int update(TaskItem taskItem) {
         int number = jdbcTemplate.update(
                 "UPDATE tasklist SET task = ?, project_id = ?, description = ?, deadline = ?, done = ? WHERE id = ?",
-                taskItem.task(),
-                taskItem.projectId(),
-                taskItem.description(),
-                taskItem.deadline(),
-                taskItem.done(),
-                taskItem.id());
+                taskItem.task(), taskItem.projectId(), taskItem.description(), taskItem.deadline(), taskItem.done(), taskItem.id());
 
         jdbcTemplate.update("DELETE FROM task_assignments WHERE task_id = ?", taskItem.id());
         if (taskItem.taskUserIds() != null) {
             for (Integer userId : taskItem.taskUserIds()) {
-                jdbcTemplate.update(
-                        "INSERT INTO task_assignments (task_id, user_id) VALUES (?, ?)",
-                        taskItem.id(), userId
-                );
+                jdbcTemplate.update("INSERT INTO task_assignments (task_id, user_id) VALUES (?, ?)", taskItem.id(), userId);
             }
         }
         return number;
@@ -164,17 +133,21 @@ public class TaskListDao {
         SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("projects")
                 .usingGeneratedKeyColumns("project_id");
-        Number key = insert.executeAndReturnKey(parameters);
-        return key.intValue();
+        return insert.executeAndReturnKey(parameters).intValue();
     }
 
-    //メールアドレスでユーザーを検索するメソッド
     public Map<String, Object> findUserByEmail(String email) {
         String sql = "SELECT user_id AS user_id,name AS name, email AS email, password AS password FROM users WHERE email = ?";
         List<Map<String, Object>> users = jdbcTemplate.queryForList(sql, email);
         return users.isEmpty() ? null : users.get(0);
     }
-    // --- マッピング用 ---
+
+    // ユーザー保存ロジックを追加
+    public void createUser(String name, String email, String encodedPassword) {
+        String sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
+        jdbcTemplate.update(sql, name, email, encodedPassword);
+    }
+
     private List<TaskItem> mapToTaskItems(List<Map<String, Object>> result) {
         return result.stream()
                 .map((Map<String, Object> row) -> {

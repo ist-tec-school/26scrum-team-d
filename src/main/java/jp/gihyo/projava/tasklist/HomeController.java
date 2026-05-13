@@ -44,10 +44,11 @@ public class HomeController {
 
     private List<TaskItem> taskItems = new ArrayList<>();
     private final TaskListDao dao;
-
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
     @Autowired
-    HomeController(TaskListDao dao) {
+    HomeController(TaskListDao dao, org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
         this.dao = dao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/list")
@@ -207,8 +208,11 @@ public class HomeController {
         dao.update(updateData);
         return "redirect:/list#task-list-top";
     }
+
+
     @GetMapping("/login")
     public String login() {
         return "login";
     }
 }
+
