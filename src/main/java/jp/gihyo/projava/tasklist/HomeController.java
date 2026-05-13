@@ -18,6 +18,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Map;
@@ -33,11 +35,11 @@ import java.util.UUID;
 public class HomeController {
     record TaskItem(
             String id,
-            @NotBlank String task,
+            @NotBlank @Size(max= 255) String task,
             List<Integer> taskUserIds,
             Integer projectId,
             String projectName,
-            String description,
+            @Size(max=200)String description,
             @NotBlank String deadline,
             Integer done
     ) {}
@@ -111,17 +113,31 @@ public class HomeController {
                 isPastDate = true;
             }
         }
-        if (result.hasErrors()|| isPastDate) {
+
+        boolean isProjectNameTooLong = (newProjectName != null && newProjectName.length()>50);
+
+        if (result.hasErrors()|| isPastDate ||isProjectNameTooLong) {
             List<TaskItem> taskItems = dao.findByCondition(status, "all", "all", "all", keyword, "all", null);
             model.addAttribute("taskList", taskItems);
             model.addAttribute("userList", dao.findAllUsers());
             model.addAttribute("projectList", dao.findAllProjects());
             model.addAttribute("selectedStatus", status);
             model.addAttribute("keyword", keyword);
-            String msg = isPastDate ? "過去の日付は入力できません" : "必須事項が未入力です";
+            String msg = "入力内容に不備があります";
+            if(isPastDate){
+                msg = "過去の日付は入力できません";
+            } else if (isProjectNameTooLong) {
+                msg = "プロジェクト名が長すぎます（50文字以内）";
+            } else if (result.hasFieldErrors("task")) {
+                msg = "タスク名を入力してください（長すぎる場合もエラーになります）";
+            } else if (result.hasFieldErrors("description")) {
+                msg = "説明文は200文字以内で入力してください";
+            }
+
             model.addAttribute("errorMessage", msg);
             return "home";
         }
+
 
         // 3. 正常系のプロジェクト登録ロジック
         Integer targetProjectId = null;
@@ -155,8 +171,7 @@ public class HomeController {
 
     @PostMapping("/update")
     String updateItem(@Validated @ModelAttribute("taskItem") TaskItem item,
-                      BindingResult result,
-                      Model model,
+                      BindingResult result, Model model,
                       @RequestParam(value="projectId", required=false) Integer projectId,
                       @RequestParam(value="newProjectName", required=false) String newProjectName,
                       @RequestParam(value="status", defaultValue="all") String status,
@@ -165,12 +180,14 @@ public class HomeController {
         // 4. バリデーションエラーの判定
         boolean isPastDate = false;
         if (item.deadline() != null && !item.deadline().isEmpty()) {
-            java.time.LocalDate deadlineDate = java.time.LocalDate.parse(item.deadline());
-            if (deadlineDate.isBefore(java.time.LocalDate.now())) {
+            if (java.time.LocalDate.parse(item.deadline()).isBefore(java.time.LocalDate.now())){
                 isPastDate = true;
             }
         }
-        if (result.hasErrors()|| isPastDate) {
+
+        boolean isProjectNameTooLong = (newProjectName != null && newProjectName.length()>50);
+
+        if (result.hasErrors()|| isPastDate || isProjectNameTooLong ) {
             // リストの再取得（画面表示を維持するため）
             List<TaskItem> taskItems = dao.findByCondition(status, "all", "all", "all", keyword, "all", null);
             model.addAttribute("taskList", taskItems);
@@ -178,7 +195,17 @@ public class HomeController {
             model.addAttribute("projectList", dao.findAllProjects());
             model.addAttribute("selectedStatus", status);
             model.addAttribute("keyword", keyword);
-            String msg = isPastDate ? "過去の日付は指定できません。" : "必須事項を入力してください。";
+            // 4. ★追加：エラー内容を具体的に分岐
+            String msg = "入力内容に不備があります。";
+            if (isPastDate) {
+                msg = "過去の日付は指定できません。";
+            } else if (isProjectNameTooLong) {
+                msg = "プロジェクト名が長すぎます（50文字以内）";
+            } else if (result.hasFieldErrors("task")) {
+                msg = "タスク名が長すぎるか、未入力です";
+            } else if (result.hasFieldErrors("description")) {
+                msg = "説明文は200文字以内で入力してください";
+            }
             model.addAttribute("errorMessage", msg);
             // 5. ダイアログ制御用のフラグとメッセージ
             model.addAttribute("isUpdateError", true);

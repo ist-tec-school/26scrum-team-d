@@ -25,6 +25,18 @@ function updateCountLabel(areaId, countId) {
     countLabel.style.color = (len >= 200) ? 'red' : 'black';
 }
 
+function checkTaskLength(input,warnId) {
+    const warn = document.getElementById(warnId);
+    if(!warn) return;
+    if (input.value.length >= 255) {
+        warn.style.display = 'block';
+        input.style.borderColor ="red";
+    }else{
+        warn.style.display = 'none';
+        input.style.borderColor = '';
+    }
+}
+
 /**
  * 更新ダイアログを表示する
  */
@@ -81,14 +93,21 @@ function handleProjectChange(selectElement, hiddenInputId) {
     const hiddenInput = document.getElementById(hiddenInputId);
 
     if (selectedValue === '0') {
-        const newProjectName = prompt("新しいプロジェクト名を入力してください");
-        if (newProjectName && newProjectName.trim() !== "") {
-            const trimmedName = newProjectName.trim();
+        const inputName = prompt("新しいプロジェクト名を入力してください");
+        if (inputName && inputName.trim() !=="") {
+            const trimmedName = inputName.trim();
+
+            if (trimmedName.length > 50) {
+                alert("プロジェクト名が長すぎます（50文字以内）");
+                selectElement.value = "";
+                return;
+            }
             hiddenInput.value = trimmedName;
 
             const oldTemp = selectElement.querySelector('.temp-option');
             if (oldTemp) oldTemp.remove();
 
+            // 定義した trimmedName を使う
             const newOption = new Option(trimmedName, "0");
             newOption.classList.add('temp-option');
             selectElement.add(newOption, selectElement.options[2]);
