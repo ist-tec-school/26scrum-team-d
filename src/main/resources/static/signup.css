@@ -134,3 +134,11 @@ select {
     text-align: left; /* 左寄せにして入力欄に合わせる */
 }
 
+/* 必須項目のラベルに赤い * を追加 */
+label.required::after {
+    content: " *";
+    color: #d93025;
+    margin-left: 3px;
+    font-weight: bold;
+}
+
