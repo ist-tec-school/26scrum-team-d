@@ -159,8 +159,9 @@ public class HomeController {
         dao.delete(id);
 
         // パラメータを維持してリダイレクト
+        String encodedKeyword = java.net.URLEncoder.encode(keyword, java.nio.charset.StandardCharsets.UTF_8);
         return String.format("redirect:/list?scope=%s&status=%s&projectId=%s&deptId=%s&sectionId=%s&keyword=%s#task-list-top",
-                scope, status, projectId, deptId, sectionId, keyword);
+                scope, status, projectId, deptId, sectionId, encodedKeyword);
     }
 
     @PostMapping("/update")
