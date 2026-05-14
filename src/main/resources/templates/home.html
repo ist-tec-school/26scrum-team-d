@@ -17,7 +17,7 @@
 
     <div class="logout-area">
         <form th:action="@{/logout}" method="post">
-            <button type="submit" class="btn-logout">
+            <button type="submit" class="btn-base btn-white btn-logout">
                 ログアウト
                 <span class="material-symbols-outlined">exit_to_app</span>
             </button>
@@ -49,10 +49,19 @@
             </option>
         </select>
         <input type="hidden" name="newProjectName" id="add_newProjectName_hidden">
+        <div id="project_name_warn" style="color: red; font-size: 0.8em; display: none;">
+            プロジェクト名は50文字以内で入力してください。
+        </div>
         <label>タスク</label>
         <input name="task" type="text"
-               th:value="${taskItem?.task}" required/>
+               th:value="${taskItem?.task}" required
+               oninput="checkTaskLength(this, 'add_task_warn')"/>
+
+        <div id="add_task_warn">
+            タスク名は255文字以内で入力してください。
+        </div>
         <label>担当者</label>
+
         <select name="taskUserIds" id="add_task_user" multiple>
             <option th:each="user : ${userList}"
                     th:value="${user.USER_ID}"
@@ -74,7 +83,7 @@
             <option value="1">対応中</option>
             <option value="3">完了</option>
         </select>
-        <input type="submit" value="登録" class="btn-register"/>
+        <input type="submit" value="登録" class="btn-base btn-primary btn-register"/>
     </form>
 </div>
 
@@ -138,15 +147,15 @@
 
     <div class="search_area">
         <input type="text" name="keyword" th:value="${keyword}" placeholder="検索ワード タスクを検索できます。">
-        <button type="submit" class="search-button">検索</button>
+        <button type="submit" class="btn-base btn-primary search-button">検索</button>
 
-        <a th:href="@{/list#task-list-top(scope='mine', status='working_group', projectId='all', deptId='all', sectionId='all', keyword='')}" class="reset-button">
+        <a th:href="@{/list#task-list-top(scope='mine',
+                    status='working_group',
+                    projectId='all', deptId='all',
+                    sectionId='all', keyword='')}"
+                    class="btn-base btn-primary reset-button">
             条件をリセット
         </a>
-
-        <div th:if="${#lists.isEmpty(taskList) and (keyword != null and keyword != '')}" class="no-result-message">
-            <p> 「<span th:text="${keyword}"></span>」での検索結果 — 0件です —</p>
-        </div>
     </div>
 
 </form>
@@ -156,7 +165,8 @@
         <thead>
         <tr>
             <th class="hidden">ID</th>
-            <th>プロジェクト</th> <th>タスク</th>
+            <th>プロジェクト</th>
+            <th>タスク</th>
             <th>担当者</th>
             <th>期限</th>
             <th>説明</th>
@@ -220,9 +230,14 @@
     </table>
 </div>
 
-<div th:if="${#lists.isEmpty(taskList)}" style="text-align: center; margin-top: 20px; color: #666;">
-    <p>現在タスクはありません。</p>
-</div>
+    <div th:if="${keyword != null and !keyword.isEmpty() and #lists.size(taskList) == 0}"
+         class="no-result-message">
+        <p> 「<span th:text="${keyword}"></span>」での検索結果 — 0件です —</p>
+    </div>
+    <div th:if="${keyword.isEmpty() and #lists.size(taskList) == 0}"
+         class="status-0message">
+        <p>現在タスクはありません。</p>
+    </div>
 
 
  <div id="updateDialog">
@@ -252,9 +267,13 @@
                         th:selected="${project.id == updateItem?.projectId}"></option>
             </select>
             <input type="hidden" name="newProjectName" id="update_newProjectName_hidden">
-            <label>タスク</label>
-            <input id="update_task" name="task" type="text"
-                   th:value="${updateItem?.task}" required/>
+            <label>タスク</label><input id="update_task" name="task" type="text"
+                   th:value="${updateItem?.task}" required
+                   oninput="checkTaskLength(this,'update_task_warn')"/>
+
+            <div id="update_task_warn" class="error-message-space">
+                タスク名は255文字以内で入力してください。
+            </div>
             <label>担当者</label>
             <select id="update_user" name="taskUserIds" multiple>
                 <option th:each="user : ${userList}"
@@ -271,7 +290,7 @@
 
             <label>説明</label>
             <textarea name="description" id="update_description" rows="4" maxlength="200"
-                      th:value="${updateItem?.description}"/></textarea>
+                      th:text="${updateItem?.description}"></textarea>
             <div id="update_count">0 / 200</div>
 
             <label>状態</label>
