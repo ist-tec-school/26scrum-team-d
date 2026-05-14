@@ -208,6 +208,8 @@ public class TaskListDao {
         String sql = "INSERT INTO users (name, email, password, section_id) VALUES (?, ?, ?, ?)";
         jdbcTemplate.update(sql, name, email, encodedPassword, sectionId);
     }
-
-
+    public List<String> findAllDeptNames() {
+        String sql = "SELECT dept_name FROM departments";
+        return jdbcTemplate.queryForList(sql, String.class);
+    }
 }

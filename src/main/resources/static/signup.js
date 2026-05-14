@@ -79,3 +79,33 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+const submitBtn = document.getElementById('submitBtn');
+
+document.getElementById('newDepartmentName').addEventListener('input', function() {
+    const name = this.value;
+    const warningElement = document.getElementById('deptWarning');
+    const submitBtn = document.querySelector('button[type="submit"]');
+
+    if (name.length === 0) {
+        warningElement.style.display = 'none';
+        return;
+    }
+
+    fetch(`/api/check-dept?name=${encodeURIComponent(name)}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.isDuplicate) {
+                warningElement.style.display = 'block';
+                this.style.borderColor = 'red';
+                if (submitBtn) submitBtn.disabled = true;
+            } else {
+                warningElement.style.display = 'none';
+                this.style.borderColor = '';
+                if (submitBtn) submitBtn.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+});
