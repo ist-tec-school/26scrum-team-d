@@ -373,6 +373,7 @@ th:nth-child(4),
 
 
 /* 検索エリアの配置 */
+/* 検索エリアの配置 */
 .search_area {
     display: flex;
     align-items: center;
@@ -386,30 +387,38 @@ th:nth-child(4),
 
 .search-form {
     display: flex;
-    align-items: center;
+    align-items: stretch; /* 高さを揃える */
+    gap: 0;              /* ★隙間を完全にゼロにする */
 }
 
-/* キーワード検索：画像の枠線の太さに合わせる */
+/* キーワード検索：高さを36pxで固定 */
 .search_area input[type="text"] {
     width: 300px;
-    padding: 8px;
+    height: 36px;            /* ★徹底：高さを明示 */
+    padding: 0 10px;         /* 上下余白を0にして横だけに */
     border: 2px solid #30575c;
+    border-right: none;      /* ★徹底：ボタンと繋げるために右線を消す */
     border-radius: 5px 0 0 5px;
-    border-right: none;
     outline: none;
+    box-sizing: border-box;  /* 2pxの枠線を高さに含める */
+    margin: 0;               /* 外側の余白を排除 */
 }
 
-/* 検索ボタン*/
+/* 検索ボタン：高さを36pxで固定 */
 .search-button {
+    height: 36px;            /* ★徹底：入力欄と完全に一致させる */
     background-color: #B0E0E6;
     border: 2px solid #30575c;
     border-radius: 0 5px 5px 0;
     color: black;
-    padding: 6px 16px;
+    padding: 0 16px;
     cursor: pointer;
     font-weight: bold;
-    transition: opacity 0.5s;
     white-space: nowrap;
+    box-sizing: border-box;  /* 2pxの枠線を高さに含める */
+    margin: 0;               /* 外側の余白を排除 */
+    display: flex;           /* 文字の上下中央揃えのため */
+    align-items: center;
 }
 
 .search-button:hover {
