@@ -3,7 +3,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 115vh;
     margin: 0;
     font-family: sans-serif;
 }
@@ -11,7 +11,7 @@ body {
 
 .login-container {
     width: 100%;
-    max-width: 430px;
+    max-width: 700px;
     padding: 20px;
 }
 
@@ -37,7 +37,7 @@ h1 {
 
 .form_body{
     background: white;
-    padding: 30px;
+    padding:40px 60px;
 }
 
 .form_header h2 {
@@ -54,7 +54,7 @@ h1 {
 .footer-links {
     margin-top: 20px;
     text-align: center;
-    font-size: 0.9em;
+    font-size: 20px;
 }
 
 .footer-links a {
@@ -83,7 +83,7 @@ select {
     box-sizing: border-box;
     margin-bottom: 5px;
     background-color: #fff;
-    font-size: 14px;
+    font-size: 20px;
 }
 
 .form-group {
@@ -97,7 +97,7 @@ select {
     padding: 10px;
     border-radius: 4px;
     margin-bottom: 15px;
-    font-size: 0.9em;
+    font-size: 20px;
     text-align: center;
 }
 
@@ -109,7 +109,7 @@ select {
 .footer-links {
     margin-top: 20px;
     text-align: center;
-    font-size: 0.9em;
+    font-size: 20px;
 }
 
 .footer-links a {
@@ -121,12 +121,13 @@ select {
 .footer-links a:hover {
     color: #333;
     text-decoration: underline;
+    transition: 0.5s;
 }
 
 /* エラーメッセージ用のスタイル */
 .error-msg {
     color: #d9534f; /* 警告用の赤色 */
-    font-size: 0.85em;
+    font-size: 14px;
     margin-top: 5px;
     margin-bottom: 10px;
     font-weight: bold;
