@@ -13,11 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.Normalizer;
 import java.util.List;
 import java.util.Map;
+import com.atilika.kuromoji.ipadic.Token;
+import com.atilika.kuromoji.ipadic.Tokenizer;
 
 @Controller
 public class SignupController {
     private final TaskListDao dao;
     private final PasswordEncoder passwordEncoder;
+    private final Tokenizer tokenizer = new Tokenizer();
 
     @Autowired
     public SignupController(TaskListDao dao, PasswordEncoder passwordEncoder) {
@@ -49,17 +52,16 @@ public class SignupController {
                          Model model) {
         Integer targetDeptId = deptId;
         if (Integer.valueOf(0).equals(deptId) && !newDepartmentName.isBlank()) {
-            List<String> existingNames = dao.findAllDeptNames();
+            String finalKana = convertToKana(newDepartmentKana);
+            if (finalKana.isBlank() || finalKana.equals(newDepartmentName)) {
+                finalKana = convertToKana(newDepartmentName);
+            }
             List<String> existingKanas = dao.findAllDeptKanas();
-            if (isDuplicateDept(newDepartmentName, existingNames) ||
-                    isDuplicateDept(newDepartmentName, existingKanas) ||
-                    isDuplicateDept(newDepartmentKana, existingNames) ||
-                    isDuplicateDept(newDepartmentKana, existingKanas)) {
-
-                model.addAttribute("errorMessage", "その部署名または読みは既に登録されています。");
+            if (isDuplicateDept(finalKana, existingKanas)) {
+                model.addAttribute("errorMessage", "既に登録されています。");
                 return displaySignup(model);
             }
-            targetDeptId = dao.addDepartment(newDepartmentName, newDepartmentKana);
+            targetDeptId = dao.addDepartment(newDepartmentName, finalKana);
         }
 
         if (Integer.valueOf(0).equals(sectionId) && !newSectionName.isBlank()) {
@@ -133,9 +135,15 @@ public class SignupController {
     @GetMapping("/api/check-dept")
     @ResponseBody
     public Map<String, Boolean> checkDept(@RequestParam String name) {
+        // 入力された文字を強制的にカナ（ひらがな）に変換
+        String inputKana = convertToKana(name);
+
         List<String> existingNames = dao.findAllDeptNames();
         List<String> existingKanas = dao.findAllDeptKanas();
-        boolean isDuplicate = isDuplicateDept(name, existingNames) || isDuplicateDept(name, existingKanas);
+
+        // 「変換後のカナ」が、既存の「漢字」または「カナ」と被っていないかチェック
+        boolean isDuplicate = isDuplicateDept(inputKana, existingNames) ||
+                isDuplicateDept(inputKana, existingKanas);
 
         return Map.of("isDuplicate", isDuplicate);
     }
@@ -152,11 +160,9 @@ public class SignupController {
 
     private String normalize(String s) {
         if (s == null) return "";
-        String nfkc = Normalizer.normalize(s, Normalizer.Form.NFKC);
-        String lower = nfkc.toLowerCase();
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < lower.length(); i++) {
-            char c = lower.charAt(i);
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
             if (c >= 0x30A1 && c <= 0x30F6) {
                 sb.append((char) (c - 0x60));
             } else {
@@ -164,6 +170,28 @@ public class SignupController {
             }
         }
         return sb.toString();
+    }
+    private String convertToKana(String text) {
+        if (text == null || text.isBlank()) return "";
+
+        // すでにひらがなや英数字のみの場合はそのまま返す（解析ミス防止）
+        if (text.matches("^[\\u3040-\\u309F\\u30A0-\\u30FFa-zA-Z0-9ー]*$")) {
+            return normalize(text);
+        }
+
+        StringBuilder sb = new StringBuilder();
+        List<Token> tokens = tokenizer.tokenize(text);
+        for (Token token : tokens) {
+            String reading = token.getReading();
+            // カタカナで返ってくるので、normalizeメソッドでひらがなに直す
+            if (reading.equals("*")) {
+                // 読みが取れない（記号など）場合は元の文字を使う
+                sb.append(token.getSurface());
+            } else {
+                sb.append(reading);
+            }
+        }
+        return normalize(sb.toString()); // カタカナ→ひらがな変換も含む
     }
 
 
