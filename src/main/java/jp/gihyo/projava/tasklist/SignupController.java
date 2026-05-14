@@ -85,6 +85,9 @@ public class SignupController {
         if (password.isBlank()) {
             model.addAttribute("passwordError", "パスワードを入力してください。");
             hasError = true;
+        }else if (password.length() < 8) {
+            model.addAttribute("passwordError", "パスワードは8文字以上で入力してください。");
+            hasError = true;
         }
 
         // エラーがあれば、再度リストを取得して画面に戻す
