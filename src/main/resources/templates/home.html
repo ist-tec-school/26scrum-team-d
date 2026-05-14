@@ -256,15 +256,12 @@
             <input type="hidden" name="sectionId" th:value="${selectedSection}">
             <input type="hidden" name="keyword" th:value="${keyword}">
             <label>プロジェクト</label>
-            <select id="update_project" name="projectId" onchange="handleProjectChange(this, 'update_newProjectName_hidden')">
+            <select id="update_project" name="projectId">
                 <option value=""></option>
-                <option value="new">+ 登録</option>
-                <option th:each="project : ${projectList}" th:value="${project.id}" th:text="${project.name}"></option>
-                <option value="0">+ 新規で登録</option>
                 <option th:each="project : ${projectList}"
                         th:value="${project.id}"
-                        th:text="${project.name}"
-                        th:selected="${project.id == updateItem?.projectId}"></option>
+                        th:text="${project.name}">
+                </option>
             </select>
             <input type="hidden" name="newProjectName" id="update_newProjectName_hidden">
             <label>タスク</label><input id="update_task" name="task" type="text"
