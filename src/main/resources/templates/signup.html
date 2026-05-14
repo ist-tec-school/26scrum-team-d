@@ -24,12 +24,12 @@
 
         <form th:action="@{/signup}" method="post" autocomplete="off">
             <div class="form-group">
-                <label for="name">名前</label>
+                <label for="name" class="required">名前</label>
                 <input type="text" id="name" name="name" required placeholder="山田 太郎" />
                 <p th:if="${nameError}" class="error-msg" th:text="${nameError}"></p>
             </div>
             <div class="form-group">
-                <label for="department">部署</label>
+                <label for="department" class="required">部署</label>
                 <select id="department" name="deptId" required onchange="handleDeptChange(this)">
                     <option value="">部署を選択してください</option>
                     <option th:each="dept : ${departments}"
@@ -42,7 +42,7 @@
             </div>
 
                 <div class="form-group">
-                    <label for="section">課</label>
+                    <label for="section" class="required">課</label>
                     <select id="section" name="sectionId" required disabled onchange="handleSectionChange(this)">
                         <option value="">先に部署を選択してください</option>
                     </select>
@@ -53,7 +53,7 @@
                 </div>
 
             <div class="form-group">
-                <label for="username">メールアドレス</label>
+                <label for="username" class="required">メールアドレス</label>
                 <input type="email" id="username" name="username" required
                        pattern=".+@example\.com$"
                        title="メールアドレスが正しくありません。"
@@ -64,7 +64,7 @@
             </div>
 
             <div class="form-group">
-                <label for="password">パスワード</label>
+                <label for="password" class="required">パスワード</label>
                 <div class="password-wrapper">
                     <input type="password" id="password" name="password" required
                            minlength="8"
