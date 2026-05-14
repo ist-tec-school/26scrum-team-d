@@ -167,12 +167,12 @@ public class HomeController {
     String updateItem(@Validated @ModelAttribute("taskItem") TaskItem item,
                       BindingResult result,
                       Model model,
-                      @RequestParam(value="scope", defaultValue="mine") String scope, // 追加
+                      @RequestParam(value="scope", defaultValue="mine") String scope,
                       @RequestParam(value="projectId", required=false) Integer projectId,
                       @RequestParam(value="newProjectName", required=false) String newProjectName,
                       @RequestParam(value="status", defaultValue="all") String status,
-                      @RequestParam(value="deptId", defaultValue="all") String deptId, // 追加
-                      @RequestParam(value="sectionId", defaultValue="all") String sectionId, // 追加
+                      @RequestParam(value="deptId", defaultValue="all") String deptId,
+                      @RequestParam(value="sectionId", defaultValue="all") String sectionId,
                       @RequestParam(value="keyword", defaultValue="") String keyword){
 
         // 4. バリデーションエラーの判定
@@ -218,8 +218,10 @@ public class HomeController {
                 item.done());
 
         dao.update(updateData);
+        // 1. まず日本語のキーワードを安全な形式に変換する
+        String encodedKeyword = java.net.URLEncoder.encode(keyword, java.nio.charset.StandardCharsets.UTF_8);
         return String.format("redirect:/list?scope=%s&status=%s&projectId=%s&deptId=%s&sectionId=%s&keyword=%s#task-list-top",
-                scope, status, projectId, deptId, sectionId, keyword);
+                scope, status, projectId, deptId, sectionId, encodedKeyword);
     }
 
 
