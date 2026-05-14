@@ -138,14 +138,4 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- パスワード表示切り替え（既存） ---
-    const passwordInput = document.getElementById('password');
-    const toggleButton = document.getElementById('togglePassword');
-    if (toggleButton && passwordInput) {
-        toggleButton.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            this.textContent = type === 'password' ? '表示' : '非表示';
-        });
-    }
 });
