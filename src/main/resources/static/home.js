@@ -213,48 +213,55 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- ここからが折り畳み判定ロジック ---
+    const refreshRowStatus = (row) => {
+        const userCell = row.cells[3];
+        const descCell = row.cells[5];
+        const descText = descCell?.querySelector('.desc-text');
+        if (descText) {
+            const style = window.getComputedStyle(descText);
+            const lineHeight = parseFloat(style.lineHeight);
+            const maxVisibleHeight = lineHeight * 3;
+            const isDescOverflow = descText.scrollHeight > maxVisibleHeight + (lineHeight / 2);
 
-    // CSSの適用待ちのため少し遅延させて判定
-    // --- home.js の折り畳み判定ロジック部分 ---
-
-    setTimeout(() => {
-        // 全ての行（tr）をループして、その行の中の「4番目」と「6番目」を連動させる
-        const rows = document.querySelectorAll('.tasklist tbody tr');
-
-        rows.forEach(row => {
-            const userCell = row.cells[3]; // 4番目のセル（担当者）
-            const descCell = row.cells[5]; // 6番目のセル（説明）
-            if (!userCell || !descCell) return;
-
-            // --- 判定ロジック ---
-            // 担当者の判定（人数）
-            const users = userCell.querySelectorAll('div');
-            const isUserOverflow = users.length > 3;
-            if (isUserOverflow) {
-                userCell.classList.add('has-overflow');
-                userCell.setAttribute('data-more-text', `他${users.length - 3}名`);
-            }
-
-            // 説明の判定（横幅）
-            const descText = descCell.querySelector('.desc-text');
-            const isDescOverflow = descText && (descText.scrollWidth > descText.clientWidth + 1);
             if (isDescOverflow) {
                 descCell.classList.add('has-overflow');
+            } else {
+                descCell.classList.remove('has-overflow');
+                descCell.classList.remove('is-expanded');
             }
+        }
 
-            // --- 連動クリックイベント ---
-            // 片方のセルがクリックされたら、同じ行の「担当者」と「説明」両方のクラスをトグルする
-            const toggleRow = () => {
-                // 両方のセルに対してクラスを付け外しする
+        const users = userCell?.querySelectorAll('.user-item, div:not(.more-btn)');
+        if (users && users.length >= 4) {
+            userCell.classList.add('has-overflow');
+        } else {
+            userCell.classList.remove('has-overflow');
+            userCell.classList.remove('is-expanded');
+        }
+    };
+    const rows = document.querySelectorAll('.tasklist tbody tr');
+    rows.forEach(row => {
+        const userCell = row.cells[3];
+        const descCell = row.cells[5];
+
+        const toggleRow = (row) => {
+            if (userCell.classList.contains('has-overflow') || descCell.classList.contains('has-overflow')) {
                 userCell.classList.toggle('is-expanded');
                 descCell.classList.toggle('is-expanded');
-            };
-
-            // はみ出しているセルがある場合のみクリックを有効にする
-            if (isUserOverflow || isDescOverflow) {
-                userCell.addEventListener('click', toggleRow);
-                descCell.addEventListener('click', toggleRow);
             }
-        });
-    }, 300);
+        };
+
+        if (userCell) userCell.addEventListener('click', toggleRow);
+        if (descCell) descCell.addEventListener('click', toggleRow);
+
+        setTimeout(() => refreshRowStatus(row), 200);
+    });
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            rows.forEach(row => refreshRowStatus(row));
+        }, 150);
+    });
 });
