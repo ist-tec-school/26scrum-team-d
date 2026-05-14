@@ -74,11 +74,13 @@ input {
 
 .header h1 {
     margin: 0;
+    padding-left: 20px;
     white-space: nowrap;
 }
 
 .logout-area {
     display: flex;
+    padding-right: 20px;
     flex-direction: column;
     align-items: flex-end;
     margin-left: auto;
@@ -210,7 +212,8 @@ th:nth-child(4),
 /* 期限列（5番目）の見出しとデータの両方を中央寄せにする */
 .tasklist th:nth-child(5),
 .tasklist td:nth-child(5) {
-    width: 8%;
+    width: 10%;
+    min-width: 110px;
     text-align: center;
 }
 
