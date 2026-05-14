@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS departments (
     dept_id INT PRIMARY KEY AUTO_INCREMENT,
-    dept_name VARCHAR(100)
+    dept_name VARCHAR(100) UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS sections (

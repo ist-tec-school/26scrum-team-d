@@ -22,7 +22,7 @@
         <div class="form_body">
         <p th:if="${errorMessage}" class="error-text" th:text="${errorMessage}"></p>
 
-        <form th:action="@{/signup}" method="post">
+        <form th:action="@{/signup}" method="post" autocomplete="off">
             <div class="form-group">
                 <label for="name">名前</label>
                 <input type="text" id="name" name="name" required placeholder="山田 太郎" />
@@ -54,15 +54,19 @@
                 <label for="username">メールアドレス</label>
                 <input type="email" id="username" name="username" required
                        pattern=".+@example\.com$"
-                       title="メールアドレスは @example.com で終わる必要があります。"
-                       placeholder="example@example.com" />
+                       title="メールアドレスが正しくありません。"
+                       placeholder="example@example.com"
+                       autocomplete="new-email"/>
+
                 <p th:if="${emailError}" class="error-msg" th:text="${emailError}"></p>
             </div>
 
             <div class="form-group">
                 <label for="password">パスワード</label>
                 <input type="password" id="password" name="password" required
-                       placeholder="パスワードを設定してください" />
+                       placeholder="パスワードを設定してください"
+                       autocomplete="new-password"/>
+
                 <p th:if="${passwordError}" class="error-msg" th:text="${passwordError}"></p>
             </div>
 

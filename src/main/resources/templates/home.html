@@ -17,7 +17,7 @@
 
     <div class="logout-area">
         <form th:action="@{/logout}" method="post">
-            <button type="submit" class="btn-logout">
+            <button type="submit" class="btn-base btn-white btn-logout">
                 ログアウト
                 <span class="material-symbols-outlined">exit_to_app</span>
             </button>
@@ -83,7 +83,7 @@
             <option value="1">対応中</option>
             <option value="3">完了</option>
         </select>
-        <input type="submit" value="登録" class="btn-register"/>
+        <input type="submit" value="登録" class="btn-base btn-primary btn-register"/>
     </form>
 </div>
 
@@ -146,12 +146,14 @@
     </div>
 
     <div class="search_area">
-        <div class="search-form">
-            <input type="text" name="keyword" th:value="${keyword}" placeholder="検索ワード">
-            <button type="submit" class="search-button">検索</button>
-        </div>
-        <a th:href="@{/list#task-list-top(scope=${selectedScope}, status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection})}"
-           class="reset-button">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="検索ワード タスクを検索できます。">
+        <button type="submit" class="btn-base btn-primary search-button">検索</button>
+
+        <a th:href="@{/list#task-list-top(scope='mine',
+                    status='working_group',
+                    projectId='all', deptId='all',
+                    sectionId='all', keyword='')}"
+                    class="btn-base btn-primary reset-button">
             条件をリセット
         </a>
     </div>
@@ -224,9 +226,14 @@
     </table>
 </div>
 
-<div th:if="${#lists.isEmpty(taskList)}" style="text-align: center; margin-top: 20px; color: #666;">
-    <p>現在タスクはありません。</p>
-</div>
+    <div th:if="${keyword != null and !keyword.isEmpty() and #lists.size(taskList) == 0}"
+         class="no-result-message">
+        <p> 「<span th:text="${keyword}"></span>」での検索結果 — 0件です —</p>
+    </div>
+    <div th:if="${keyword.isEmpty() and #lists.size(taskList) == 0}"
+         class="status-0message">
+        <p>現在タスクはありません。</p>
+    </div>
 
 
  <div id="updateDialog">
