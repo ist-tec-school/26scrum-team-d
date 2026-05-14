@@ -203,9 +203,19 @@ th:nth-child(4),
 }
 
 .desc-text {
-    white-space: nowrap;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+    max-height: 4.5em;
+    white-space: normal;
+}
+.is-expanded .desc-text {
+    -webkit-line-clamp: unset;
+    max-height: none;
 }
 
 .tasklist td:nth-child(6).has-overflow:not(.is-expanded) {
@@ -222,11 +232,11 @@ th:nth-child(4),
 }
 
 /* 【追記】全文表示（展開済み）の時：「(一部表示に戻す)」を表示 */
-.tasklist td:nth-child(6).is-expanded::after {
+.tasklist td:nth-child(6).has-overflow.is-expanded::after {
     content: " (一部表示に戻す)";
     font-size: 0.8em;
     color: #4D648D;
-    display: block;    /* テキストのすぐ下に表示させる（お好みで） */
+    display: block;
     margin-top: 5px;
     cursor: pointer;
 }

@@ -55,7 +55,8 @@
                 <input type="email" id="username" name="username" required
                        pattern=".+@example\.com$"
                        title="メールアドレスは @example.com で終わる必要があります。"
-                       placeholder="example@example.com" />
+                       placeholder="example@example.com"
+                       autocomplete="off"/>
                 <p th:if="${emailError}" class="error-msg" th:text="${emailError}"></p>
             </div>
 
