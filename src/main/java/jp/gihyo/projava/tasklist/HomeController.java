@@ -170,6 +170,7 @@ public class HomeController {
                       Model model,
                       @RequestParam(value="scope", defaultValue="mine") String scope,
                       @RequestParam(value="projectId", required=false) Integer projectId,
+                      @RequestParam(value="filterProjectId", defaultValue="all") String filterProjectId,
                       @RequestParam(value="newProjectName", required=false) String newProjectName,
                       @RequestParam(value="status", defaultValue="all") String status,
                       @RequestParam(value="deptId", defaultValue="all") String deptId,
@@ -222,7 +223,7 @@ public class HomeController {
         // 1. まず日本語のキーワードを安全な形式に変換する
         String encodedKeyword = java.net.URLEncoder.encode(keyword, java.nio.charset.StandardCharsets.UTF_8);
         return String.format("redirect:/list?scope=%s&status=%s&projectId=%s&deptId=%s&sectionId=%s&keyword=%s#task-list-top",
-                scope, status, projectId, deptId, sectionId, encodedKeyword);
+                scope, status, filterProjectId, deptId, sectionId, encodedKeyword);
     }
 
 
