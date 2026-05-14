@@ -15,6 +15,11 @@ body {
     color: #333;
 }
 
+.h2 {
+    white-space: nowrap;
+    margin-top: 20px;
+}
+
  .wrapper {
      margin: 30px;
  }
@@ -26,6 +31,46 @@ input {
 .hidden {
     display: none;
 }
+
+/* --- 共通ボタンベース --- */
+.btn-base {
+    display: inline-block;
+    padding: 6px 16px;
+    border: 2px solid #30575c;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 13px;
+    text-align: center;
+    text-decoration: none;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: all 0.5s ease;
+    white-space: nowrap;
+}
+
+.btn-base:hover {
+    opacity: 0.8;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+
+/* --- カラーバリエーション --- */
+.btn-primary {
+    background-color: #B0E0E6;
+    color: black;
+}
+.btn-primary:hover {
+    background-color: #8fc1c7;
+}
+
+.btn-white {
+    background-color: white;
+    color: black;
+}
+.btn-white:hover {
+    background-color: #e0e0e0;
+}
+
 
 .header h1 {
     margin: 0;
@@ -41,25 +86,8 @@ input {
 }
 
 /* ログアウトボタン */
-button.btn-logout {
+.btn-logout {
     width: 100%;
-    padding: 6px 16px;
-    color: black;
-    background-color: white;
-    border: 2px solid #30575c;
-    border-radius: 5px;
-    font-weight: bold;
-    font-size: 13px;
-    text-decoration: none;
-    box-sizing: border-box;
-    transition: all 0.3s;
-}
-
-.btn-logout:hover {
-    background-color: #e0e0e0;
-    opacity: 0.8;
-    transition: 0.5s;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);     /* 検索ボタンと同じ透明度の変化を追加 */
 }
 
 .material-symbols-outlined {
@@ -93,19 +121,9 @@ button.btn-logout {
     box-sizing: border-box;
 }
 
+/*登録ボタン*/
 .btn-register {
-    background-color: #B0E0E6;
-    border: 2px solid #30575c;
-    border-radius: 5px;
-    color: black;
     margin-top: 10px;
-    font-weight: bold
-}
-
-.btn-register:hover {
-    background-color: #8fc1c7;
-    opacity: 0.8;
-    transition: opacity 0.5s;
 }
 
 /* 1. テーブルを包んでいる親要素の設定 */
@@ -124,9 +142,9 @@ button.btn-logout {
 
 }
 .tasklist table, .tasklist th, .tasklist td {
-    border: 1px solid black; /* 枠線を引く */
-    border-collapse: collapse; /* 重なる線を一本にする */
-    padding: 8px;              /* 文字の周りに隙間を作る */
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 8px;
     vertical-align: middle;
     text-align: center;
 }
@@ -134,8 +152,6 @@ button.btn-logout {
 .tasklist th {
     background-color: #f4f7f6; /* 見出しに色をつける */
 }
-
-/* 各列の幅を指定（合計で100%になるように調整、またはpx指定） */
 
 /* プロジェクト列 */
 th:nth-child(2) { width: 15%;
@@ -331,6 +347,8 @@ th:nth-child(4),
     align-items: center;    /* 上下の中心を揃える */
     justify-content: space-between; /* 両端に振り分ける（左に見出し、右にフィルター） */
     margin-bottom: 10px;    /* 下のテーブルとの隙間 */
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 
@@ -406,62 +424,27 @@ th:nth-child(4),
 
 /* 検索ボタン*/
 .search-button {
-    background-color: #B0E0E6;
-    border: 2px solid #30575c;
     border-radius: 0 5px 5px 0;
-    color: black;
-    padding: 6px 16px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: opacity 0.5s;
-    white-space: nowrap;
 }
-
-.search-button:hover {
-    background-color: #8fc1c7;
-    opacity: 0.8;
-    transition: opacity 0.5s;
-}
-
-/* 0件メッセージ：画像のように細い線で区切る */
-.search-no-result {
+.status-0message {
+    text-align: center;
     margin-top: 20px;
-    padding-top: 10px;
-    border-top: 1px solid #ddd;
-    font-size: 1.1em;
+    color: #616161;
 }
 
-.search-no-result p {
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.no-result-message {
+    text-align: center;
+    margin-top: 20px;
+    color: #616161;
 }
 
 /*リセットボタン*/
-.search_area a.reset-button{
-    padding: 6px 8px;
-    text-decoration: none;
-    background-color: #B0E0E6;
-    border: 2px solid #30575c;
-    border-radius: 5px;
-    color: black;
+.search_area a.reset-button {
     margin-left: auto;
-    font-weight: bold;
-    font-size: 14px;
-    display: inline-block;
-    white-space: nowrap;
 }
-
-.search_area a.reset-button:hover {
-    background-color: #8fc1c7;
-    opacity: 0.8;
-    transition: opacity 0.5s;
-}
-
 /* エラーメッセージのスタイル */
 .error-text {
-    color: #d93025; /* Google等のエラーで使われる赤色 */
+    color: #d93025;
     background-color: #fce8e6;
     padding: 10px;
     border-radius: 4px;
@@ -506,85 +489,85 @@ input:invalid:focus {
 }
 
 
-
 .choices {
-    width: 100% !important;
+    width: 100%;
     max-width: 400px;
-    margin: 0 !important;
+    margin: 0;
     vertical-align: middle;
     padding: 3px 0;
 }
 
-.choices__inner {
+.choices .choices__inner {
     position: relative;
-    min-height: 38px !important;
-    padding: 0 40px 0 10px !important;
-    border: 2px solid #30575c;!important;
-    border-radius: 0 !important;
-    background-color: #fff !important;
-    display: flex !important;
-    align-items: center !important;
+    min-height: 38px;
+    padding: 0 40px 0 10px;
+    border: 2px solid #30575c; /* セミコロン修正 */
+    border-radius: 0;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
     flex-wrap: wrap;
-    box-sizing: border-box !important;
-    cursor: pointer !important;
+    box-sizing: border-box;
+    cursor: pointer;
 }
 
-.is-focused .choices__inner,
-.is-open .choices__inner {
-    border: 1px solid #000 !important;
+/* 状態変化時のスタイル */
+.choices.is-focused .choices__inner,
+.choices.is-open .choices__inner {
+    border: 1px solid #000;
     z-index: 1;
 }
 
-
-.choices__input {
-    background-color: transparent !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    font-size: 14px !important;
-    min-width: 150px !important;
-    height: 100% !important;
-    display: inline-block !important;
+.choices .choices__input {
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    min-width: 150px;
+    height: 100%;
+    display: inline-block;
 }
-.choices__input::placeholder {
-    line-height: 36px !important;
+
+.choices .choices__input::placeholder {
+    line-height: 36px;
     color: #888;
 }
 
-.choices__list--multiple .choices__item {
-    background-color: #4D648D !important;
-    border: 1px solid #4D648D !important;
-    border-radius: 3px !important;
-    cursor: pointer !important;
+.choices .choices__list--multiple .choices__item {
+    background-color: #4D648D;
+    border: 1px solid #4D648D;
+    border-radius: 3px;
+    cursor: pointer;
 }
 
-.choices__list--dropdown {
-    border: 1px solid #000 !important;
-    border-top: none !important;
-    border-radius: 0 !important;
-    box-sizing: border-box !important;
-    z-index: 100 !important;
+.choices .choices__list--dropdown {
+    border: 1px solid #000;
+    border-top: none;
+    border-radius: 0;
+    box-sizing: border-box;
+    z-index: 100;
 }
 
-.choices__list--dropdown .choices__input {
-    display: block !important;
-    width: 100% !important;
-    height: 40px !important;
-    min-height: 40px !important;
-    margin: 0 !important;
-    padding: 0 15px !important;
-    border: none !important;
-    border-bottom: 1px solid #ccc !important;
-    box-sizing: border-box !important;
-    cursor: text !important;
+.choices .choices__list--dropdown .choices__input {
+    display: block;
+    width: 100%;
+    height: 40px;
+    min-height: 40px;
+    margin: 0;
+    padding: 0 15px;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    box-sizing: border-box;
+    cursor: text;
 }
 
-.choices__list--dropdown .choices__item--choice {
-    height: 35px !important;
-    min-height: 35px !important;
-    display: flex !important;
-    align-items: center !important;
-    padding: 0 15px !important;
-    cursor: pointer !important;
+.choices .choices__list--dropdown .choices__item--choice {
+    display: flex;
+    align-items: center;
+    height: 35px;
+    min-height: 35px;
+    padding: 0 15px;
+    cursor: pointer;
 }
 
 .choices::after {
