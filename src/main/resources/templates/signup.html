@@ -64,7 +64,9 @@
             <div class="form-group">
                 <label for="password">パスワード</label>
                 <input type="password" id="password" name="password" required
-                       placeholder="パスワードを設定してください"
+                       minlength="8"
+                       title="パスワードは8文字以上必要です"
+                       placeholder="8文字以上で設定してください"
                        autocomplete="new-password"/>
 
                 <p th:if="${passwordError}" class="error-msg" th:text="${passwordError}"></p>
