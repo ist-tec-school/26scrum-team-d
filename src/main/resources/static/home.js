@@ -77,8 +77,8 @@ function showUpdateDialog(button) {
     updateCountLabel('update_description', 'update_count');
 
     // 5. ダイアログの表示
-    dialog.style.left = ((window.innerWidth - 500) / 2) + 'px';
-    dialog.style.display = 'block';
+    dialog.style.left = "";
+    dialog.style.display = 'flex';
 }
 
 /**

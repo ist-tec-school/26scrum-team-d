@@ -268,18 +268,23 @@ th:nth-child(4),
 
 /* タスク更新ダイアログ (第18章のサンプルで使用) */
 #updateDialog {
-    display: none; /* JSで表示する際に display: flex; に切り替えます */
+    display: none; /* JSで flex に切り替えます */
     position: fixed;
     z-index: 9999;
-    left: 0;
     top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-
-    /* 真ん中に寄せるための設定 */
+    left: 0;
+    width: 100vw;  /* 幅をビューポート全体に */
+    height: 100vh; /* 高さをビューポート全体に */
+    background-color: rgba(0, 0, 0, 0.7); /* 少し暗くして視認性アップ */
     justify-content: center;
     align-items: center;
+    margin: 0;
+}
+
+/* フォームの中身がはみ出さないための安全策を追加 */
+#updateDialog .task_form form > * {
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 /* --- ダイアログ本体：2枚目のベース（二重線など）を維持 --- */
