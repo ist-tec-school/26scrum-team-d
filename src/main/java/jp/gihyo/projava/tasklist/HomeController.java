@@ -139,7 +139,6 @@ public class HomeController {
             return "home";
         }
 
-
         // 3. 正常系のプロジェクト登録ロジック
         Integer targetProjectId = null;
         if (Integer.valueOf(0).equals(projectId) && newProjectName != null && !newProjectName.isEmpty()) {
@@ -165,18 +164,33 @@ public class HomeController {
     }
 
     @GetMapping("/delete")
-    String deleteItem(@RequestParam("id") String id) {
+    String deleteItem(@RequestParam("id") String id,
+                      @RequestParam(value = "scope", defaultValue = "mine") String scope,
+                      @RequestParam(value = "status", defaultValue = "working_group") String status,
+                      @RequestParam(value = "projectId", defaultValue = "all") String projectId,
+                      @RequestParam(value = "deptId", defaultValue = "all") String deptId,
+                      @RequestParam(value = "sectionId", defaultValue = "all") String sectionId,
+                      @RequestParam(value = "keyword", defaultValue = "") String keyword) {
         dao.delete(id);
-        return "redirect:/list#task-list-top";
+
+        // パラメータを維持してリダイレクト
+        String encodedKeyword = java.net.URLEncoder.encode(keyword, java.nio.charset.StandardCharsets.UTF_8);
+        return String.format("redirect:/list?scope=%s&status=%s&projectId=%s&deptId=%s&sectionId=%s&keyword=%s#task-list-top",
+                scope, status, projectId, deptId, sectionId, encodedKeyword);
     }
 
     @PostMapping("/update")
     String updateItem(@Validated @ModelAttribute("taskItem") TaskItem item,
-                      BindingResult result, Model model,
+                      BindingResult result,
+                      Model model,
+                      @RequestParam(value="scope", defaultValue="mine") String scope,
                       @RequestParam(value="projectId", required=false) Integer projectId,
+                      @RequestParam(value="filterProjectId", defaultValue="all") String filterProjectId,
                       @RequestParam(value="newProjectName", required=false) String newProjectName,
                       @RequestParam(value="status", defaultValue="all") String status,
-                      @RequestParam(value="keyword", defaultValue="") String keyword) {
+                      @RequestParam(value="deptId", defaultValue="all") String deptId,
+                      @RequestParam(value="sectionId", defaultValue="all") String sectionId,
+                      @RequestParam(value="keyword", defaultValue="") String keyword){
 
         // 4. バリデーションエラーの判定
         boolean isPastDate = false;
@@ -233,7 +247,10 @@ public class HomeController {
                 item.done());
 
         dao.update(updateData);
-        return "redirect:/list#task-list-top";
+        // 1. まず日本語のキーワードを安全な形式に変換する
+        String encodedKeyword = java.net.URLEncoder.encode(keyword, java.nio.charset.StandardCharsets.UTF_8);
+        return String.format("redirect:/list?scope=%s&status=%s&projectId=%s&deptId=%s&sectionId=%s&keyword=%s#task-list-top",
+                scope, status, filterProjectId, deptId, sectionId, encodedKeyword);
     }
 
 

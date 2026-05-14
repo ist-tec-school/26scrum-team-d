@@ -40,9 +40,9 @@ public class SignupController {
                          @RequestParam("username") String email,
                          @RequestParam String password,
                          @RequestParam Integer deptId,
-                         @RequestParam(required = false)String newDepartmentName,
+                         @RequestParam(required = false) String newDepartmentName,
                          @RequestParam Integer sectionId,
-                         @RequestParam(required = false)String newSectionName,
+                         @RequestParam(required = false) String newSectionName,
                          RedirectAttributes redirectAttributes,
                          Model model) {
         if (Integer.valueOf(0).equals(deptId) && !newDepartmentName.isBlank()) {
@@ -67,21 +67,41 @@ public class SignupController {
             targetSectionId = dao.addSection(newSectionName, targetDeptId);
         }
 
+        //バリデーション
+
         boolean hasError = false;
-        // バリデーション
-        if (name.isBlank()) {
-            model.addAttribute("nameError", "名前を入力してください。");
+
+        if (deptId == null) {
+            model.addAttribute("deptError", "部署を選択してください。");
+            hasError = true;
+        } else if (deptId == 0 && (newDepartmentName == null || newDepartmentName.isBlank())) {
+            model.addAttribute("deptError", "新しい部署名を入力してください。");
+            hasError = true;
+        }
+
+        if (sectionId == null) {
+            model.addAttribute("sectionError", "課を選択してください。");
+            hasError = true;
+        } else if (sectionId == 0 && (newSectionName == null || newSectionName.isBlank())) {
+            model.addAttribute("sectionError", "新しい課名を入力してください。");
             hasError = true;
         }
 
         if (!email.endsWith("@example.com")) {
             model.addAttribute("emailError", "メールアドレスは @example.com である必要があります。");
             hasError = true;
-        } else if (dao.findUserByEmail(email) != null) {
+        }
+
+
+        if (dao.findUserByEmail(email) != null) {
             model.addAttribute("emailError", "すでに登録されているメールアドレスです。");
             hasError = true;
         }
 
+        if (name.isBlank()) {
+            model.addAttribute("nameError", "名前を入力してください。");
+            hasError = true;
+        }
         if (password.isBlank()) {
             model.addAttribute("passwordError", "パスワードを入力してください。");
             hasError = true;
