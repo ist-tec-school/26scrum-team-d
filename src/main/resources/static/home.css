@@ -15,6 +15,11 @@ body {
     color: #333;
 }
 
+.h2 {
+    white-space: nowrap;
+    margin-top: 20px;
+}
+
  .wrapper {
      margin: 30px;
  }
@@ -39,7 +44,7 @@ input {
     text-decoration: none;
     box-sizing: border-box;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.5s ease;
     white-space: nowrap;
 }
 
@@ -332,6 +337,8 @@ th:nth-child(4),
     align-items: center;    /* 上下の中心を揃える */
     justify-content: space-between; /* 両端に振り分ける（左に見出し、右にフィルター） */
     margin-bottom: 10px;    /* 下のテーブルとの隙間 */
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 
@@ -407,22 +414,18 @@ th:nth-child(4),
 
 /* 検索ボタン*/
 .search-button {
-    border-radius: 0 5px 5px 0; /* 右側だけ丸く */
+    border-radius: 0 5px 5px 0;
 }
-
-/* 0件メッセージ：画像のように細い線で区切る */
-.search-no-result {
+.status-0message {
+    text-align: center;
     margin-top: 20px;
-    padding-top: 10px;
-    border-top: 1px solid #ddd;
-    font-size: 1.1em;
+    color: #616161;
 }
 
-.search-no-result p {
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.no-result-message {
+    text-align: center;
+    margin-top: 20px;
+    color: #616161;
 }
 
 /*リセットボタン*/
