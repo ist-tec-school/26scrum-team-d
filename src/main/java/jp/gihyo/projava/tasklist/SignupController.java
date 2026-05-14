@@ -7,11 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-<<<<<<< feature/TEAMD-7_TEAMD-123
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-=======
 import org.springframework.transaction.annotation.Transactional;
->>>>>>> development
 
 import java.util.List;
 import java.util.Map;
