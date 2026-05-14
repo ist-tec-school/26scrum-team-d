@@ -149,19 +149,31 @@ public class HomeController {
     }
 
     @GetMapping("/delete")
-    String deleteItem(@RequestParam("id") String id) {
+    String deleteItem(@RequestParam("id") String id,
+                      @RequestParam(value = "scope", defaultValue = "mine") String scope,
+                      @RequestParam(value = "status", defaultValue = "working_group") String status,
+                      @RequestParam(value = "projectId", defaultValue = "all") String projectId,
+                      @RequestParam(value = "deptId", defaultValue = "all") String deptId,
+                      @RequestParam(value = "sectionId", defaultValue = "all") String sectionId,
+                      @RequestParam(value = "keyword", defaultValue = "") String keyword) {
         dao.delete(id);
-        return "redirect:/list#task-list-top";
+
+        // パラメータを維持してリダイレクト
+        return String.format("redirect:/list?scope=%s&status=%s&projectId=%s&deptId=%s&sectionId=%s&keyword=%s#task-list-top",
+                scope, status, projectId, deptId, sectionId, keyword);
     }
 
     @PostMapping("/update")
     String updateItem(@Validated @ModelAttribute("taskItem") TaskItem item,
                       BindingResult result,
                       Model model,
+                      @RequestParam(value="scope", defaultValue="mine") String scope, // 追加
                       @RequestParam(value="projectId", required=false) Integer projectId,
                       @RequestParam(value="newProjectName", required=false) String newProjectName,
                       @RequestParam(value="status", defaultValue="all") String status,
-                      @RequestParam(value="keyword", defaultValue="") String keyword) {
+                      @RequestParam(value="deptId", defaultValue="all") String deptId, // 追加
+                      @RequestParam(value="sectionId", defaultValue="all") String sectionId, // 追加
+                      @RequestParam(value="keyword", defaultValue="") String keyword){
 
         // 4. バリデーションエラーの判定
         boolean isPastDate = false;
@@ -206,7 +218,8 @@ public class HomeController {
                 item.done());
 
         dao.update(updateData);
-        return "redirect:/list#task-list-top";
+        return String.format("redirect:/list?scope=%s&status=%s&projectId=%s&deptId=%s&sectionId=%s&keyword=%s#task-list-top",
+                scope, status, projectId, deptId, sectionId, keyword);
     }
 
 
