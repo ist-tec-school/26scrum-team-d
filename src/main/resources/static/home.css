@@ -2,6 +2,11 @@
 .header {
     background-color: #B0E0E6;
     padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 body {
@@ -22,30 +27,75 @@ input {
     display: none;
 }
 
-/* --- ログアウトボタン --- */
-
-div.header-container {
-    position: absolute !important;
-    top: 35px !important;
-    right: 20px !important;
-    z-index: 9999;
-}
-
-button.btn-logout {
-    background-color: #000 !important;
-    color: white !important;
-    padding: 8px 16px !important;
-    border: none !important;
+/* --- 共通ボタンベース --- */
+.btn-base {
+    display: inline-block;
+    padding: 6px 16px;
+    border: 2px solid #30575c;
     border-radius: 5px;
-    cursor: pointer !important;
-    font-size: 14px !important;
-    font-weight: bold !important;
-    transition: opacity 0.3s;
+    font-weight: bold;
+    font-size: 13px;
+    text-align: center;
+    text-decoration: none;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
 }
 
-.btn-logout:hover {
-    background-color: #333 !important;
-    opacity: 0.8 !important;
+.btn-base:hover {
+    opacity: 0.8;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+
+/* --- カラーバリエーション --- */
+.btn-primary {
+    background-color: #B0E0E6;
+    color: black;
+}
+.btn-primary:hover {
+    background-color: #8fc1c7;
+}
+
+.btn-white {
+    background-color: white;
+    color: black;
+}
+.btn-white:hover {
+    background-color: #e0e0e0;
+}
+
+
+.header h1 {
+    margin: 0;
+    white-space: nowrap;
+}
+
+.logout-area {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-left: auto;
+    gap: 10px;
+}
+
+/* ログアウトボタン */
+.btn-logout {
+    width: 100%;
+}
+
+.material-symbols-outlined {
+    font-size: 20px;
+    vertical-align: middle;
+}
+
+.login-name {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #616161;
+    font-weight: bold;
+    white-space: nowrap;
 }
 
 /* タスク入力フォーム */
@@ -61,20 +111,14 @@ button.btn-logout {
 .task_form input[type="date"], select {
     width: 200px;
 }
-
-.btn-register {
-    background-color: #B0E0E6;
-    border: 2px solid #30575c;
-    border-radius: 5px;
-    color: black;
-    margin-top: 10px;
-    font-weight: bold
+.task_form select{
+    width:100%;
+    box-sizing: border-box;
 }
 
-.btn-register:hover {
-    background-color: #8fc1c7;
-    opacity: 0.8;
-    transition: opacity 0.5s;
+/*登録ボタン*/
+.btn-register {
+    margin-top: 10px;
 }
 
 /* 1. テーブルを包んでいる親要素の設定 */
@@ -93,9 +137,9 @@ button.btn-logout {
 
 }
 .tasklist table, .tasklist th, .tasklist td {
-    border: 1px solid black; /* 枠線を引く */
-    border-collapse: collapse; /* 重なる線を一本にする */
-    padding: 8px;              /* 文字の周りに隙間を作る */
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 8px;
     vertical-align: middle;
     text-align: center;
 }
@@ -104,17 +148,20 @@ button.btn-logout {
     background-color: #f4f7f6; /* 見出しに色をつける */
 }
 
-/* 各列の幅を指定（合計で100%になるように調整、またはpx指定） */
-
 /* プロジェクト列 */
-th:nth-child(2) { width: 20%;
+th:nth-child(2) { width: 15%;
 }
 
 /* タスク列 */
-th:nth-child(3) { width: 17%;
+th:nth-child(3) { width: 12%;
 }
 
-/* --- 担当者列（4番目）の折りたたみ・共通化設定 --- */
+/* ★ここを追加（例：10%に広げる場合） */
+th:nth-child(4),
+.tasklist td:nth-child(4) {
+    width: 10% !important;
+}
+
 
 /* 判定用の目印があるセルを指マークにする */
 .tasklist td:nth-child(4).has-overflow {
@@ -162,7 +209,7 @@ th:nth-child(3) { width: 17%;
 }
 
 .tasklist td:nth-child(6) {
-    width: 30%;
+    width: 40%;
     min-width: auto;
 }
 
@@ -360,21 +407,7 @@ th:nth-child(3) { width: 17%;
 
 /* 検索ボタン*/
 .search-button {
-    background-color: #B0E0E6;
-    border: 2px solid #30575c;
-    border-radius: 0 5px 5px 0;
-    color: black;
-    padding: 6px 16px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: opacity 0.5s;
-    white-space: nowrap;
-}
-
-.search-button:hover {
-    background-color: #8fc1c7;
-    opacity: 0.8;
-    transition: opacity 0.5s;
+    border-radius: 0 5px 5px 0; /* 右側だけ丸く */
 }
 
 /* 0件メッセージ：画像のように細い線で区切る */
@@ -393,29 +426,12 @@ th:nth-child(3) { width: 17%;
 }
 
 /*リセットボタン*/
-.search_area a.reset-button{
-    padding: 6px 8px;
-    text-decoration: none;
-    background-color: #B0E0E6;
-    border: 2px solid #30575c;
-    border-radius: 5px;
-    color: black;
+.search_area a.reset-button {
     margin-left: auto;
-    font-weight: bold;
-    font-size: 14px;
-    display: inline-block;
-    white-space: nowrap;
 }
-
-.search_area a.reset-button:hover {
-    background-color: #8fc1c7;
-    opacity: 0.8;
-    transition: opacity 0.5s;
-}
-
 /* エラーメッセージのスタイル */
 .error-text {
-    color: #d93025; /* Google等のエラーで使われる赤色 */
+    color: #d93025;
     background-color: #fce8e6;
     padding: 10px;
     border-radius: 4px;
@@ -460,85 +476,85 @@ input:invalid:focus {
 }
 
 
-
 .choices {
-    width: 100% !important;
+    width: 100%;
     max-width: 400px;
-    margin: 0 !important;
+    margin: 0;
     vertical-align: middle;
     padding: 3px 0;
 }
 
-.choices__inner {
+.choices .choices__inner {
     position: relative;
-    min-height: 38px !important;
-    padding: 0 40px 0 10px !important;
-    border: 2px solid #30575c;!important;
-    border-radius: 0 !important;
-    background-color: #fff !important;
-    display: flex !important;
-    align-items: center !important;
+    min-height: 38px;
+    padding: 0 40px 0 10px;
+    border: 2px solid #30575c; /* セミコロン修正 */
+    border-radius: 0;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
     flex-wrap: wrap;
-    box-sizing: border-box !important;
-    cursor: pointer !important;
+    box-sizing: border-box;
+    cursor: pointer;
 }
 
-.is-focused .choices__inner,
-.is-open .choices__inner {
-    border: 1px solid #000 !important;
+/* 状態変化時のスタイル */
+.choices.is-focused .choices__inner,
+.choices.is-open .choices__inner {
+    border: 1px solid #000;
     z-index: 1;
 }
 
-
-.choices__input {
-    background-color: transparent !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    font-size: 14px !important;
-    min-width: 150px !important;
-    height: 100% !important;
-    display: inline-block !important;
+.choices .choices__input {
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    min-width: 150px;
+    height: 100%;
+    display: inline-block;
 }
-.choices__input::placeholder {
-    line-height: 36px !important;
+
+.choices .choices__input::placeholder {
+    line-height: 36px;
     color: #888;
 }
 
-.choices__list--multiple .choices__item {
-    background-color: #4D648D !important;
-    border: 1px solid #4D648D !important;
-    border-radius: 3px !important;
-    cursor: pointer !important;
+.choices .choices__list--multiple .choices__item {
+    background-color: #4D648D;
+    border: 1px solid #4D648D;
+    border-radius: 3px;
+    cursor: pointer;
 }
 
-.choices__list--dropdown {
-    border: 1px solid #000 !important;
-    border-top: none !important;
-    border-radius: 0 !important;
-    box-sizing: border-box !important;
-    z-index: 100 !important;
+.choices .choices__list--dropdown {
+    border: 1px solid #000;
+    border-top: none;
+    border-radius: 0;
+    box-sizing: border-box;
+    z-index: 100;
 }
 
-.choices__list--dropdown .choices__input {
-    display: block !important;
-    width: 100% !important;
-    height: 40px !important;
-    min-height: 40px !important;
-    margin: 0 !important;
-    padding: 0 15px !important;
-    border: none !important;
-    border-bottom: 1px solid #ccc !important;
-    box-sizing: border-box !important;
-    cursor: text !important;
+.choices .choices__list--dropdown .choices__input {
+    display: block;
+    width: 100%;
+    height: 40px;
+    min-height: 40px;
+    margin: 0;
+    padding: 0 15px;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    box-sizing: border-box;
+    cursor: text;
 }
 
-.choices__list--dropdown .choices__item--choice {
-    height: 35px !important;
-    min-height: 35px !important;
-    display: flex !important;
-    align-items: center !important;
-    padding: 0 15px !important;
-    cursor: pointer !important;
+.choices .choices__list--dropdown .choices__item--choice {
+    display: flex;
+    align-items: center;
+    height: 35px;
+    min-height: 35px;
+    padding: 0 15px;
+    cursor: pointer;
 }
 
 .choices::after {
@@ -640,4 +656,33 @@ input:invalid:focus {
     color: #333;
     margin-top: 5px;    /* テキストエリアとの距離を詰める（お好みで） */
     margin-bottom: 15px; /* 下のボタンとの間隔 */
+}
+
+.error-message-space {
+    grid-column: 2;          /* 入力欄と同じ列に配置 */
+    color: red;
+    font-size: 0.8em;
+    height: 1.2em;           /* 1行分の高さを固定で確保 */
+    margin-bottom: 5px;
+    visibility: hidden;      /* ★最初は非表示（でも場所は取っておく） */
+}
+
+/* 警告が出た時 */
+.error-message-space.show {
+    visibility: visible;     /* ★表示する */
+}
+/* 警告エリアの場所をあらかじめ固定する */
+#add_task_warn, #update_task_warn {
+    grid-column: 2;          /* 入力欄と同じ列 */
+    color: red;
+    font-size: 0.8em;
+    height: 1.2em;           /* ★1行分の高さを常にキープ */
+    margin-top: 2px;
+    margin-bottom: 5px;
+    visibility: hidden;      /* ★初期状態は透明（場所は取っている） */
+}
+
+/* クラス「show」がついた時だけ見えるようにする */
+#add_task_warn.show, #update_task_warn.show {
+    visibility: visible;     /* ★表示する */
 }

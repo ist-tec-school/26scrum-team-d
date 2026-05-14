@@ -5,22 +5,27 @@
     <title>タスク管理アプリケーション</title>
     <link th:href="@{/home.css}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <script th:src="@{/home.js}" defer></script>
 </head>
 <body>
 <div class="header">
+    <h1>タスク管理アプリケーション</h1>
+
 <input type="hidden" id="isUpdateError" th:value="${isUpdateError}">
-<div class="header-container">
 
     <div class="logout-area">
         <form th:action="@{/logout}" method="post">
-            <button type="submit" class="btn-logout">ログアウト</button>
+            <button type="submit" class="btn-base btn-white btn-logout">
+                ログアウト
+                <span class="material-symbols-outlined">exit_to_app</span>
+            </button>
         </form>
+        <div class="login-name">
+            ログイン中：<span th:text="${loginUserName}"></span> さん
+        </div>
     </div>
-</div>
-
-<h1>タスク管理アプリケーション</h1>
 </div>
 
 <div class="wrapper">
@@ -44,10 +49,19 @@
             </option>
         </select>
         <input type="hidden" name="newProjectName" id="add_newProjectName_hidden">
+        <div id="project_name_warn" style="color: red; font-size: 0.8em; display: none;">
+            プロジェクト名は50文字以内で入力してください。
+        </div>
         <label>タスク</label>
         <input name="task" type="text"
-               th:value="${taskItem?.task}" required/>
+               th:value="${taskItem?.task}" required
+               oninput="checkTaskLength(this, 'add_task_warn')"/>
+
+        <div id="add_task_warn">
+            タスク名は255文字以内で入力してください。
+        </div>
         <label>担当者</label>
+
         <select name="taskUserIds" id="add_task_user" multiple>
             <option th:each="user : ${userList}"
                     th:value="${user.USER_ID}"
@@ -69,7 +83,7 @@
             <option value="1">対応中</option>
             <option value="3">完了</option>
         </select>
-        <input type="submit" value="登録" class="btn-register"/>
+        <input type="submit" value="登録" class="btn-base btn-primary btn-register"/>
     </form>
 </div>
 
@@ -133,9 +147,13 @@
 
     <div class="search_area">
         <input type="text" name="keyword" th:value="${keyword}" placeholder="検索ワード タスクを検索できます。">
-        <button type="submit" class="search-button">検索</button>
+        <button type="submit" class="btn-base btn-primary search-button">検索</button>
 
-        <a th:href="@{/list#task-list-top(scope='mine', status='working_group', projectId='all', deptId='all', sectionId='all', keyword='')}" class="reset-button">
+        <a th:href="@{/list#task-list-top(scope='mine',
+                    status='working_group',
+                    projectId='all', deptId='all',
+                    sectionId='all', keyword='')}"
+                    class="btn-base btn-primary reset-button">
             条件をリセット
         </a>
 
@@ -235,9 +253,14 @@
                         th:selected="${project.id == updateItem?.projectId}"></option>
             </select>
             <input type="hidden" name="newProjectName" id="update_newProjectName_hidden">
-            <label>タスク</label>
+            <<label>タスク</label>
             <input id="update_task" name="task" type="text"
-                   th:value="${updateItem?.task}" required/>
+                   th:value="${updateItem?.task}" required
+                   oninput="checkTaskLength(this,'update_task_warn')"/>
+
+            <div id="update_task_warn">
+                タスク名は255文字以内で入力してください。
+            </div>
             <label>担当者</label>
             <select id="update_user" name="taskUserIds" multiple>
                 <option th:each="user : ${userList}"
@@ -254,7 +277,7 @@
 
             <label>説明</label>
             <textarea name="description" id="update_description" rows="4" maxlength="200"
-                      th:value="${updateItem?.description}"/></textarea>
+                      th:text="${updateItem?.description}"></textarea>
             <div id="update_count">0 / 200</div>
 
             <label>状態</label>

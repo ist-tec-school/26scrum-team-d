@@ -10,8 +10,12 @@
     <h1>タスク管理アプリケーション</h1>
 
     <div class="task_form">
-        <h2>ログイン</h2>
+        <div class="form_header">
+            <h2>ログイン</h2>
+        </div>
 
+        <div class="form_body">
+            <p th:if="${signupSuccess}" class="success-text" th:text="${signupSuccess}"></p>
         <p th:if="${param.error}" class="error-text">
             IDまたはパスワードが正しくありません。
         </p>
@@ -41,6 +45,7 @@
             <a th:href="@{/signup}" class="btn-signup">新規ユーザー登録はこちら</a>
             </div>
         </form>
+        </div>
     </div>
 </div>
 
