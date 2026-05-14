@@ -7,6 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -32,8 +34,8 @@ public class SignupController {
         return "signup";
     }
 
-
     @PostMapping("/signup")
+    @Transactional(rollbackFor = Exception.class)
     public String signup(@RequestParam String name,
                          @RequestParam("username") String email,
                          @RequestParam String password,
@@ -41,6 +43,7 @@ public class SignupController {
                          @RequestParam(required = false) String newDepartmentName,
                          @RequestParam Integer sectionId,
                          @RequestParam(required = false) String newSectionName,
+                         RedirectAttributes redirectAttributes,
                          Model model) {
         if (Integer.valueOf(0).equals(deptId) && !newDepartmentName.isBlank()) {
             if (dao.findDeptIdByName(newDepartmentName) != null) {
@@ -84,7 +87,6 @@ public class SignupController {
             hasError = true;
         }
 
-
         if (!email.endsWith("@example.com")) {
             model.addAttribute("emailError", "メールアドレスは @example.com である必要があります。");
             hasError = true;
@@ -103,8 +105,12 @@ public class SignupController {
         if (password.isBlank()) {
             model.addAttribute("passwordError", "パスワードを入力してください。");
             hasError = true;
+        }else if (password.length() < 8) {
+            model.addAttribute("passwordError", "パスワードは8文字以上で入力してください。");
+            hasError = true;
         }
 
+        // エラーがあれば、再度リストを取得して画面に戻す
         if (hasError) {
             List<Map<String, Object>> departments = dao.findAllDepartments();
             List<Map<String, Object>> sections = dao.findAllSections();
@@ -112,10 +118,12 @@ public class SignupController {
             model.addAttribute("sections", sections);
             return "signup";
         }
-
+        // パスワードを暗号化
         String encodedPassword = passwordEncoder.encode(password);
+        // DBへ保存（TaskListDaoにこのメソッドがある前提です）
         dao.createUser(name, email, encodedPassword, targetSectionId);
 
-        return "redirect:/login?register";
+        redirectAttributes.addFlashAttribute("signupSuccess", "新しいユーザーを作成しました");
+        return "redirect:/login";
     }
 }

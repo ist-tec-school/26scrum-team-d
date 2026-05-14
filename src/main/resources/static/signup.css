@@ -115,12 +115,13 @@ select {
 .footer-links a {
     color: #666;
     text-decoration: none;
-    transition: color 0.2s;
+    transition: color 0.5s;
 }
 
 .footer-links a:hover {
     color: #333;
     text-decoration: underline;
+    transition:0.5s;
 }
 
 /* エラーメッセージ用のスタイル */
@@ -132,3 +133,4 @@ select {
     font-weight: bold;
     text-align: left; /* 左寄せにして入力欄に合わせる */
 }
+

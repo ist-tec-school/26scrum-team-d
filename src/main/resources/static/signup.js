@@ -65,3 +65,17 @@ function prepareSectionForNewDept() {
     sectionSelect.disabled = false;
     handleSectionChange(sectionSelect);
 }
+
+// パスワード表示切り替え
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordInput = document.getElementById('password');
+    const toggleButton = document.getElementById('togglePassword');
+
+    if (toggleButton && passwordInput) {
+        toggleButton.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? '表示' : '非表示';
+        });
+    }
+});

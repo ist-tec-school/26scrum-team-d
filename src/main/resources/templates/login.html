@@ -15,6 +15,7 @@
         </div>
 
         <div class="form_body">
+            <p th:if="${signupSuccess}" class="success-text" th:text="${signupSuccess}"></p>
         <p th:if="${param.error}" class="error-text">
             IDまたはパスワードが正しくありません。
         </p>
@@ -32,8 +33,11 @@
 
             <div class="form-group">
                 <label for="password">パスワード</label>
+                <div class="password-wrapper">
                 <input type="password" id="password" name="password" required
                        placeholder="パスワードを入力" />
+                <button type="button" id="togglePassword" class="btn-toggle">表示</button>
+                </div>
             </div>
 
             <input type="submit" value="ログイン" class="btn-register" />
@@ -45,5 +49,6 @@
     </div>
 </div>
 
+<script th:src="@{./login.js}"></script>
 </body>
 </html>
