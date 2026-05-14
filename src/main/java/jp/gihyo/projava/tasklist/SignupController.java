@@ -7,9 +7,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.text.Normalizer;
 import java.util.List;
 import java.util.Map;
 
@@ -40,20 +41,25 @@ public class SignupController {
                          @RequestParam("username") String email,
                          @RequestParam String password,
                          @RequestParam Integer deptId,
-                         @RequestParam(required = false) String newDepartmentName,
+                         @RequestParam(required = false)String newDepartmentName,
+                         @RequestParam(required = false)String newDepartmentKana,
                          @RequestParam Integer sectionId,
                          @RequestParam(required = false) String newSectionName,
                          RedirectAttributes redirectAttributes,
                          Model model) {
-        if (Integer.valueOf(0).equals(deptId) && !newDepartmentName.isBlank()) {
-            if (dao.findDeptIdByName(newDepartmentName) != null) {
-                model.addAttribute("errorMessage", "その部署は既に登録されています。");
-                return displaySignup(model);
-            }
-        }
         Integer targetDeptId = deptId;
         if (Integer.valueOf(0).equals(deptId) && !newDepartmentName.isBlank()) {
-            targetDeptId = dao.addDepartment(newDepartmentName);
+            List<String> existingNames = dao.findAllDeptNames();
+            List<String> existingKanas = dao.findAllDeptKanas();
+            if (isDuplicateDept(newDepartmentName, existingNames) ||
+                    isDuplicateDept(newDepartmentName, existingKanas) ||
+                    isDuplicateDept(newDepartmentKana, existingNames) ||
+                    isDuplicateDept(newDepartmentKana, existingKanas)) {
+
+                model.addAttribute("errorMessage", "その部署名または読みは既に登録されています。");
+                return displaySignup(model);
+            }
+            targetDeptId = dao.addDepartment(newDepartmentName, newDepartmentKana);
         }
 
         if (Integer.valueOf(0).equals(sectionId) && !newSectionName.isBlank()) {
@@ -66,8 +72,6 @@ public class SignupController {
         if (Integer.valueOf(0).equals(sectionId) && !newSectionName.isBlank()) {
             targetSectionId = dao.addSection(newSectionName, targetDeptId);
         }
-
-        //バリデーション
 
         boolean hasError = false;
 
@@ -126,4 +130,42 @@ public class SignupController {
         redirectAttributes.addFlashAttribute("signupSuccess", "新しいユーザーを作成しました");
         return "redirect:/login";
     }
+    @GetMapping("/api/check-dept")
+    @ResponseBody
+    public Map<String, Boolean> checkDept(@RequestParam String name) {
+        List<String> existingNames = dao.findAllDeptNames();
+        List<String> existingKanas = dao.findAllDeptKanas();
+        boolean isDuplicate = isDuplicateDept(name, existingNames) || isDuplicateDept(name, existingKanas);
+
+        return Map.of("isDuplicate", isDuplicate);
+    }
+    private boolean isDuplicateDept(String newName, List<String> existingNames) {
+        String normalizedNew = normalize(newName);
+        for (String existing : existingNames) {
+            String normalizedExisting = normalize(existing);
+            if (normalizedNew.contains(normalizedExisting) || normalizedExisting.contains(normalizedNew)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String normalize(String s) {
+        if (s == null) return "";
+        String nfkc = Normalizer.normalize(s, Normalizer.Form.NFKC);
+        String lower = nfkc.toLowerCase();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < lower.length(); i++) {
+            char c = lower.charAt(i);
+            if (c >= 0x30A1 && c <= 0x30F6) {
+                sb.append((char) (c - 0x60));
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
+
+
 }

@@ -30,7 +30,8 @@ public class SecurityConfig {
                         "/h2-console/**",
                         "/login",
                         "/signup",
-                        "/register"
+                        "/register",
+                        "/api/check-dept"
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and()
