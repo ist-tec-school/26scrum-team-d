@@ -121,7 +121,6 @@ input {
     box-sizing: border-box;
 }
 
-/*登録ボタン*/
 .btn-register {
     margin-top: 10px;
 }
@@ -152,6 +151,8 @@ input {
 .tasklist th {
     background-color: #f4f7f6; /* 見出しに色をつける */
 }
+
+/* 各列の幅を指定（合計で100%になるように調整、またはpx指定） */
 
 /* プロジェクト列 */
 th:nth-child(2) { width: 15%;
@@ -295,26 +296,33 @@ th:nth-child(4),
 
 /* タスク更新ダイアログ (第18章のサンプルで使用) */
 #updateDialog {
-    display: none; /* JSで表示する際に display: flex; に切り替えます */
+    display: none; /* JSで flex に切り替えます */
     position: fixed;
     z-index: 9999;
-    left: 0;
     top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-
-    /* 真ん中に寄せるための設定 */
+    left: 0;
+    width: 100vw;  /* 幅をビューポート全体に */
+    height: 100vh; /* 高さをビューポート全体に */
+    background-color: rgba(0, 0, 0, 0.7); /* 少し暗くして視認性アップ */
     justify-content: center;
     align-items: center;
+    margin: 0;
+}
+
+/* フォームの中身がはみ出さないための安全策を追加 */
+#updateDialog .task_form form > * {
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 /* --- ダイアログ本体：2枚目のベース（二重線など）を維持 --- */
 #updateDialog .task_form {
     background-color: #FFFFFF;
-    border: 2px double #333; /* 2枚目画像の二重線 */
-    width: 500px;
-    padding: 20px;
+    border: 2px solid #30575c; /* 2枚目画像の二重線 */
+    border-radius: 8px;
+    width: 550px;
+    padding: 30px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
 }
 
 /* 文字数表示：説明入力欄のすぐ右下 */
@@ -402,6 +410,14 @@ th:nth-child(4),
     align-items: center;
     padding: 5px 10px;
     margin-bottom: 20px;
+    flex-wrap: wrap; /* ★ 追加：中身が入りきらない時に次の行へ送る */
+}
+
+/* メッセージのスタイルを修正・追加 */
+.search-no-result {
+    width: 100%;    /* ★ 追加：横幅を100%にして、ボタンを強制的に2行目へ下げる */
+    margin-bottom: 10px; /* ボタンとの間に少し隙間を作る */
+    font-size: 1.1em;
 }
 
 .search-container {
@@ -410,22 +426,38 @@ th:nth-child(4),
 
 .search-form {
     display: flex;
-    align-items: center;
+    align-items: stretch; /* 高さを揃える */
+    gap: 0;              /* ★隙間を完全にゼロにする */
 }
 
-/* キーワード検索：画像の枠線の太さに合わせる */
+/* キーワード検索：高さを36pxで固定 */
 .search_area input[type="text"] {
     width: 300px;
-    padding: 8px;
+    height: 36px;            /* ★徹底：高さを明示 */
+    padding: 0 10px;         /* 上下余白を0にして横だけに */
     border: 2px solid #30575c;
+    border-right: none;      /* ★徹底：ボタンと繋げるために右線を消す */
     border-radius: 5px 0 0 5px;
-    border-right: none;
     outline: none;
+    box-sizing: border-box;  /* 2pxの枠線を高さに含める */
+    margin: 0;               /* 外側の余白を排除 */
 }
 
 /* 検索ボタン*/
 .search-button {
+    height: 36px;            /* ★徹底：入力欄と完全に一致させる */
+    background-color: #B0E0E6;
+    border: 2px solid #30575c;
     border-radius: 0 5px 5px 0;
+    color: black;
+    padding: 0 16px;
+    cursor: pointer;
+    font-weight: bold;
+    white-space: nowrap;
+    box-sizing: border-box;  /* 2pxの枠線を高さに含める */
+    margin: 0;               /* 外側の余白を排除 */
+    display: flex;           /* 文字の上下中央揃えのため */
+    align-items: center;
 }
 .status-0message {
     text-align: center;
@@ -442,7 +474,18 @@ th:nth-child(4),
 /*リセットボタン*/
 .search_area a.reset-button {
     margin-left: auto;
+    font-weight: bold;
+    font-size: 14px;
+    display: inline-block;
+    white-space: nowrap;
 }
+
+.search_area a.reset-button:hover {
+    background-color: #8fc1c7;
+    opacity: 0.8;
+    transition: opacity 0.5s;
+}
+
 /* エラーメッセージのスタイル */
 .error-text {
     color: #d93025;

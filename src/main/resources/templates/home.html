@@ -157,6 +157,9 @@
             条件をリセット
         </a>
     </div>
+    <div th:if="${#lists.isEmpty(taskList) and (keyword != null and keyword != '')}" class="no-result-message">
+    <p style="margin-top: 10px;"> 「<span th:text="${keyword}"></span>」での検索結果 — 0件です —</p>
+</div>
 
 </form>
 
@@ -255,12 +258,11 @@
                         th:selected="${project.id == updateItem?.projectId}"></option>
             </select>
             <input type="hidden" name="newProjectName" id="update_newProjectName_hidden">
-            <<label>タスク</label>
-            <input id="update_task" name="task" type="text"
+            <label>タスク</label><input id="update_task" name="task" type="text"
                    th:value="${updateItem?.task}" required
                    oninput="checkTaskLength(this,'update_task_warn')"/>
 
-            <div id="update_task_warn">
+            <div id="update_task_warn" class="error-message-space">
                 タスク名は255文字以内で入力してください。
             </div>
             <label>担当者</label>
