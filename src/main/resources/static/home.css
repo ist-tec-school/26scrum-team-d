@@ -290,9 +290,11 @@ th:nth-child(4),
 /* --- ダイアログ本体：2枚目のベース（二重線など）を維持 --- */
 #updateDialog .task_form {
     background-color: #FFFFFF;
-    border: 2px double #333; /* 2枚目画像の二重線 */
-    width: 500px;
-    padding: 20px;
+    border: 2px solid #30575c; /* 2枚目画像の二重線 */
+    border-radius: 8px;
+    width: 550px;
+    padding: 30px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
 }
 
 /* 文字数表示：説明入力欄のすぐ右下 */
