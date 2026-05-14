@@ -42,20 +42,24 @@ public class SignupController {
                          @RequestParam String password,
                          @RequestParam Integer deptId,
                          @RequestParam(required = false)String newDepartmentName,
+                         @RequestParam(required = false)String newDepartmentKana,
                          @RequestParam Integer sectionId,
                          @RequestParam(required = false)String newSectionName,
                          RedirectAttributes redirectAttributes,
                          Model model) {
-        if (Integer.valueOf(0).equals(deptId) && !newDepartmentName.isBlank()) {
-            List<String> existingNames = dao.findAllDeptNames();
-            if (isDuplicateDept(newDepartmentName, existingNames)) {
-                model.addAttribute("errorMessage", "「" + newDepartmentName + "」に酷似した部署名が既に登録されています。");
-                return displaySignup(model);
-            }
-        }
         Integer targetDeptId = deptId;
         if (Integer.valueOf(0).equals(deptId) && !newDepartmentName.isBlank()) {
-            targetDeptId = dao.addDepartment(newDepartmentName);
+            List<String> existingNames = dao.findAllDeptNames();
+            List<String> existingKanas = dao.findAllDeptKanas();
+            if (isDuplicateDept(newDepartmentName, existingNames) ||
+                    isDuplicateDept(newDepartmentName, existingKanas) ||
+                    isDuplicateDept(newDepartmentKana, existingNames) ||
+                    isDuplicateDept(newDepartmentKana, existingKanas)) {
+
+                model.addAttribute("errorMessage", "その部署名または読みは既に登録されています。");
+                return displaySignup(model);
+            }
+            targetDeptId = dao.addDepartment(newDepartmentName, newDepartmentKana);
         }
 
         if (Integer.valueOf(0).equals(sectionId) && !newSectionName.isBlank()) {
@@ -112,7 +116,8 @@ public class SignupController {
     @ResponseBody
     public Map<String, Boolean> checkDept(@RequestParam String name) {
         List<String> existingNames = dao.findAllDeptNames();
-        boolean isDuplicate = isDuplicateDept(name, existingNames);
+        List<String> existingKanas = dao.findAllDeptKanas();
+        boolean isDuplicate = isDuplicateDept(name, existingNames) || isDuplicateDept(name, existingKanas);
 
         return Map.of("isDuplicate", isDuplicate);
     }

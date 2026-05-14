@@ -212,4 +212,17 @@ public class TaskListDao {
         String sql = "SELECT dept_name FROM departments";
         return jdbcTemplate.queryForList(sql, String.class);
     }
+    public List<String> findAllDeptKanas() {
+        String sql = "SELECT dept_kana FROM departments";
+        return jdbcTemplate.queryForList(sql, String.class);
+    }
+    public Integer addDepartment(String deptName, String deptKana) {
+        SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("departments")
+                .usingGeneratedKeyColumns("dept_id");
+        Map<String, Object> params = new HashMap<>();
+        params.put("dept_name", deptName);
+        params.put("dept_kana", deptKana);
+        return insert.executeAndReturnKey(params).intValue();
+    }
 }
