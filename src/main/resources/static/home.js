@@ -213,14 +213,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- ここからが折り畳み判定ロジック ---
-
-    // CSSの適用待ちのため少し遅延させて判定
-    // --- home.js の折り畳み判定ロジック部分 ---
     const refreshRowStatus = (row) => {
         const userCell = row.cells[3];
         const descCell = row.cells[5];
-
-        // --- 説明欄の判定 ---
         const descText = descCell?.querySelector('.desc-text');
         if (descText) {
             const style = window.getComputedStyle(descText);
@@ -228,7 +223,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const maxVisibleHeight = lineHeight * 3;
             const isDescOverflow = descText.scrollHeight > maxVisibleHeight + (lineHeight / 2);
 
-            // 説明が溢れている時だけクラスをつける（＝説明側のボタンを表示）
             if (isDescOverflow) {
                 descCell.classList.add('has-overflow');
             } else {
@@ -237,31 +231,20 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // --- 担当者欄の判定 ---
         const users = userCell?.querySelectorAll('.user-item, div:not(.more-btn)');
         if (users && users.length >= 4) {
-            // 担当者が溢れている時だけクラスをつける（＝担当者側のボタンを表示）
             userCell.classList.add('has-overflow');
         } else {
             userCell.classList.remove('has-overflow');
             userCell.classList.remove('is-expanded');
         }
     };
-    // 2. 初期設定とクリックイベントの登録
     const rows = document.querySelectorAll('.tasklist tbody tr');
     rows.forEach(row => {
         const userCell = row.cells[3];
         const descCell = row.cells[5];
 
-        // const toggleRow = () => {
-        //     // 説明または担当者のどちらかが「はみ出し状態」なら開閉を許可
-        //     if (descCell.classList.contains('has-overflow') || userCell.classList.contains('has-overflow')) {
-        //         userCell.classList.toggle('is-expanded');
-        //         descCell.classList.toggle('is-expanded');
-        //     }
-        // };
         const toggleRow = (row) => {
-            // 「どちらか」が溢れていれば、両方の開閉状態を切り替える
             if (userCell.classList.contains('has-overflow') || descCell.classList.contains('has-overflow')) {
                 userCell.classList.toggle('is-expanded');
                 descCell.classList.toggle('is-expanded');
@@ -271,11 +254,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (userCell) userCell.addEventListener('click', toggleRow);
         if (descCell) descCell.addEventListener('click', toggleRow);
 
-        // 初回実行（CSS適用を待つため少し遅らせる）
         setTimeout(() => refreshRowStatus(row), 200);
     });
 
-    // 3. リサイズ時に全行を再判定
     let resizeTimer;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
