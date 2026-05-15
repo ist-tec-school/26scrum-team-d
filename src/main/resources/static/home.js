@@ -239,21 +239,19 @@ function setupToggle(selector, instance) {
 /**
  * メイン初期化処理
  */
-let addProjectChoice = null; // ★追加：プロジェクト選択用のインスタンスを保持する変数
-let updateProjectChoice = null; // ★追加
-
 document.addEventListener('DOMContentLoaded', () => {
-    // 既存の担当者選択（addChoice, updateChoice）の初期化はそのまま ...
 
-    // プロジェクト選択（add_project）の初期化
-    const addProjectEl = document.getElementById('add_project');
-    if (addProjectEl) {
-        addProjectChoice = new Choices(addProjectEl, commonOptions);
+    // 1. Choices.js 初期化
+    const addEl = document.getElementById('add_task_user');
+    if (addEl) {
+        const addChoice = new Choices(addEl, commonOptions);
+        setupToggle('#add_task_user', addChoice);
     }
 
-    const updateProjectEl = document.getElementById('update_project');
-    if (updateProjectEl) {
-        updateProjectChoice = new Choices(updateProjectEl, commonOptions);
+    const updateEl = document.getElementById('update_user');
+    if (updateEl) {
+        updateChoice = new Choices(updateEl, commonOptions);
+        setupToggle('#update_user', updateChoice);
     }
 
     // 2. フィルタ連動の初期設定

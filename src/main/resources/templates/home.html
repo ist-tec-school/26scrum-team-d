@@ -41,6 +41,10 @@
                 onchange="handleProjectChange(this, 'add_newProjectName_hidden')">
             <option value=""></option>
             <option value="0">+ 新規で登録</option>
+            <option th:each="project : ${projectList}"
+                    th:value="${project.id}"
+                    th:text="${project.name}"
+                    th:selected="${project.id == updateItem?.projectId}"></option>
         </select>
 
         <input type="hidden" name="newProjectName" id="add_newProjectName_hidden">
