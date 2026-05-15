@@ -340,24 +340,42 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * 削除確認モーダルの制御
+ * 削除確認モーダルを表示し、ユーザーの選択結果を返す
+ * @returns {Promise<boolean>} 削除ならtrue、キャンセルならfalse
  */
-/**
- * 削除確認ダイアログを開く
- */
-function openDeleteDialog() {
-    const dialog = document.getElementById('delete-confirm-dialog');
-    if (dialog) {
-        dialog.showModal();
-    }
+function confirmDelete() {
+    const modal = document.getElementById('delete-modal');
+    modal.style.display = 'flex'; // モーダルを表示
+
+    return new Promise((resolve) => {
+        // 削除ボタンの処理
+        window.deleteModal = () => {
+            // closeDeleteModal();
+            modal.style.display = 'none';
+            resolve(true); // 実行を許可
+        };
+
+        // キャンセルボタンの処理
+        window.closeDeleteModal = () => {
+            modal.style.display = 'none'; // モーダルを非表示
+            resolve(false); // 実行をキャンセル
+        };
+    });
 }
 
 /**
- * 削除確認ダイアログを閉じる
+ * 実際に実行するメインの処理
  */
-function closeDeleteDialog() {
-    const dialog = document.getElementById('delete-confirm-dialog');
-    if (dialog) {
-        dialog.close();
+// 修正ポイント: 引数 button を受け取る
+async function handleDelete(button) {
+    // 1. クリックされたボタンが含まれる <form> を取得しておく
+    const form = button.closest('form');
+
+    // 2. モーダルの確認を待つ
+    const confirmed = await confirmDelete();
+
+    // 3. ユーザーが「削除」を押した場合のみ、JavaScriptから送信を実行
+    if (confirmed && form) {
+        form.submit();
     }
 }
