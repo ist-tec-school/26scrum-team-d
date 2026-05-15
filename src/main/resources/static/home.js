@@ -91,36 +91,109 @@ function closeUpdateDialog() {
 /**
  * プロジェクト選択時の新規登録処理
  */
+
+// モーダルを管理するための変数
+// モーダル制御用の変数をグローバルに定義
+let currentTargetId = '';
+let currentSelectEl = null;
+
+/**
+ * プロジェクト選択が変更された時の処理
+ */
 function handleProjectChange(selectElement, hiddenInputId) {
-    const selectedValue = selectElement.value;
-    const hiddenInput = document.getElementById(hiddenInputId);
-
-    if (selectedValue === '0') {
-        const inputName = prompt("新しいプロジェクト名を入力してください");
-        if (inputName && inputName.trim() !=="") {
-            const trimmedName = inputName.trim();
-
-            if (trimmedName.length > 50) {
-                alert("プロジェクト名が長すぎます（50文字以内）");
-                selectElement.value = "";
-                return;
-            }
-            hiddenInput.value = trimmedName;
-
-            const oldTemp = selectElement.querySelector('.temp-option');
-            if (oldTemp) oldTemp.remove();
-
-            // 定義した trimmedName を使う
-            const newOption = new Option(trimmedName, "0");
-            newOption.classList.add('temp-option');
-            selectElement.add(newOption, selectElement.options[2]);
-            newOption.selected = true;
-        } else {
-            selectElement.value = "";
-        }
+    if (selectElement.value === "0") {
+        // 次に値をセットすべきhiddenのIDを保存
+        currentTargetId = hiddenInputId;
+        currentSelectEl = selectElement;
+        openProjectModal();
+    } else {
+        // 既存プロジェクト選択時は隠しフィールドをクリア
+        const hiddenField = document.getElementById(hiddenInputId);
+        if (hiddenField) hiddenField.value = "";
     }
 }
 
+/**
+ * プロジェクトモーダルの「登録」ボタン
+ */
+function submitProjectModal() {
+    // 1. 入力値を取得（ID: custom_newProjectName）
+    const inputEl = document.getElementById('custom_newProjectName');
+    const name = inputEl.value.trim();
+
+    if (!name) {
+        alert("プロジェクト名を入力してください。");
+        return;
+    }
+
+    if (name.length > 50) {
+        alert("プロジェクト名は50文字以内で入力してください。");
+        return;
+    }
+
+    // 2. HTML側の hidden フィールドに値をセット
+    // ここが add_newProjectName_hidden に該当します
+    const hiddenField = document.getElementById(currentTargetId);
+    if (hiddenField) {
+        hiddenField.value = name;
+    }
+
+    // 3. セレクトボックスの見た目を更新
+    if (currentSelectEl) {
+        // 「+ 新規で登録」の文字を書き換えて、選択されていることを分かりやすくする
+        const optionZero = currentSelectEl.querySelector('option[value="0"]');
+        if (optionZero) {
+            optionZero.textContent = "新規登録: " + name;
+        }
+        currentSelectEl.value = "0"; // 値を0に固定（Daoがこれを見て新規判定するため）
+    }
+
+    // 4. モーダルを閉じる
+    closeProjectModal();
+}
+
+/**
+ * モーダルを閉じる処理
+ */
+function closeProjectModal() {
+    document.getElementById('projectModal').style.display = 'none';
+    // もし値を入れずに閉じたなら、選択をリセット
+    const hiddenField = document.getElementById(currentTargetId);
+    if (hiddenField && !hiddenField.value && currentSelectEl) {
+        currentSelectEl.value = "";
+    }
+}
+
+/**
+ * 文字数カウント
+ */
+function updateProjectCountLabel() {
+    const input = document.getElementById('custom_newProjectName');
+    const countLabel = document.getElementById('project_count');
+    const errorDiv = document.getElementById('project_error');
+    if (!input || !countLabel) return;
+
+    const len = input.value.length;
+    countLabel.textContent = `${len} / 50`;
+
+    if (len > 50) {
+        countLabel.style.color = 'red';
+        errorDiv.style.display = 'block';
+    } else {
+        countLabel.style.color = 'black';
+        errorDiv.style.display = 'none';
+    }
+}
+
+// 補助：openProjectModal
+function openProjectModal() {
+    const modal = document.getElementById('projectModal');
+    if (modal) {
+        modal.style.display = 'block';
+        document.getElementById('custom_newProjectName').value = '';
+        updateProjectCountLabel();
+    }
+}
 /**
  * 部署・課の連動フィルタリング
  */

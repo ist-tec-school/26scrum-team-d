@@ -137,11 +137,16 @@ input {
 
 /* タスク一覧 */
 .tasklist table{
+    table-layout: fixed; /* 描画速度を向上させる */
     width: 100%;
-    table-layout: fixed;
     border-collapse: collapse;
-
 }
+
+#table-view-area {
+    min-height: 100vh; /* 画面遷移時のフッター跳ね上がり防止 */
+    contain: paint; /* 描画範囲を限定し、外への影響（フォームの伸び）を抑える */
+}
+
 .tasklist table, .tasklist th, .tasklist td {
     border: 1px solid black;
     border-collapse: collapse;
@@ -744,4 +749,62 @@ input:invalid:focus {
 /* クラス「show」がついた時だけ見えるようにする */
 #add_task_warn.show, #update_task_warn.show {
     visibility: visible;     /* ★表示する */
+}
+
+/* モーダル全体の背景（暗くなる部分） */
+.modal-overlay {
+    display: none; /* 初期状態は非表示 */
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 背景を暗くする */
+}
+
+#custom_newProjectName {
+    width: 90%;
+}
+/* モーダル本体の配置 */
+.modal-content {
+    position: fixed;
+    top: 39%;
+    left: 30%;
+    width: 40%; /* 更新モーダルに合わせたサイズ */
+    align-content: center;
+    transform: scale(1.5);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 文字数カウントのスタイル */
+#project_count {
+    text-align: right;
+    font-size: 0.8em;
+    margin-top: 5px;
+    color: #666;
+}
+
+/* ボタンエリア（更新モーダルのスタイルを継承） */
+.dialog-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-cancel {
+    background-color: #999;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-cancel:hover {
+    background-color: #777;
 }
