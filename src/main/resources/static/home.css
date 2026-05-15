@@ -137,11 +137,16 @@ input {
 
 /* タスク一覧 */
 .tasklist table{
+    table-layout: fixed; /* 描画速度を向上させる */
     width: 100%;
-    table-layout: fixed;
     border-collapse: collapse;
-
 }
+
+#table-view-area {
+    min-height: 100vh; /* 画面遷移時のフッター跳ね上がり防止 */
+    contain: paint; /* 描画範囲を限定し、外への影響（フォームの伸び）を抑える */
+}
+
 .tasklist table, .tasklist th, .tasklist td {
     border: 1px solid black;
     border-collapse: collapse;
