@@ -18,7 +18,7 @@
     <div class="logout-area">
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn-base btn-white btn-logout">
-                ログアウト
+               アウト
                 <span class="material-symbols-outlined">exit_to_app</span>
             </button>
         </form>
@@ -159,7 +159,7 @@
 
 </form>
 
-<div class="tasklist" th:if="${!#lists.isEmpty(taskList)}">
+<dialog class="tasklist" th:if="${!#lists.isEmpty(taskList)}">
     <table>
         <thead>
         <tr>
@@ -221,7 +221,15 @@
                     <input type="hidden" name="deptId" th:value="${selectedDept}">
                     <input type="hidden" name="sectionId" th:value="${selectedSection}">
                     <input type="hidden" name="keyword" th:value="${keyword}">
-                    <button type="submit" onclick="return confirm('本当に削除しますか？')">削除</button>
+                    <button type="button" onclick="openDeleteDialog()">削除</button>
+
+                    <dialog id="delete-confirm-dialog" class="task_form modal-content">
+                        <label>本当に削除しますか？</label>
+                        <div class="dialog-buttons">
+                            <button type="submit" class="btn-base btn-primary">削除</button>
+                            <button type="button" class="btn-base btn-white" onclick="closeDeleteDialog()">キャンセル</button>
+                        </div>
+                    </dialog>
                 </form>
             </td>
         </tr>
@@ -309,7 +317,8 @@
         <h2>プロジェクト新規登録</h2>
         <div class="modal-body">
             <label>プロジェクト名</label>
-            <input type="text" id="custom_newProjectName" placeholder="プロジェクト名を入力してください"
+            <input type="text" id="custom_newProjectName" required
+                   placeholder="プロジェクト名を入力してください"
                    oninput="updateProjectCountLabel()">
             <div id="project_count">0 / 50</div>
             <div id="project_error" class="error-text" style="display: none;">
