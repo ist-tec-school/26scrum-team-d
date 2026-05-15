@@ -338,3 +338,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 150);
     });
 });
+
+/**
+ * 削除確認モーダルの制御
+ */
+/**
+ * 削除確認ダイアログを開く
+ */
+function openDeleteDialog() {
+    const dialog = document.getElementById('delete-confirm-dialog');
+    if (dialog) {
+        dialog.showModal();
+    }
+}
+
+/**
+ * 削除確認ダイアログを閉じる
+ */
+function closeDeleteDialog() {
+    const dialog = document.getElementById('delete-confirm-dialog');
+    if (dialog) {
+        dialog.close();
+    }
+}

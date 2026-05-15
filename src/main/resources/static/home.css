@@ -803,3 +803,8 @@ input:invalid:focus {
 .btn-cancel:hover {
     background-color: #777;
 }
+
+/*本当に削除しますか*/
+.dialog-buttons {
+    display: inline-flex;
+}
