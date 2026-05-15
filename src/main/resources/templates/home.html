@@ -37,17 +37,12 @@
 
     <form action="/add" method="post">
         <label>プロジェクト</label>
-        <select name="projectId"
-                id="add_project"
+        <select name="projectId" id="add_project"
                 onchange="handleProjectChange(this, 'add_newProjectName_hidden')">
             <option value=""></option>
             <option value="0">+ 新規で登録</option>
-            <option th:each="project : ${projectList}"
-                    th:value="${project.id}"
-                    th:text="${project.name}"
-                    th:selected="${project.id == taskItem?.projectId}">
-            </option>
         </select>
+
         <input type="hidden" name="newProjectName" id="add_newProjectName_hidden">
         <div id="project_name_warn" style="color: red; font-size: 0.8em; display: none;">
             プロジェクト名は50文字以内で入力してください。
@@ -304,5 +299,25 @@
     </div>
 </div>
 </div>
+
+<div id="projectModal" class="modal-overlay">
+    <div class="task_form modal-content">
+        <h2>プロジェクト新規登録</h2>
+        <div class="modal-body">
+            <label>プロジェクト名</label>
+            <input type="text" id="custom_newProjectName" placeholder="プロジェクト名を入力してください"
+                   oninput="updateProjectCountLabel()">
+            <div id="project_count">0 / 50</div>
+            <div id="project_error" class="error-text" style="display: none;">
+                プロジェクト名は50文字以内で入力してください。
+            </div>
+        </div>
+        <div class="dialog-buttons">
+            <button type="button" class="btn-base btn-primary" onclick="submitProjectModal()">登録</button>
+            <button type="button" class="btn-base btn-cancel" onclick="closeProjectModal()">キャンセル</button>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
