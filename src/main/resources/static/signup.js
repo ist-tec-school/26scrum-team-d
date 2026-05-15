@@ -81,21 +81,25 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    // --- 要素の取得 ---
     const newDeptInput = document.getElementById('newDepartmentName');
     const hiddenKanaInput = document.getElementById('newDepartmentKana');
-    const warningElement = document.getElementById('deptWarning');
-    const submitBtn = document.querySelector('button[type="submit"]');
 
-    /**
-     * 重複チェックを実行する共通関数
-     * @param {string} value - チェック対象の文字列（読み or 漢字）
-     */
+    if (newDeptInput) {
+        newDeptInput.addEventListener('input', (e) => {
+            const val = e.target.value;
+            if (hiddenKanaInput) {
+                hiddenKanaInput.value = val;
+            }
+            performCheck(val);
+        });
+    }
+
     function performCheck(value) {
-        if (!value || value.length === 0) {
+        const warningElement = document.getElementById('deptWarning');
+        const submitBtn = document.querySelector('button[type="submit"]');
+
+        if (!value) {
             if (warningElement) warningElement.style.display = 'none';
-            if (newDeptInput) newDeptInput.style.borderColor = '';
-            if (submitBtn) submitBtn.disabled = false;
             return;
         }
 
@@ -103,39 +107,14 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.isDuplicate) {
-                    if (warningElement) warningElement.style.display = 'block';
-                    if (newDeptInput) newDeptInput.style.borderColor = 'red';
+                    warningElement.style.display = 'block';
+                    newDeptInput.style.borderColor = 'red';
                     if (submitBtn) submitBtn.disabled = true;
                 } else {
-                    if (warningElement) warningElement.style.display = 'none';
-                    if (newDeptInput) newDeptInput.style.borderColor = '';
+                    warningElement.style.display = 'none';
+                    newDeptInput.style.borderColor = '';
                     if (submitBtn) submitBtn.disabled = false;
                 }
-            })
-            .catch(error => console.error('Error:', error));
+            });
     }
-
-    if (newDeptInput) {
-        // 1. ひらがな入力中（IME変換前）の読みをキャプチャ
-        newDeptInput.addEventListener('compositionupdate', (e) => {
-            const currentKana = e.data;
-            if (hiddenKanaInput) {
-                hiddenKanaInput.value = currentKana; // 隠しフィールドに「読み」を保存
-            }
-            performCheck(currentKana); // 読みでチェック
-        });
-
-        // 2. 確定時、または直接入力（英数字など）
-        newDeptInput.addEventListener('input', (e) => {
-            // IME変換中でないときだけ実行
-            if (!e.isComposing) {
-                const finalValue = e.target.value;
-                if (hiddenKanaInput) {
-                    hiddenKanaInput.value = finalValue;
-                }
-                performCheck(finalValue);
-            }
-        });
-    }
-
 });
