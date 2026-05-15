@@ -93,9 +93,9 @@
         <div class="filter_area">
 
             <div class="scope-toggle">
-                <a th:href="@{/list(scope='mine', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
+                <a th:href="@{/list#task-list-top(scope='mine', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
                    class="scope-btn" th:classappend="${selectedScope == 'mine'} ? 'active' : ''">自分のタスク</a>
-                <a th:href="@{/list(scope='all', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
+                <a th:href="@{/list#task-list-top(scope='all', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
                    class="scope-btn" th:classappend="${selectedScope == 'all'} ? 'active' : ''">全てのタスク</a>
             </div>
             <input type="hidden" name="scope" th:value="${selectedScope}">
@@ -213,7 +213,7 @@
                         onclick="showUpdateDialog(this)">更新</button>
             </td>
             <td>
-                <form action="/delete">
+                <form th:action="@{/delete}" method="get">
                     <input type="hidden" name="id" th:value="${task.id}">
                     <input type="hidden" name="scope" th:value="${selectedScope}">
                     <input type="hidden" name="status" th:value="${selectedStatus}">
@@ -221,7 +221,7 @@
                     <input type="hidden" name="deptId" th:value="${selectedDept}">
                     <input type="hidden" name="sectionId" th:value="${selectedSection}">
                     <input type="hidden" name="keyword" th:value="${keyword}">
-                    <button type="submit" onclick="return confirm('本当に削除しますか？')">削除</button>
+                    <button type="button" onclick="handleDelete(this)">削除</button>
                 </form>
             </td>
         </tr>
@@ -323,7 +323,18 @@
     </div>
 </div>
 
+<div id="delete-modal" class="modal-overlay">
+    <div class="task_form modal-content">
+        <h2>削除の確認</h2>
+        <div class="modal-body">
+            <p>このタスクを削除してもよろしいですか？</p>
+        </div>
+        <div class="dialog-buttons">
+            <button type="button" class="btn-base btn-primary" onclick="deleteModal()">削除</button>
+            <button type="button" class="btn-base btn-cancel" onclick="closeDeleteModal()">キャンセル</button>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
-
-
