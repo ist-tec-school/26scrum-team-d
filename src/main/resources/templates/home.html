@@ -221,7 +221,7 @@
                     <input type="hidden" name="deptId" th:value="${selectedDept}">
                     <input type="hidden" name="sectionId" th:value="${selectedSection}">
                     <input type="hidden" name="keyword" th:value="${keyword}">
-                    <button type="submit" onclick="return confirm('本当に削除しますか？')">削除</button>
+                    <button type="submit" onclick="handleDelete()">削除</button>
                 </form>
             </td>
         </tr>
@@ -323,5 +323,16 @@
     </div>
 </div>
 
+<div id="delete-modal" class="modal-overlay">
+    <div class="task_form modal-content">
+        <div class="modal-body">
+            <label>本当に削除しますか</label>
+        </div>
+        <div class="dialog-buttons">
+            <button type="button" class="btn-base btn-primary" onclick="deleteModal()">削除</button>
+            <button type="button" class="btn-base btn-primary" onclick="closeDeleteModal()">キャンセル</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>
