@@ -5,6 +5,8 @@
     <title>新規登録 - タスク管理アプリケーション</title>
     <link th:href="@{/login.css}" rel="stylesheet">
     <link th:href="@{/signup.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
     <script th:inline="javascript">
         const allSections = /*[[${sections}]]*/[];
     </script>
@@ -75,8 +77,10 @@
                            title="パスワードは8文字以上必要です"
                            placeholder="8文字以上で設定してください"
                            autocomplete="new-password"/>
-                    <button type="button" id="togglePassword" class="btn-toggle">表示</button>
-                    <p th:if="${passwordError}" class="error-msg" th:text="${passwordError}"></p>
+                    <button type="button" id="togglePassword" class="btn-toggle">
+                        <span class="material-symbols-outlined">visibility</span>
+                    </button>
+
                 </div>
                 <p th:if="${passwordError}" class="error-msg" th:text="${passwordError}"></p>
             </div>

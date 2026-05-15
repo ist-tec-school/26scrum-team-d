@@ -125,6 +125,24 @@ select {
     transition:0.5s;
 }
 
+/*PW表示切り替えボタン*/
+.btn-toggle {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #616161;
+    cursor: pointer;
+    font-size: 15px;
+    padding: 5px;
+    z-index: 10;
+}
+
+.btn-toggle:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
 /* エラーメッセージ用のスタイル */
 .error-msg {
     color: #d9534f; /* 警告用の赤色 */
