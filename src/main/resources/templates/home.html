@@ -18,7 +18,7 @@
     <div class="logout-area">
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn-base btn-white btn-logout">
-                ログアウト
+               アウト
                 <span class="material-symbols-outlined">exit_to_app</span>
             </button>
         </form>
@@ -159,7 +159,7 @@
 
 </form>
 
-<div class="tasklist" th:if="${!#lists.isEmpty(taskList)}">
+<dialog class="tasklist" th:if="${!#lists.isEmpty(taskList)}">
     <table>
         <thead>
         <tr>
@@ -309,7 +309,8 @@
         <h2>プロジェクト新規登録</h2>
         <div class="modal-body">
             <label>プロジェクト名</label>
-            <input type="text" id="custom_newProjectName" placeholder="プロジェクト名を入力してください"
+            <input type="text" id="custom_newProjectName" required
+                   placeholder="プロジェクト名を入力してください"
                    oninput="updateProjectCountLabel()">
             <div id="project_count">0 / 50</div>
             <div id="project_error" class="error-text" style="display: none;">

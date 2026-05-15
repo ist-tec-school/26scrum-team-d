@@ -1,0 +1,245 @@
+
+/* 全体基本スタイル */
+* {
+    box-sizing: border-box;
+    font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+}
+body {
+    margin: 0;
+    padding: 20px;
+    background-color: #f8f9fa;
+    color: #333333;
+}
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* タイトルエリア（会社カラーをベースに変更） */
+h1 {
+    font-size: 20pt;
+    color: #616161; /* 濃いグレー */
+    margin-top: 0;
+    margin-bottom: 20px;
+    border-bottom: 3px solid #B0E0E6; /* 会社カラー */
+    padding-bottom: 10px;
+}
+
+/* タイムスケール切り替え & フィルターエリア */
+.control-panel {
+    background-color: #f1f5f9;
+    padding: 15px 20px;
+    border-radius: 6px;
+    margin-bottom: 25px;
+    border: 1px solid #30575c; /* 枠線：濃い色 */
+}
+.panel-row {
+    display: table;
+    width: 100%;
+    margin-bottom: 12px;
+}
+.panel-row:last-child {
+    margin-bottom: 0;
+}
+.panel-row-divider {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #30575c; /* 枠線：濃い色 */
+}
+.panel-cell {
+    display: table-cell;
+    vertical-align: middle;
+    padding-right: 20px;
+}
+.panel-cell-right {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: right;
+}
+
+label {
+    font-size: 9.5pt;
+    font-weight: bold;
+    color: #616161; /* 濃いグレー */
+    margin-right: 8px;
+}
+.label-start-date {
+    color: #30575c; /* 枠線：濃い色 */
+    margin-left: 10px;
+}
+select, input[type="text"], .input-date {
+    padding: 6px 10px;
+    border: 1px solid #30575c; /* 枠線：濃い色 */
+    border-radius: 4px;
+    font-size: 9.5pt;
+    background-color: #ffffff;
+    margin-right: 15px;
+    min-width: 120px;
+}
+
+/* ボタン群（会社カラー・ホバーを反映） */
+.btn-group {
+    display: inline-block;
+    background: #e2e8f0;
+    padding: 2px;
+    border-radius: 4px;
+    margin-right: 20px;
+}
+.btn {
+    background: transparent;
+    border: none;
+    padding: 6px 14px;
+    font-size: 9.5pt;
+    font-weight: 500;
+    color: #616161; /* 濃いグレー */
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+}
+.btn:hover {
+    background-color: #8fc1c7; /* ホバー時 */
+    color: #ffffff;
+}
+.btn.active {
+    background: #B0E0E6; /* 会社カラー */
+    color: #30575c; /* 枠線：濃い色（コントラスト用） */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    font-weight: bold;
+}
+.btn-primary {
+    background: #B0E0E6; /* 会社カラー */
+    color: #30575c; /* 枠線：濃い色 */
+    border: 1px solid #30575c; /* 枠線：濃い色 */
+    padding: 7px 16px;
+    font-size: 9.5pt;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.btn-primary:hover {
+    background-color: #8fc1c7; /* ホバー時 */
+    color: #ffffff;
+}
+
+/* ガントチャートテーブル構造 */
+.gantt-wrapper {
+    overflow-x: auto;
+    border: 1px solid #30575c; /* 枠線：濃い色 */
+    border-radius: 6px;
+}
+.gantt-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+    min-width: 1100px;
+}
+
+/* ヘッダーデザイン（会社カラーと濃い枠線をマッピング） */
+.gantt-table th {
+    background-color: #B0E0E6; /* 会社カラー */
+    color: #30575c; /* 枠線：濃い色（文字のコントラスト） */
+    font-weight: bold;
+    padding: 12px 12px;
+    border: 1px solid #30575c; /* 枠線：濃い色 */
+    text-align: center;
+}
+.gantt-table th.timeline-header {
+    background-color: #30575c; /* 枠線：濃い色（メリハリを出すため背景に利用） */
+    color: #ffffff;
+    font-size: 8.5pt;
+    padding: 10px 4px;
+    width: 35px;
+    min-width: 35px;
+    border: 1px solid #ffffff;
+}
+.gantt-table th.sat-header {
+    color: #93c5fd; /* 土曜日用ライトブルー */
+}
+.gantt-table th.sun-header {
+    color: #fca5a5; /* 日曜日用ライトレッド */
+}
+
+/* 行スタイル */
+.gantt-table td {
+    padding: 8px 12px;
+    border: 1px solid #30575c; /* 枠線：濃い色 */
+    vertical-align: middle;
+    color: #333333;
+}
+
+/* プロジェクト/フェーズの大項目行 */
+.row-group {
+    background-color: #edfaff; /* 会社カラーの極薄トーン */
+    font-weight: bold;
+    color: #30575c; /* 枠線：濃い色 */
+}
+.row-group td {
+    padding: 10px 12px;
+    border-bottom: 2px solid #30575c; /* 枠線：濃い色 */
+}
+
+/* 進捗ステータスバッジ */
+.progress-cell {
+    text-align: center;
+}
+.status-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 8pt;
+    font-weight: bold;
+}
+.status-completed { background-color: #d1fae5; color: #065f46; } /* 緑 */
+.status-ing { background-color: #fef08a; color: #713f12; }       /* 黄 */
+.status-notstart { background-color: #e2e8f0; color: #475569; }  /* グレー */
+
+/* タイムラインセルの描画 */
+.chart-cell {
+    padding: 0 !important;
+    position: relative;
+    background-color: #ffffff;
+    border-right: 1px solid #e2e8f0;
+}
+.chart-cell.weekend {
+    background-color: #f8fafc;
+}
+
+/* 期間バーの表現 - 指定カラーコードの適用 */
+.bar-actual {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    right: 0;
+    height: 12px;
+    border-radius: 3px;
+    z-index: 2;
+}
+.bar-actual.completed {
+    background-color: #10b981; /* 完了：緑 */
+}
+.bar-actual.ing {
+    background-color: #eab308; /* 対応中：黄 */
+}
+.bar-actual.notstart {
+    background-color: #94a3b8; /* 未着手：グレー */
+}
+
+/* 状態テキスト配置 */
+.chart-status-text {
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+    font-size: 7pt;
+    color: #616161; /* 濃いグレー */
+    white-space: nowrap;
+    z-index: 3;
+    transform: scale(0.8);
+    transform-origin: left bottom;
+}
+gantt.css
+「gantt.css」を表示しています。
