@@ -73,9 +73,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (toggleButton && passwordInput) {
         toggleButton.addEventListener('click', function() {
+
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
-            this.textContent = type === 'password' ? '表示' : '非表示';
+
+            // 目のアイコンを切り替える
+            this.querySelector('.material-symbols-outlined').textContent = (type === 'password') ? 'visibility' : 'visibility_off';
         });
     }
 });
