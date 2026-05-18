@@ -99,10 +99,7 @@ public class GanttController {
         model.addAttribute("selectedStartDate", startDate != null ? startDate : todayStr);
 
         // ※ もしすでに別の日付ヘッダーロジックを実装済みの場合は、以下のif文は削除してください
-        if (!model.containsAttribute("timeScaleHeaders")) {
-            model.addAttribute("timeScaleHeaders", List.of("5/11", "5/12", "5/13", "5/14", "5/15", "5/16", "5/17"));
-        }
-
+        model.addAttribute("timeScaleHeaders", timeScaleHeaders);
         return "gantt";
     }
 }
