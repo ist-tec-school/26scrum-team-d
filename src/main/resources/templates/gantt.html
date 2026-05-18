@@ -29,24 +29,33 @@
             <!-- プロジェクト・部署・課フィルター要件 -->
             <div class="panel-cell-right">
                 <label>プロジェクト:</label>
-                <select>
-                    <option value="">すべて</option>
-                    <option value="p1" selected>次世代システム開発基盤PJ</option>
-                    <option value="p2">基幹リプレイスPJ</option>
+                <select name="projectId" onchange="this.form.submit()">
+                    <option value="all" th:selected="${selectedProject == 'all'}">すべてのプロジェクト</option>
+                    <option th:each="project : ${projectList}"
+                            th:value="${project.id}"
+                            th:text="${project.name}"
+                            th:selected="${selectedProject == project.id.toString()}">
+                    </option>
                 </select>
 
                 <label>部署:</label>
-                <select>
-                    <option value="">すべて</option>
-                    <option value="d1" selected>開発本部</option>
-                    <option value="d2">企画・マーケティング部</option>
+                <select name="deptId" onchange="this.form.submit()">
+                    <option value="all" th:selected="${selectedDept == 'all'}">すべての部署</option>
+                    <option th:each="dept : ${deptList}"
+                            th:value="${dept.DEPT_ID}"
+                            th:text="${dept.DEPT_NAME}"
+                            th:selected="${selectedDept == dept.DEPT_ID.toString()}">
+                    </option>
                 </select>
 
                 <label>課:</label>
-                <select>
-                    <option value="">すべて</option>
-                    <option value="s1">開発1課</option>
-                    <option value="s2">デザイン課</option>
+                <select name="sectionId" onchange="this.form.submit()">
+                    <option value="all" th:selected="${selectedSection == 'all'}">すべての課</option>
+                    <option th:each="sec : ${sectionList}"
+                            th:value="${sec.SECTION_ID}"
+                            th:text="${sec.SECTION_NAME}"
+                            th:selected="${selectedSection == sec.SECTION_ID.toString()}">
+                    </option>
                 </select>
             </div>
         </div>
