@@ -69,7 +69,7 @@
         </select>
         <label>開始予定日</label>
         <input name="startDate" type="date"
-               th:value="${taskItem?.startDate}"/>
+               th:value="${taskItem?.start_date}"/>
         <label>期限</label>
         <input name="deadline" type="date"
                th:value="${taskItem?.deadline}"
@@ -288,7 +288,7 @@
             </select>
             <label>開始予定日</label>
             <input id="update_startDate" name="startDate" type="date"
-                   th:value="${updateItem?.startDate}"/>
+                   th:value="${updateItem?.start_date}"/>
             <label>期限</label>
             <input id="update_deadline" name="deadline" type="date"
                    th:value="${updateItem?.deadline}"
