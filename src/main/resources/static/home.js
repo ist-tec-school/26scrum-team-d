@@ -56,6 +56,7 @@ function showUpdateDialog(button) {
     const description = row.cells[5].innerText;
     const statusMap = { '未着手': 0, '対応中': 1, '完了': 3 };
     const statusText = row.cells[6].innerText.trim();
+    const startDate = row.getAttribute('data-start-date');
 
     // 2. フォームに値をセット
     document.getElementById('update_id').value = id;
@@ -63,6 +64,8 @@ function showUpdateDialog(button) {
     document.getElementById('update_deadline').value = deadline;
     document.getElementById('update_description').value = description;
     document.getElementById('update_status').value = statusMap[statusText] ?? 0;
+    document.getElementById('update_start_date').value = startDate;
+
 
     const projectSelect = document.getElementById('update_project');
     if (projectSelect) projectSelect.value = projectId || '';
