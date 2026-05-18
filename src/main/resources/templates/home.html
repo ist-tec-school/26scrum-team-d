@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="ja">
 <head>
     <meta charset="UTF-8">
     <title>タスク管理アプリケーション</title>
@@ -230,7 +230,9 @@
         </tr>
         </tbody>
     </table>
+</dialog>
 </div>
+
 
     <div th:if="${keyword != null and !keyword.isEmpty() and #lists.size(taskList) == 0}"
          class="no-result-message">
