@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,13 +33,25 @@ public class GanttController {
     @GetMapping
     public String showGantt(Model model,
                             @AuthenticationPrincipal UserDetails userDetails,
+                            @RequestParam(value = "startDate", required = false) String startDateStr,
                             @RequestParam(value = "scope", defaultValue = "all") String scope,
                             @RequestParam(value = "status", defaultValue = "all") String status,
                             @RequestParam(value = "projectId", defaultValue = "all") String projectId,
                             @RequestParam(value = "deptId", defaultValue = "all") String deptId,
                             @RequestParam(value = "sectionId", defaultValue = "all") String sectionId,
                             @RequestParam(value = "keyword", defaultValue = "") String keyword,
+                            @RequestParam(value = "taskUserId", defaultValue = "all") String taskUserId, // 担当者フィルター用
                             @RequestParam(value = "startDate", required = false) String startDate) {
+        LocalDate baseDate = (startDateStr != null && !startDateStr.isEmpty())
+                ? LocalDate.parse(startDateStr)
+                : LocalDate.now();
+
+        List<String> timeScaleHeaders = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        for (int i = 0; i < 61; i++) {
+            timeScaleHeaders.add(baseDate.plusDays(i).format(formatter));
+        }
+
 
         // 1. ログイン中のユーザーIDを取得（引数の7番目で利用）
         Integer currentUserId = null;
@@ -73,9 +87,8 @@ public class GanttController {
         model.addAttribute("today", todayStr);
         model.addAttribute("selectedStartDate", startDate != null ? startDate : todayStr);
 
-        // 🚀 右側の日程表示を一旦非表示にするため、空のリストを渡す
-        model.addAttribute("timeScaleHeaders", List.of());
-
+        // ※ もしすでに別の日付ヘッダーロジックを実装済みの場合は、以下のif文は削除してください
+        model.addAttribute("timeScaleHeaders", timeScaleHeaders);
         return "gantt";
     }
 }
