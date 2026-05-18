@@ -27,7 +27,7 @@
                     <button type="button" class="btn">月</button>
                 </div>
 
-                <label class="label-start-date">表示開始日:</label>
+<!--                <label class="label-start-date">表示開始日:</label>-->
                 <input type="date"
                        name="startDate"
                        th:value="${selectedStartDate != null ? selectedStartDate : today}"
@@ -123,7 +123,7 @@
                     <div th:if="${#lists.isEmpty(task.taskUserIds)}">-</div>
                 </td>
 
-                <td class="sticky-col sticky-col-3" th:text="${task.startDate != null ? task.startDate : '-'}">2026/05/12</td>
+<!--                <td class="sticky-col sticky-col-3" th:text="${task.startDate != null ? task.startDate : '-'}">2026/05/12</td>-->
 
                 <td class="sticky-col sticky-col-4" th:text="${task.deadline}">2026/05/15</td>
 
