@@ -76,7 +76,28 @@ public class GanttController {
         List<HomeController.TaskItem> taskItems = dao.findByCondition(
                 status, projectId, deptId, sectionId, keyword, targetScope, targetUserId
         );
-        model.addAttribute("taskList", taskItems);
+        List<GanttDisplayItem> displayList = new ArrayList<>();
+        Integer lastProjectId = null;
+
+        for (HomeController.TaskItem item : taskItems) {
+            Integer currentProjectId = item.projectId();
+
+            // プロジェクトが切り替わったタイミング（または最初のループ）でプロジェクト行を生成
+            if (lastProjectId == null || !lastProjectId.equals(currentProjectId)) {
+                String projectName = (item.projectName() != null && !item.projectName().isBlank())
+                        ? item.projectName()
+                        : "プロジェクト未割当";
+
+                // プロジェクト行を追加
+                displayList.add(new GanttDisplayItem(projectName));
+                lastProjectId = currentProjectId;
+            }
+
+            // 通常のタスク行を追加
+            displayList.add(new GanttDisplayItem(item));
+        }
+
+        model.addAttribute("taskList", displayList);
 
         // 4. セレクトボックス（th:each）に表示するためのマスターデータをDBから取得してセット
         model.addAttribute("projectList", dao.findAllProjects());
@@ -101,5 +122,33 @@ public class GanttController {
         // ※ もしすでに別の日付ヘッダーロジックを実装済みの場合は、以下のif文は削除してください
         model.addAttribute("timeScaleHeaders", timeScaleHeaders);
         return "gantt";
+    }
+
+    // =================================================================
+    // 💡 【新設】ガントチャート表示専用のタスク情報保持クラス
+    // =================================================================
+    public static class GanttDisplayItem {
+        private final HomeController.TaskItem originalTask;
+        private final boolean isGroup;
+        private final String displayTitle;
+
+        // 通常タスク用のコンストラクタ
+        public GanttDisplayItem(HomeController.TaskItem task) {
+            this.originalTask = task;
+            this.isGroup = false;
+            this.displayTitle = task.task();
+        }
+
+        // プロジェクト（グループ）行用のコンストラクタ
+        public GanttDisplayItem(String projectName) {
+            this.originalTask = null;
+            this.isGroup = true;
+            this.displayTitle = projectName;
+        }
+
+        // HTML（Thymeleaf）から呼び出すためのGetter群
+        public HomeController.TaskItem getTask() { return originalTask; }
+        public boolean isGroup() { return isGroup; }
+        public String getDisplayTitle() { return displayTitle; }
     }
 }
