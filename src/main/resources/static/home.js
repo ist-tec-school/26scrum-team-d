@@ -64,11 +64,8 @@ function showUpdateDialog(button) {
     document.getElementById('update_deadline').value = deadline;
     document.getElementById('update_description').value = description;
     document.getElementById('update_status').value = statusMap[statusText] ?? 0;
+    document.getElementById('update_start_date').value = startDate;
 
-    const startDateInput = document.getElementById('update_start_date');
-    if (startDateInput) {
-        startDateInput.value = startDate || '';
-    }
 
     const projectSelect = document.getElementById('update_project');
     if (projectSelect) projectSelect.value = projectId || '';
