@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS tasklist (
     project_id INT,
     description VARCHAR(512),
     deadline VARCHAR(10),
+    start_date VARCHAR(10),
     done INT,
     FOREIGN KEY(project_id) REFERENCES projects(project_id)
 );
