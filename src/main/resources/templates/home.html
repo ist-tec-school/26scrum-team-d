@@ -18,7 +18,7 @@
     <div class="logout-area">
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn-base btn-white btn-logout">
-               アウト
+               ログアウト
                 <span class="material-symbols-outlined">exit_to_app</span>
             </button>
         </form>
@@ -89,7 +89,10 @@
 <form action="/list#task-list-top" method="get" id="mainFilterForm">
 
     <div class="list_header" id="task-list-top">
-        <h2>タスク一覧</h2>
+        <div class="title-with-btn">
+            <h2>タスク一覧</h2>
+            <a th:href="@{/gantt}" class="btn-base btn-primary gantt-link-btn">ガントチャート</a>
+        </div>
         <div class="filter_area">
 
             <div class="scope-toggle">

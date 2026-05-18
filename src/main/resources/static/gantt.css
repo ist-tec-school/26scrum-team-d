@@ -6,13 +6,40 @@
 }
 body {
     margin: 0;
-    padding: 20px;
+    padding: 0;
     background-color: #f8f9fa;
     color: #333333;
 }
+.wrapper{
+    padding: 30px;
+}
+
+.btn-base {
+    display: inline-block;
+    padding: 6px 16px;
+    border: 2px solid #30575c;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 13px;
+    text-align: center;
+    text-decoration: none;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: all 0.5s ease;
+    white-space: nowrap;
+}
+.btn-base:hover {
+    opacity: 0.8;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.btn-white {
+    background-color: #ffffff;
+    color: #30575c;
+}
+
 .container {
     max-width: 1400px;
-    margin: 0 auto;
+    margin: 30px auto;
     background: #ffffff;
     padding: 25px;
     border-radius: 8px;
@@ -131,12 +158,12 @@ select, input[type="text"], .input-date {
     overflow-x: auto;
     border: 1px solid #30575c; /* 枠線：濃い色 */
     border-radius: 6px;
+    width: 100%;
 }
 .gantt-table {
-    width: 100%;
+    width: max-content; /* テーブルが潰れないように中身の最大幅を維持（100%から変更） */
     border-collapse: collapse;
     font-size: 9pt;
-    min-width: 1100px;
 }
 
 /* ヘッダーデザイン（会社カラーと濃い枠線をマッピング） */
@@ -148,21 +175,34 @@ select, input[type="text"], .input-date {
     border: 1px solid #30575c; /* 枠線：濃い色 */
     text-align: center;
 }
+
 .gantt-table th.timeline-header {
     background-color: #30575c; /* 枠線：濃い色（メリハリを出すため背景に利用） */
     color: #ffffff;
     font-size: 8.5pt;
     padding: 10px 4px;
-    width: 35px;
-    min-width: 35px;
+    min-width: 60px; /* スケール切り替えに備えて35pxから60pxへ拡張 */
     border: 1px solid #ffffff;
+    text-align: center;
+    position: relative;
+    z-index: 3; /* 💡 固定列(z-index:4)の下を潜り抜けさせる */
 }
-.gantt-table th.sat-header {
-    color: #93c5fd; /* 土曜日用ライトブルー */
+
+.gantt-table .sticky-col {
+    position: sticky;
+    z-index: 4; /* 期間バー(z-index:2)やヘッダーの上に確実に重ねる */
 }
-.gantt-table th.sun-header {
-    color: #fca5a5; /* 日曜日用ライトレッド */
-}
+
+/* thとtdで背景色を既存のデザイン（会社カラー / 白）に合わせる */
+th.sticky-col { background-color: #B0E0E6; }
+td.sticky-col { background-color: #ffffff; }
+
+/* 簡潔な幅と位置の指定 */
+.sticky-col-1 { width: 320px; left: 0px; }
+.sticky-col-2 { width: 120px; left: 320px; }
+.sticky-col-3 { width: 110px; left: 440px; }
+.sticky-col-4 { width: 110px; left: 550px; }
+.sticky-col-5 { width: 100px; left: 660px; }
 
 /* 行スタイル */
 .gantt-table td {
@@ -174,13 +214,16 @@ select, input[type="text"], .input-date {
 
 /* プロジェクト/フェーズの大項目行 */
 .row-group {
-    background-color: #edfaff; /* 会社カラーの極薄トーン */
     font-weight: bold;
-    color: #30575c; /* 枠線：濃い色 */
+    color: #30575c;
 }
 .row-group td {
     padding: 10px 12px;
-    border-bottom: 2px solid #30575c; /* 枠線：濃い色 */
+    border-bottom: 2px solid #30575c;
+    position: sticky;        /* 💡 追加：横スクロールしても背景色が途切れないように固定 */
+    left: 0;
+    background-color: #edfaff; /* 💡 td自体に背景色を適用（透け防止） */
+    z-index: 1;
 }
 
 /* 進捗ステータスバッジ */
@@ -194,10 +237,6 @@ select, input[type="text"], .input-date {
     font-size: 8pt;
     font-weight: bold;
 }
-.status-completed { background-color: #d1fae5; color: #065f46; } /* 緑 */
-.status-ing { background-color: #fef08a; color: #713f12; }       /* 黄 */
-.status-notstart { background-color: #e2e8f0; color: #475569; }  /* グレー */
-
 /* タイムラインセルの描画 */
 .chart-cell {
     padding: 0 !important;
@@ -219,15 +258,9 @@ select, input[type="text"], .input-date {
     border-radius: 3px;
     z-index: 2;
 }
-.bar-actual.completed {
-    background-color: #10b981; /* 完了：緑 */
-}
-.bar-actual.ing {
-    background-color: #eab308; /* 対応中：黄 */
-}
-.bar-actual.notstart {
-    background-color: #94a3b8; /* 未着手：グレー */
-}
+.bar-actual.bar-todo    { background-color: #94a3b8; } /* 未着手：グレー */
+.bar-actual.bar-working { background-color: #eab308; } /* 対応中：黄 */
+.bar-actual.bar-done    { background-color: #10b981; } /* 完了：緑 */
 
 /* 状態テキスト配置 */
 .chart-status-text {
@@ -241,5 +274,18 @@ select, input[type="text"], .input-date {
     transform: scale(0.8);
     transform-origin: left bottom;
 }
-gantt.css
-「gantt.css」を表示しています。
+
+.container {
+    position: relative;
+}
+
+.btn-back-top {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+}
+
+.col-title { width: 320px; }
+.col-owner { width: 120px; }
+.col-date { width: 110px; }
+.col-status { width: 100px; }
