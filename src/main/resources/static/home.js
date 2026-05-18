@@ -65,6 +65,7 @@ function showUpdateDialog(button) {
     document.getElementById('update_description').value = description;
     document.getElementById('update_status').value = statusMap[statusText] ?? 0;
     document.getElementById('update_start_date').value = startDate;
+    updateDateConstraints('update');
 
 
     const projectSelect = document.getElementById('update_project');
@@ -81,7 +82,32 @@ function showUpdateDialog(button) {
 
     // 5. ダイアログの表示
     dialog.style.left = "";
-    dialog.style.display = 'flex';
+    dialog.style.display = 'flex'
+}
+
+/**
+ * @param {string} prefix 'add' または 'update'
+ */
+function updateDateConstraints(prefix) {
+    const startInput = document.getElementById(prefix === 'add' ? 'add_startDate' : 'update_start_date');
+    const deadlineInput = document.getElementById(prefix === 'add' ? 'add_deadline' : 'update_deadline');
+
+    if (!startInput || !deadlineInput) return;
+    const today = new Date().toISOString().split('T')[0];
+
+    if (startInput.value) {
+        if (startInput.value > today) {
+            deadlineInput.min = startInput.value;
+        } else {
+            deadlineInput.min = today;
+        }
+    } else {
+        deadlineInput.min = today;
+    }
+
+    if (deadlineInput.value) {
+        startInput.max = deadlineInput.value;
+    }
 }
 
 /**
