@@ -6,13 +6,40 @@
 }
 body {
     margin: 0;
-    padding: 20px;
+    padding: 0;
     background-color: #f8f9fa;
     color: #333333;
 }
+.wrapper{
+    padding: 30px;
+}
+
+.btn-base {
+    display: inline-block;
+    padding: 6px 16px;
+    border: 2px solid #30575c;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 13px;
+    text-align: center;
+    text-decoration: none;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: all 0.5s ease;
+    white-space: nowrap;
+}
+.btn-base:hover {
+    opacity: 0.8;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.btn-white {
+    background-color: #ffffff;
+    color: #30575c;
+}
+
 .container {
     max-width: 1400px;
-    margin: 0 auto;
+    margin: 30px auto;
     background: #ffffff;
     padding: 25px;
     border-radius: 8px;
@@ -241,5 +268,18 @@ select, input[type="text"], .input-date {
     transform: scale(0.8);
     transform-origin: left bottom;
 }
-gantt.css
-「gantt.css」を表示しています。
+
+.container {
+    position: relative;
+}
+
+.btn-back-top {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+}
+
+.col-title { width: 320px; }
+.col-owner { width: 120px; }
+.col-date { width: 110px; }
+.col-status { width: 100px; }
