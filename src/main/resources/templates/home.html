@@ -68,14 +68,16 @@
             </option>
         </select>
         <label>開始予定日</label>
-        <input name="start_date" type="date"
+        <input id="add_startDate" name="start_date" type="date"
                th:value="${taskItem?.start_date}"
-                required/>
+                required
+               onchange="updateDateConstraints('add')"/>
         <label>期限</label>
-        <input name="deadline" type="date"
+        <input id="add_deadline" name="deadline" type="date"
                th:value="${taskItem?.deadline}"
                th:min="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
-               required/>
+               required
+               onchange="updateDateConstraints('add')"/>
         <label>説明</label>
         <textarea name="description" id="add_description" rows="4" maxlength="200"></textarea>
         <div id="add_count" >0 / 200</div>
@@ -291,12 +293,14 @@
             <label>開始予定日</label>
             <input id="update_start_date" name="start_date" type="date"
                    th:value="${updateItem?.start_date}"
-                    required/>
+                    required
+                   onchange="updateDateConstraints('update')"/>
             <label>期限</label>
             <input id="update_deadline" name="deadline" type="date"
                    th:value="${updateItem?.deadline}"
                    th:min="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
-                   required/>
+                   required
+                   onchange="updateDateConstraints('update')"/>
 
             <label>説明</label>
             <textarea name="description" id="update_description" rows="4" maxlength="200"
