@@ -61,7 +61,7 @@
         </div>
 
         <div class="panel-row panel-row-divider">
-            <!-- 状態フィルター ＆ 担当者フィルター -->
+            <!-- 状態・担当者フィルター -->
             <div class="panel-cell">
                 <label>状態:</label>
                 <select>
@@ -88,100 +88,45 @@
         <table class="gantt-table">
             <thead>
             <tr>
-                <th style="width: 320px;">タスクのタイトル</th>
-                <th style="width: 120px;">担当者</th>
-                <th style="width: 110px;">開始日</th>
-                <th style="width: 110px;">終了日</th>
-                <th style="width: 100px;">状態</th>
-                <!-- タイムラインヘッダー（日付直マッピング・連続） -->
-                <th class="timeline-header">5/11</th>
-                <th class="timeline-header">5/12</th>
-                <th class="timeline-header">5/13</th>
-                <th class="timeline-header">5/14</th>
-                <th class="timeline-header">5/15</th>
-                <th class="timeline-header sat-header">5/16</th>
-                <th class="timeline-header sun-header">5/17</th>
-                <th class="timeline-header">5/18</th>
-                <th class="timeline-header">5/19</th>
-                <th class="timeline-header">5/20</th>
-                <th class="timeline-header">5/21</th>
-                <th class="timeline-header">5/22</th>
-                <th class="timeline-header sat-header">5/23</th>
-                <th class="timeline-header sun-header">5/24</th>
-                <th class="timeline-header">5/25</th>
+                <th class="gantt-header-title sticky-col sticky-col-1">タスクのタイトル</th>
+                <th class="gantt-header-user sticky-col sticky-col-2">担当者</th>
+                <th class="gantt-header-date sticky-col sticky-col-3">開始日</th>
+                <th class="gantt-header-date sticky-col sticky-col-4">終了日</th>
+                <th class="gantt-header-status sticky-col sticky-col-5">状態</th>
+
+                <th th:each="headerLabel : ${timeScaleHeaders}"
+                    class="timeline-header"
+                    th:text="${headerLabel}">
+                    5/11
+                </th>
             </tr>
             </thead>
             <tbody>
-            <!-- グループ 1 -->
-            <tr class="row-group">
-                <td colspan="20">プロジェクトの概念化と開始</td>
-            </tr>
-            <tr>
-                <td>プロジェクト憲章の作成</td>
-                <td>山田 太郎</td>
-                <td>2026/05/12</td>
-                <td>2026/05/15</td>
-                <td class="progress-cell"><span class="status-badge status-completed">完了</span></td>
-                <!-- タイムライン描画表示 -->
-                <td class="chart-cell"></td>
-                <td class="chart-cell"><div class="bar-actual completed"></div><span class="chart-status-text">完了</span></td>
-                <td class="chart-cell"><div class="bar-actual completed"></div></td>
-                <td class="chart-cell"><div class="bar-actual completed"></div></td>
-                <td class="chart-cell"><div class="bar-actual completed"></div></td>
-                <td class="chart-cell weekend"></td>
-                <td class="chart-cell weekend"></td>
-                <td class="chart-cell"></td><td class="chart-cell"></td><td class="chart-cell"></td><td class="chart-cell"></td><td class="chart-cell"></td><td class="chart-cell weekend"></td><td class="chart-cell weekend"></td><td class="chart-cell"></td>
-            </tr>
-            <tr>
-                <td>要件リサーチと分析</td>
-                <td>佐藤 美咲</td>
-                <td>2026/05/15</td>
-                <td>2026/05/21</td>
-                <td class="progress-cell"><span class="status-badge status-ing">対応中</span></td>
-                <!-- タイムライン -->
-                <td class="chart-cell"></td><td class="chart-cell"></td><td class="chart-cell"></td><td class="chart-cell"></td>
-                <td class="chart-cell"><div class="bar-actual ing"></div><span class="chart-status-text">対応中</span></td>
-                <td class="chart-cell weekend"><div class="bar-actual ing"></div></td>
-                <td class="chart-cell weekend"><div class="bar-actual ing"></div></td>
-                <td class="chart-cell"><div class="bar-actual ing"></div></td>
-                <td class="chart-cell"><div class="bar-actual ing"></div></td>
-                <td class="chart-cell"><div class="bar-actual ing"></div></td>
-                <td class="chart-cell"><div class="bar-actual ing"></div></td>
-                <td class="chart-cell"></td><td class="chart-cell weekend"></td><td class="chart-cell weekend"></td><td class="chart-cell"></td>
-            </tr>
-            <tr>
-                <td>ステークホルダー確認</td>
-                <td>鈴木 一郎</td>
-                <td>2026/05/19</td>
-                <td>2026/05/22</td>
-                <td class="progress-cell"><span class="status-badge status-ing">対応中</span></td>
-                <!-- タイムライン -->
-                <td class="chart-cell"></td><td class="chart-cell"></td><td class="chart-cell"></td><td class="chart-cell"></td><td class="chart-cell"></td><td class="chart-cell weekend"></td><td class="chart-cell weekend"></td>
-                <td class="chart-cell"></td>
-                <td class="chart-cell"><div class="bar-actual ing"></div><span class="chart-status-text">対応中</span></td>
-                <td class="chart-cell"><div class="bar-actual ing"></div></td>
-                <td class="chart-cell"><div class="bar-actual ing"></div></td>
-                <td class="chart-cell"><div class="bar-actual ing"></div></td>
-                <td class="chart-cell weekend"></td><td class="chart-cell weekend"></td><td class="chart-cell"></td>
-            </tr>
+            <tr th:each="task : ${taskList}">
+                <td th:text="${task.task}"></td>
 
-            <!-- グループ 2 -->
-            <tr class="row-group">
-                <td colspan="20">プロジェクトの定義と計画</td>
-            </tr>
-            <tr>
-                <td>スコープと目標の設定</td>
-                <td>山田 太郎</td>
-                <td>2026/05/22</td>
-                <td>2026/05/27</td>
-                <td class="progress-cell"><span class="status-badge status-notstart">未着手</span></td>
-                <!-- タイムライン -->
-                <td class="chart-cell"></td><td class="chart-cell"></td><td class="chart-cell"></td><td class="chart-cell"></td><td class="chart-cell"></td><td class="chart-cell weekend"></td><td class="chart-cell weekend"></td>
-                <td class="chart-cell"></td><td class="chart-cell"></td><td class="chart-cell"></td><td class="chart-cell"></td>
-                <td class="chart-cell"><div class="bar-actual notstart"></div><span class="chart-status-text">未着手</span></td>
-                <td class="chart-cell weekend"><div class="bar-actual notstart"></div></td>
-                <td class="chart-cell weekend"><div class="bar-actual notstart"></div></td>
-                <td class="chart-cell"><div class="bar-actual notstart"></div></td>
+                <td class="user-cell">
+                    <th:block th:each="uid : ${task.taskUserIds}">
+                        <div th:each="user : ${userList}" th:if="${user.USER_ID == uid}" th:text="${user.NAME}"></div>
+                    </th:block>
+                    <div th:if="${#lists.isEmpty(task.taskUserIds)}">-</div>
+                </td>
+
+                <td th:text="${task.startDate != null ? task.startDate : '-'}">2026/05/12</td>
+
+                <td th:text="${task.deadline}">2026/05/15</td>
+
+                <td th:switch="${task.done}">
+                    <span th:case="0" class="status-badge status-notstart">未着手</span>
+                    <span th:case="1" class="status-badge status-ing">対応中</span>
+                    <span th:case="3" class="status-badge status-completed">完了</span>
+                </td>
+
+                <td class="chart-cell">
+                    <div class="bar-actual"
+                         th:classappend="${task.done == 0} ? 'notstart' : (${task.done == 1} ? 'ing' : 'completed')">
+                    </div>
+                </td>
             </tr>
             </tbody>
         </table>
