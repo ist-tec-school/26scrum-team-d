@@ -7,7 +7,6 @@ License: CC0 1.0 Universal
 */
 package jp.gihyo.projava.tasklist;
 
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +23,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Map;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -41,7 +39,8 @@ public class HomeController {
             String projectName,
             @Size(max=200)String description,
             @NotBlank String deadline,
-            Integer done
+            Integer done,
+            String start_date
     ) {}
 
     private List<TaskItem> taskItems = new ArrayList<>();
@@ -87,7 +86,7 @@ public class HomeController {
         model.addAttribute("selectedDept", deptId);
         model.addAttribute("selectedSection", sectionId);
         model.addAttribute("keyword", keyword);
-        model.addAttribute("taskItem", new TaskItem("", "", List.of(), null, "", "", "", 0));
+        model.addAttribute("taskItem", new TaskItem("", "", List.of(), null, "", "", "", 0,""));
         // listItems メソッド内
         String today = java.time.LocalDate.now().toString();
         String twoDaysLater = java.time.LocalDate.now().plusDays(2).toString();
@@ -156,7 +155,8 @@ public class HomeController {
                 "",
                 item.description(),
                 item.deadline(),
-                item.done()
+                item.done(),
+                item.start_date()
         );
 
         dao.add(newItem);
@@ -244,7 +244,9 @@ public class HomeController {
                 "",              // projectName (更新時は空文字またはDAOで取得)
                 item.description(),
                 item.deadline(),
-                item.done());
+                item.done(),
+                item.start_date()
+        );
 
         dao.update(updateData);
         // 1. まず日本語のキーワードを安全な形式に変換する
