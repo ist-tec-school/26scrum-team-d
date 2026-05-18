@@ -13,7 +13,7 @@
     <h1>ガントチャート</h1>
 
     <!-- コントロールパネル（タイムスケール切り替え、開始日表示選択 ＆ 5軸フィルター） -->
-    <form action="/list#task-list-top" method="get" id="mainFilterForm">
+    <form action="/gantt" method="get" id="mainFilterForm">
         <input type="hidden" name="scope" th:value="${selectedScope}">
         <input type="hidden" name="keyword" th:value="${keyword}">
 

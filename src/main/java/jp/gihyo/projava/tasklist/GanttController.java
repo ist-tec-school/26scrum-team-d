@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -21,10 +22,11 @@ public class GanttController {
     public GanttController(TaskListDao dao){
         this.dao = dao;
     }
+
     /**
      * ガントチャート画面を表示する
      * URL: http://localhost:8080/gantt
-     * * @return templates/gantt.html
+     * @return templates/gantt.html
      */
     @GetMapping
     public String showGantt(Model model,
@@ -34,11 +36,43 @@ public class GanttController {
                             @RequestParam(value = "projectId", defaultValue = "all") String projectId,
                             @RequestParam(value = "deptId", defaultValue = "all") String deptId,
                             @RequestParam(value = "sectionId", defaultValue = "all") String sectionId,
-                            @RequestParam(value = "keyword", defaultValue = "") String keyword) {
+                            @RequestParam(value = "keyword", defaultValue = "") String keyword,
+                            @RequestParam(value = "startDate", required = false) String startDate) {
 
-        List<HomeController.TaskItem> taskItems = dao.findByCondition("all", "all", "all", "all", "", "all", null);
+        // 1. ログイン中のユーザーIDを取得（引数の7番目で利用）
+        Integer currentUserId = null;
+        if (userDetails != null) {
+            Map<String, Object> user = dao.findUserByEmail(userDetails.getUsername());
+            if (user != null && user.get("user_id") != null) {
+                currentUserId = ((Number) user.get("user_id")).intValue();
+            }
+        }
 
+        // 2. 画面から送られてきた5軸条件でSQLを実行（固定値の "all" から変数に変更）
+        List<HomeController.TaskItem> taskItems = dao.findByCondition(
+                status, projectId, deptId, sectionId, keyword, scope, currentUserId
+        );
         model.addAttribute("taskList", taskItems);
+
+        // 3. セレクトボックスを表示するための各マスターデータをDBから取得してセット
+        model.addAttribute("projectList", dao.findAllProjects());
+        model.addAttribute("deptList", dao.findAllDepartments());
+        model.addAttribute("sectionList", dao.findAllSections());
+        model.addAttribute("userList", dao.findAllUsers());
+
+        // 4. 現在選ばれているフィルターの値を画面に戻す（選択状態をキープするため）
+        model.addAttribute("selectedScope", scope);
+        model.addAttribute("selectedStatus", status);
+        model.addAttribute("selectedProject", projectId);
+        model.addAttribute("selectedDept", deptId);
+        model.addAttribute("selectedSection", sectionId);
+        model.addAttribute("keyword", keyword);
+
+        // 5. 日程表示用の初期設定（プルした日付の仕組みを引き継ぎます）
+        String todayStr = LocalDate.now().toString();
+        model.addAttribute("today", todayStr);
+        model.addAttribute("selectedStartDate", startDate != null ? startDate : todayStr);
+        model.addAttribute("timeScaleHeaders", List.of());
 
         return "gantt";
     }
