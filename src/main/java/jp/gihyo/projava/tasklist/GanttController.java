@@ -53,7 +53,7 @@ public class GanttController {
         }
 
 
-        // 1. ログインユーザーのIDを取得（「自分のタスク」絞り込み用）
+        // 1. ログイン中のユーザーIDを取得（引数の7番目で利用）
         Integer currentUserId = null;
         if (userDetails != null) {
             Map<String, Object> user = dao.findUserByEmail(userDetails.getUsername());
@@ -62,38 +62,27 @@ public class GanttController {
             }
         }
 
-        // 2. 担当者フィルターとscopeの連動ロジック
-        String targetScope = scope;
-        Integer targetUserId = currentUserId;
-
-        // 「担当者」セレクトボックスで特定のユーザーが選ばれた場合、DAOの「mine」の仕組みを流用してその人で絞り込む
-        if (!"all".equals(taskUserId)) {
-            targetScope = "mine";
-            targetUserId = Integer.parseInt(taskUserId);
-        }
-
-        // 3. 選択された条件をそのままDAOに引き渡して、タスクをSQLで絞り込む
+        // 2. 画面から送られてきた5軸条件でSQLを実行
         List<HomeController.TaskItem> taskItems = dao.findByCondition(
-                status, projectId, deptId, sectionId, keyword, targetScope, targetUserId
+                status, projectId, deptId, sectionId, keyword, scope, currentUserId
         );
         model.addAttribute("taskList", taskItems);
 
-        // 4. セレクトボックス（th:each）に表示するためのマスターデータをDBから取得してセット
+        // 3. セレクトボックスを表示するための各マスターデータをDBから取得してセット
         model.addAttribute("projectList", dao.findAllProjects());
         model.addAttribute("deptList", dao.findAllDepartments());
         model.addAttribute("sectionList", dao.findAllSections());
         model.addAttribute("userList", dao.findAllUsers());
 
-        // 5. 現在選択されているフィルターの値をセット（th:selected で選択状態を維持するため）
+        // 4. 現在選ばれているフィルターの値を画面に戻す（選択状態をキープするため）
         model.addAttribute("selectedScope", scope);
         model.addAttribute("selectedStatus", status);
         model.addAttribute("selectedProject", projectId);
         model.addAttribute("selectedDept", deptId);
         model.addAttribute("selectedSection", sectionId);
-        model.addAttribute("selectedTaskUserId", taskUserId);
         model.addAttribute("keyword", keyword);
 
-        // 6. タイムライン表示に必要な日付の初期値をセット（画面エラー防止）
+        // 5. 日程表示用の初期設定
         String todayStr = LocalDate.now().toString();
         model.addAttribute("today", todayStr);
         model.addAttribute("selectedStartDate", startDate != null ? startDate : todayStr);
