@@ -5,6 +5,7 @@
     <title>ガントチャート</title>
     <link rel="stylesheet" th:href="@{/home.css}">
     <link rel="stylesheet" th:href="@{/gantt.css}">
+    <script th:src="@{/gantt.js}" defer></script>
 </head>
 <body>
 
@@ -116,11 +117,13 @@
                 <th class="sticky-col sticky-col-4 col-edate">終了日</th>
                 <th class="sticky-col sticky-col-5 col-status">状態</th>
 
-                <th th:each="headerLabel : ${timeScaleHeaders}"
-                    class="timeline-header"
-                    th:text="${headerLabel}">
-                    5/11
-                </th>
+                <th:block th:each="headerLabel : ${timeScaleHeaders}">
+                    <th class="timeline-header"
+                        th:data-date="${headerLabel}"
+                        th:text="${#strings.length(headerLabel) >= 10 ? #strings.replace(#strings.substring(headerLabel, 5, 10), '-', '/') : headerLabel}">
+                        05/12
+                    </th>
+                </th:block>
             </tr>
             </thead>
                 <tbody>
@@ -144,10 +147,10 @@
 
                     <th:block th:each="headerLabel : ${timeScaleHeaders}">
                         <th:block th:with="
-                    isInPeriod=${task.start_date != null && task.deadline != null && headerLabel >= task.start_date && headerLabel <= task.deadline},
-                    isDeadlineDay=${headerLabel == task.deadline}">
+                            isInPeriod=${task.start_date != null && task.deadline != null && headerLabel >= task.start_date && headerLabel <= task.deadline},
+                            isDeadlineDay=${headerLabel == task.deadline}">
 
-                            <td class="chart-cell" th:classappend="${#strings.contains(headerLabel, 'Sat') || #strings.contains(headerLabel, 'Sun')} ? 'weekend'">
+                            <td class="chart-cell" th:data-date="${headerLabel}">
 
                                 <div th:if="${isInPeriod}"
                                      class="bar-actual"
