@@ -1,96 +1,109 @@
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>ガントチャート</title>
+    <link rel="stylesheet" th:href="@{/home.css}">
     <link rel="stylesheet" th:href="@{/gantt.css}">
 </head>
 <body>
 
 <div class="container">
-    <a th:href="@{/list}" class="btn-base btn-white btn-back-top">戻る</a>
 
     <h1>ガントチャート</h1>
+    <a th:href="@{/list}" class="btn-base btn-white btn-back-top">タスク一覧に戻る</a>
 
     <!-- コントロールパネル（タイムスケール切り替え、開始日表示選択 ＆ 5軸フィルター） -->
     <form action="/gantt" method="get" id="mainFilterForm">
         <input type="hidden" name="scope" th:value="${selectedScope}">
         <input type="hidden" name="keyword" th:value="${keyword}">
 
-    <div class="control-panel">
-        <div class="panel-row">
-            <div class="panel-cell">
+    <div class="list_header">
+        <div class="time-scale">
                 <label>タイムスケール表示切替:</label>
                 <div class="btn-group">
                     <button type="button" class="btn active">日</button>
                     <button type="button" class="btn">週</button>
                     <button type="button" class="btn">月</button>
                 </div>
-
                 <label class="label-start-date">表示開始日:</label>
                 <input type="date"
-                       name="startDate"
+                       name="start_date"
                        th:value="${selectedStartDate != null ? selectedStartDate : today}"
                        class="input-date"
                        onchange="this.form.submit()">
             </div>
 
-            <!-- プロジェクト・部署・課フィルター要件 -->
-            <div class="panel-cell-right">
-                <label>プロジェクト:</label>
-                <select name="projectId" onchange="this.form.submit()">
-                    <option value="all" th:selected="${selectedProject == 'all'}">すべてのプロジェクト</option>
-                    <option th:each="project : ${projectList}"
-                            th:value="${project.id}"
-                            th:text="${project.name}"
-                            th:selected="${selectedProject == project.id.toString()}">
-                    </option>
-                </select>
+                <div class="list_header" id="task-list-top">
 
-                <label>部署:</label>
-                <select name="deptId" onchange="this.form.submit()">
-                    <option value="all" th:selected="${selectedDept == 'all'}">すべての部署</option>
-                    <option th:each="dept : ${deptList}"
-                            th:value="${dept.DEPT_ID}"
-                            th:text="${dept.DEPT_NAME}"
-                            th:selected="${selectedDept == dept.DEPT_ID.toString()}">
-                    </option>
-                </select>
+                    <div class="filter_area">
+                        <div class="scope-toggle">
+                            <a th:href="@{/list#task-list-top(scope='mine', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
+                               class="scope-btn" th:classappend="${selectedScope == 'mine'} ? 'active' : ''">自分のタスク</a>
+                            <a th:href="@{/list#task-list-top(scope='all', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
+                               class="scope-btn" th:classappend="${selectedScope == 'all'} ? 'active' : ''">全てのタスク</a>
+                        </div>
+                        <input type="hidden" name="scope" th:value="${selectedScope}">
 
-                <label>課:</label>
-                <select name="sectionId" onchange="this.form.submit()">
-                    <option value="all" th:selected="${selectedSection == 'all'}">すべての課</option>
-                    <option th:each="sec : ${sectionList}"
-                            th:value="${sec.SECTION_ID}"
-                            th:text="${sec.SECTION_NAME}"
-                            th:selected="${selectedSection == sec.SECTION_ID.toString()}">
-                    </option>
-                </select>
+                        <select name="status" id="status-filter" onchange="this.form.submit()">
+                            <option value="working_group" th:selected="${selectedStatus == 'working_group'}">未完了のタスク</option>
+                            <option value="3" th:selected="${selectedStatus == '3'}">完了済みのタスク</option>
+                            <option value="all" th:selected="${selectedStatus == 'all'}">すべてのタスク</option>
+                        </select>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div class="panel-row panel-row-divider">
-            <!-- 状態・担当者フィルター -->
-            <div class="panel-cell">
-                <label>状態:</label>
-                <select name="status" id="status-filter" onchange="this.form.submit()">
-                    <option value="working_group" th:selected="${selectedStatus == 'working_group'}">未完了のタスク</option>
-                    <option value="3" th:selected="${selectedStatus == '3'}">完了済みのタスク</option>
-                    <option value="all" th:selected="${selectedStatus == 'all'}">すべてのタスク</option>
-                </select>
+                <div class="filter_container">
+                    <div class="filter_item">
+                        <select name="deptId" onchange="this.form.submit()">
+                            <option value="all" th:selected="${selectedDept == 'all'}">すべての部署</option>
+                            <option th:each="dept : ${deptList}"
+                                    th:value="${dept.DEPT_ID}"
+                                    th:text="${dept.DEPT_NAME}"
+                                    th:selected="${selectedDept == dept.DEPT_ID.toString()}">
+                            </option>
+                        </select>
+                    </div>
 
-                <label>担当者:</label>
-                <select name="taskUserId" onchange="this.form.submit()">
-                    <option value="all" th:selected="${selectedTaskUserId == 'all'}">すべて</option>
-                    <option th:each="user : ${userList}"
-                            th:value="${user.USER_ID}"
-                            th:text="${user.NAME}"
-                            th:selected="${selectedTaskUserId == user.USER_ID.toString()}">
-                    </option>
-                </select>
-            </div>
-        </div>
-    </div>
+                    <div class="filter_item">
+                        <select name="sectionId" onchange="this.form.submit()">
+                            <option value="all" th:selected="${selectedSection == 'all'}">すべての課</option>
+                            <option th:each="sec : ${sectionList}"
+                                    th:value="${sec.SECTION_ID}"
+                                    th:text="${sec.SECTION_NAME}"
+                                    th:data-dept="${sec.DEPT_ID}"
+                                    th:selected="${selectedSection == sec.SECTION_ID.toString()}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="filter_item">
+                        <select name="projectId" onchange="this.form.submit()">
+                            <option value="all" th:selected="${selectedProject == 'all'}">すべてのプロジェクト</option>
+                            <option th:each="project : ${projectList}"
+                                    th:value="${project.id}"
+                                    th:text="${project.name}"
+                                    th:selected="${selectedProject == project.id.toString()}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="search_area">
+                    <input type="text" name="keyword" th:value="${keyword}" placeholder="検索ワード タスクを検索できます。">
+                    <button type="submit" class="btn-base btn-primary search-button">検索</button>
+
+                    <a th:href="@{/list#task-list-top(scope='mine',
+                    status='working_group',
+                    projectId='all', deptId='all',
+                    sectionId='all', keyword='')}"
+                       class="btn-base btn-primary reset-button">
+                        条件をリセット
+                    </a>
+                </div>
+
+            </form>
 
     <!-- ガントチャート本体 -->
     <div class="gantt-wrapper">
@@ -146,7 +159,6 @@
             </tbody>
         </table>
     </div>
-    </form>
 </div>
 
 
