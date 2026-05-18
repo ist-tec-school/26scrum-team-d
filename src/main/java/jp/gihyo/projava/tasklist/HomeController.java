@@ -134,9 +134,7 @@ public class HomeController {
             model.addAttribute("projectList", dao.findAllProjects());
             model.addAttribute("selectedStatus", status);
             model.addAttribute("keyword", keyword);
-            if (isInvalidDateOrder) {
-                return "home";
-            }
+
             String msg = "入力内容に不備があります";
             if(isPastDate){
                 msg = "過去の日付は入力できません";
