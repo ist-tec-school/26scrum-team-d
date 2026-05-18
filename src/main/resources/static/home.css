@@ -362,7 +362,7 @@ th:nth-child(4),
     display: flex;          /* 横並びにする */
     align-items: center;    /* 上下の中心を揃える */
     justify-content: space-between; /* 両端に振り分ける（左に見出し、右にフィルター） */
-    margin-bottom: 10px;    /* 下のテーブルとの隙間 */
+    margin: 10px;
     flex-wrap: wrap;
     gap: 15px;
 }
