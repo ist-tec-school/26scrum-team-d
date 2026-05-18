@@ -14,18 +14,18 @@
     <a th:href="@{/list}" class="btn-base btn-white btn-back-top">タスク一覧に戻る</a>
 
     <!-- コントロールパネル（タイムスケール切り替え、開始日表示選択 ＆ 5軸フィルター） -->
-    <form action="/list#task-list-top" method="get" id="mainFilterForm">
+    <form action="/gantt" method="get" id="mainFilterForm">
         <input type="hidden" name="scope" th:value="${selectedScope}">
         <input type="hidden" name="keyword" th:value="${keyword}">
 
-            <div class="list_header">
-                <div class="time-scale">
-                    <label>タイムスケール表示切替:</label>
-                    <div class="btn-group">
-                        <button type="button" class="btn active">日</button>
-                        <button type="button" class="btn">週</button>
-                        <button type="button" class="btn">月</button>
-                    </div>
+    <div class="list_header">
+        <div class="time-scale">
+                <label>タイムスケール表示切替:</label>
+                <div class="btn-group">
+                    <button type="button" class="btn active">日</button>
+                    <button type="button" class="btn">週</button>
+                    <button type="button" class="btn">月</button>
+                </div>
                 <label class="label-start-date">表示開始日:</label>
                 <input type="date"
                        name="start_date"

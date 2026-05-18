@@ -67,6 +67,10 @@
                     th:text="${user.NAME}">
             </option>
         </select>
+        <label>開始予定日</label>
+        <input name="start_date" type="date"
+               th:value="${taskItem?.start_date}"
+                required/>
         <label>期限</label>
         <input name="deadline" type="date"
                th:value="${taskItem?.deadline}"
@@ -184,7 +188,8 @@
                     ${task.deadline < today} ? 'task-overdue-urgent' :
                     (${task.deadline <= twoDaysLater} ? 'task-warning' : '')
                 ) : ''
-            )">
+            )"
+            th:data-start-date="${task.start_date}">
             <td class="hidden" th:text="${task.id}"></td>
             <td th:text="${task.projectName}" th:data-project-id="${task.projectId}">プロジェクト名</td>
             <td th:text="${task.task}"></td>
@@ -283,6 +288,10 @@
                         th:selected="${selectedUserIds != null && selectedUserIds.contains(user.USER_ID)}">
                 </option>
             </select>
+            <label>開始予定日</label>
+            <input id="update_start_date" name="start_date" type="date"
+                   th:value="${updateItem?.start_date}"
+                    required/>
             <label>期限</label>
             <input id="update_deadline" name="deadline" type="date"
                    th:value="${updateItem?.deadline}"
