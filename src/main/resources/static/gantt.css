@@ -14,29 +14,6 @@ body {
     padding: 30px;
 }
 
-.btn-base {
-    display: inline-block;
-    padding: 6px 16px;
-    border: 2px solid #30575c;
-    border-radius: 5px;
-    font-weight: bold;
-    font-size: 13px;
-    text-align: center;
-    text-decoration: none;
-    box-sizing: border-box;
-    cursor: pointer;
-    transition: all 0.5s ease;
-    white-space: nowrap;
-}
-.btn-base:hover {
-    opacity: 0.8;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-.btn-white {
-    background-color: #ffffff;
-    color: #30575c;
-}
-
 .container {
     max-width: 1400px;
     margin: 30px auto;
@@ -51,106 +28,84 @@ h1 {
     font-size: 20pt;
     color: #616161; /* 濃いグレー */
     margin-top: 0;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     border-bottom: 3px solid #B0E0E6; /* 会社カラー */
     padding-bottom: 10px;
 }
 
-/* タイムスケール切り替え & フィルターエリア */
-.control-panel {
-    background-color: #f1f5f9;
-    padding: 15px 20px;
-    border-radius: 6px;
-    margin-bottom: 25px;
-    border: 1px solid #30575c; /* 枠線：濃い色 */
-}
-.panel-row {
-    display: table;
-    width: 100%;
-    margin-bottom: 12px;
-}
-.panel-row:last-child {
-    margin-bottom: 0;
-}
-.panel-row-divider {
+.btn-back-top {
+    display: block;
+    width: max-content;   /* ボタンが横一杯に広がらないように、文字幅に合わせる */
+    margin-left: auto;
     margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px dashed #30575c; /* 枠線：濃い色 */
-}
-.panel-cell {
-    display: table-cell;
-    vertical-align: middle;
-    padding-right: 20px;
-}
-.panel-cell-right {
-    display: table-cell;
-    vertical-align: middle;
-    text-align: right;
-}
-
-label {
+    margin-bottom: 20px;
     font-size: 9.5pt;
     font-weight: bold;
-    color: #616161; /* 濃いグレー */
+}
+
+/* タイムスケール切り替え & フィルターエリア */
+/* タイムスケールと表示開始日の親コンテナ */
+.time-scale {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap; /* 画面幅が非常に狭くなったときにここも安全に折り返す */
+    gap: 15px;       /* ボタングループと「表示開始日」の間の隙間 */
+}
+
+/* タイムスケール内のラベル共通 */
+.time-scale label {
+    font-size: 9.5pt;
+    font-weight: bold;
+    color: #616161;
     margin-right: 8px;
+    white-space: nowrap; /* ラベルの途中改行を防止 */
 }
-.label-start-date {
-    color: #30575c; /* 枠線：濃い色 */
-    margin-left: 10px;
+
+/* 表示開始日のラベル（左側の余白をgapで制御するため、既存の設定がある場合は上書き） */
+.time-scale .label-start-date {
+    margin-left: 5px; /* ボタングループとの距離を微調整 */
+    color: #616161;   /* 他のラベルと色味を統一 */
 }
-select, input[type="text"], .input-date {
-    padding: 6px 10px;
-    border: 1px solid #30575c; /* 枠線：濃い色 */
+
+/* 日・週・月のボタングループ */
+.time-scale .btn-group {
+    display: inline-flex;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid #ced4da;
+}
+
+/* 切り替えボタンの基本スタイル */
+.time-scale .btn {
+    background-color: #ffffff;
+    border: none;
+    border-right: 1px solid #ced4da;
+    padding: 6px 14px;
+    font-size: 9.5pt;
+    color: #495057;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.time-scale .btn:last-child {
+    border-right: none; /* 一番右のボタンの枠線を消す */
+}
+
+/* 「週」など、アクティブ（選択中）なボタンのスタイル */
+.time-scale .btn.active {
+    background-color: #7ba6bc; /* スクショの選択色（くすみブルー）に適合 */
+    color: #ffffff;
+    font-weight: bold;
+}
+
+/* 日付入力欄（input type="date"）の微調整 */
+.time-scale .input-date {
+    padding: 5px 10px;
+    border: 1px solid black;
     border-radius: 4px;
     font-size: 9.5pt;
     background-color: #ffffff;
-    margin-right: 15px;
-    min-width: 120px;
-}
-
-/* ボタン群（会社カラー・ホバーを反映） */
-.btn-group {
-    display: inline-block;
-    background: #e2e8f0;
-    padding: 2px;
-    border-radius: 4px;
-    margin-right: 20px;
-}
-.btn {
-    background: transparent;
-    border: none;
-    padding: 6px 14px;
-    font-size: 9.5pt;
-    font-weight: 500;
-    color: #616161; /* 濃いグレー */
-    cursor: pointer;
-    border-radius: 3px;
-    transition: background-color 0.2s;
-}
-.btn:hover {
-    background-color: #8fc1c7; /* ホバー時 */
-    color: #ffffff;
-}
-.btn.active {
-    background: #B0E0E6; /* 会社カラー */
-    color: #30575c; /* 枠線：濃い色（コントラスト用） */
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    font-weight: bold;
-}
-.btn-primary {
-    background: #B0E0E6; /* 会社カラー */
-    color: #30575c; /* 枠線：濃い色 */
-    border: 1px solid #30575c; /* 枠線：濃い色 */
-    padding: 7px 16px;
-    font-size: 9.5pt;
-    font-weight: bold;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-.btn-primary:hover {
-    background-color: #8fc1c7; /* ホバー時 */
-    color: #ffffff;
+    outline: none;
 }
 
 /* ガントチャートテーブル構造 */
@@ -319,9 +274,4 @@ th.sticky-col-5 { z-index: 121 !important; }
     position: relative;
 }
 
-.btn-back-top {
-    position: absolute;
-    top: 25px;
-    right: 25px;
-}
 
