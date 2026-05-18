@@ -88,7 +88,7 @@ public class HomeController {
         model.addAttribute("selectedDept", deptId);
         model.addAttribute("selectedSection", sectionId);
         model.addAttribute("keyword", keyword);
-        model.addAttribute("taskItem", new TaskItem("", "", List.of(), null, "", "", "", 0));
+        model.addAttribute("taskItem", new TaskItem("", "", List.of(), null, "", "", "", "",0));
         // listItems メソッド内
         String today = java.time.LocalDate.now().toString();
         String twoDaysLater = java.time.LocalDate.now().plusDays(2).toString();
@@ -157,6 +157,7 @@ public class HomeController {
                 "",
                 item.description(),
                 item.deadline(),
+                item.startDate(),
                 item.done()
         );
 
@@ -245,6 +246,7 @@ public class HomeController {
                 "",              // projectName (更新時は空文字またはDAOで取得)
                 item.description(),
                 item.deadline(),
+                item.startDate(),
                 item.done());
 
         dao.update(updateData);
