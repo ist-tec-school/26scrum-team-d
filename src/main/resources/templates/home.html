@@ -67,6 +67,9 @@
                     th:text="${user.NAME}">
             </option>
         </select>
+        <label>開始予定日</label>
+        <input name="startDate" type="date"
+               th:value="${taskItem?.startDate}"/>
         <label>期限</label>
         <input name="deadline" type="date"
                th:value="${taskItem?.deadline}"
@@ -278,6 +281,9 @@
                         th:selected="${selectedUserIds != null && selectedUserIds.contains(user.USER_ID)}">
                 </option>
             </select>
+            <label>開始予定日</label>
+            <input id="update_startDate" name="startDate" type="date"
+                   th:value="${updateItem?.startDate}"/>
             <label>期限</label>
             <input id="update_deadline" name="deadline" type="date"
                    th:value="${updateItem?.deadline}"

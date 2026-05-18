@@ -24,9 +24,9 @@ public class TaskListDao {
     @Transactional
     public void add(TaskItem taskItem) {
         jdbcTemplate.update(
-                "INSERT INTO tasklist (id, task, project_id, description, deadline, done) VALUES (?, ?, ?, ?, ?, ?)",
+                "INSERT INTO tasklist (id, task, project_id, description, deadline, start_date, done) VALUES (?, ?, ?, ?, ?, ?, ?)",
                 taskItem.id(), taskItem.task(), taskItem.projectId(),
-                taskItem.description(), taskItem.deadline(), taskItem.done()
+                taskItem.description(), taskItem.deadline(), taskItem.startDate(),taskItem.done()
         );
 
         if (taskItem.taskUserIds() != null) {
@@ -117,8 +117,8 @@ public class TaskListDao {
     @Transactional
     public int update(TaskItem taskItem) {
         int number = jdbcTemplate.update(
-                "UPDATE tasklist SET task = ?, project_id = ?, description = ?, deadline = ?, done = ? WHERE id = ?",
-                taskItem.task(), taskItem.projectId(), taskItem.description(), taskItem.deadline(), taskItem.done(), taskItem.id());
+                "UPDATE tasklist SET task = ?, project_id = ?, description = ?, deadline = ?,  start_date = ?, done = ? WHERE id = ?",
+                taskItem.task(), taskItem.projectId(), taskItem.description(), taskItem.deadline(), taskItem.startDate(), taskItem.done(), taskItem.id());
 
         jdbcTemplate.update("DELETE FROM task_assignments WHERE task_id = ?", taskItem.id());
         if (taskItem.taskUserIds() != null) {
