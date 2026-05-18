@@ -248,6 +248,7 @@ public class HomeController {
                 item.start_date()
         );
 
+
         dao.update(updateData);
         // 1. まず日本語のキーワードを安全な形式に変換する
         String encodedKeyword = java.net.URLEncoder.encode(keyword, java.nio.charset.StandardCharsets.UTF_8);
