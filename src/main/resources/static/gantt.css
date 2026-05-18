@@ -109,76 +109,116 @@ h1 {
 }
 
 /* ガントチャートテーブル構造 */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
 .gantt-wrapper {
-    overflow-x: auto;
-    border: 1px solid #30575c; /* 枠線：濃い色 */
+    overflow: auto;
+    max-height: 600px;
+    border: 1px solid #30575c;
     border-radius: 6px;
     width: 100%;
+    position: relative;
 }
 .gantt-table {
-    width: max-content; /* テーブルが潰れないように中身の最大幅を維持（100%から変更） */
-    border-collapse: collapse;
+    width: max-content;
+    border-collapse: separate;
+    border-spacing: 0;
     font-size: 9pt;
 }
 
-/* ヘッダーデザイン（会社カラーと濃い枠線をマッピング） */
+.col-title  { width: 320px; min-width: 160px; max-width: 160px; }
+.col-owner  { width: 120px; min-width: 100px; max-width: 100px; }
+.col-sdate  { width: 100px; min-width: 100px; max-width: 100px; }
+.col-edate  { width: 100px; min-width: 100px; max-width: 100px; }
+.col-status { width: 50px; min-width: 10px; max-width: 100px; }
+
 .gantt-table th {
-    background-color: #B0E0E6; /* 会社カラー */
-    color: #30575c; /* 枠線：濃い色（文字のコントラスト） */
+    position:sticky;
+    top:0;
+    background-color: #B0E0E6;
+    color: #30575c;
     font-weight: bold;
     padding: 12px 12px;
-    border: 1px solid #30575c; /* 枠線：濃い色 */
+    border-right: 1px solid #30575c;
+    border-bottom: 1px solid #30575c;
     text-align: center;
+    box-sizing: border-box;
+    z-index: 120;
 }
 
 .gantt-table th.timeline-header {
-    background-color: #30575c; /* 枠線：濃い色（メリハリを出すため背景に利用） */
+    position: sticky;
+    top: 0;
+    background-color: #30575c;
     color: #ffffff;
     font-size: 8.5pt;
     padding: 10px 4px;
-    min-width: 60px; /* スケール切り替えに備えて35pxから60pxへ拡張 */
-    border: 1px solid #ffffff;
+    min-width: 60px;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #30575c;
     text-align: center;
-    position: relative;
-    z-index: 3; /* 💡 固定列(z-index:4)の下を潜り抜けさせる */
+    z-index: 119;
 }
 
 .gantt-table .sticky-col {
     position: sticky;
-    z-index: 4; /* 期間バー(z-index:2)やヘッダーの上に確実に重ねる */
+    z-index: 100;
+    box-sizing: border-box;
 }
 
-/* thとtdで背景色を既存のデザイン（会社カラー / 白）に合わせる */
-th.sticky-col { background-color: #B0E0E6; }
-td.sticky-col { background-color: #ffffff; }
+th.sticky-col {
+    position: sticky !important;
+    top: 0 !important;
+    background-color: #B0E0E6;
+    border-right: 1px solid #30575c !important;
+    border-bottom: 1px solid #30575c !important;
+    z-index: 125 !important;
+}
+td.sticky-col {
+    background-color: #ffffff;
+    border-right: 1px solid #30575c !important;
+    border-bottom: 1px solid #30575c !important;
+    z-index: 100;
+}
 
-/* 簡潔な幅と位置の指定 */
-.sticky-col-1 { width: 320px; left: 0px; }
-.sticky-col-2 { width: 120px; left: 320px; }
-.sticky-col-3 { width: 110px; left: 440px; }
-.sticky-col-4 { width: 110px; left: 550px; }
-.sticky-col-5 { width: 100px; left: 660px; }
+.sticky-col-1 { left: 0; text-align: center;}
+.sticky-col-2 { left: 160px; text-align: center;}
+.sticky-col-3 { left: 260px; text-align: center;}
+.sticky-col-4 { left: 360px; text-align: center;}
+.sticky-col-5 {
+    left: 460px;
+    box-shadow: 4px 0 8px -4px rgba(0,0,0,0.15);
+    text-align: center;
+}
+th.sticky-col-1 { z-index: 125 !important; }
+th.sticky-col-2 { z-index: 124 !important; }
+th.sticky-col-3 { z-index: 123 !important; }
+th.sticky-col-4 { z-index: 122 !important; }
+th.sticky-col-5 { z-index: 121 !important; }
 
-/* 行スタイル */
 .gantt-table td {
     padding: 8px 12px;
-    border: 1px solid #30575c; /* 枠線：濃い色 */
+    border-right: 1px solid #30575c;
+    border-bottom: 1px solid #30575c;
     vertical-align: middle;
     color: #333333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* プロジェクト/フェーズの大項目行 */
 .row-group {
     font-weight: bold;
     color: #30575c;
 }
 .row-group td {
-    padding: 10px 12px;
     border-bottom: 2px solid #30575c;
-    position: sticky;        /* 💡 追加：横スクロールしても背景色が途切れないように固定 */
+    position: sticky;
     left: 0;
-    background-color: #edfaff; /* 💡 td自体に背景色を適用（透け防止） */
-    z-index: 1;
+    background-color: #edfaff;
+    z-index: 110;
 }
 
 /* 進捗ステータスバッジ */
@@ -221,20 +261,17 @@ td.sticky-col { background-color: #ffffff; }
 .chart-status-text {
     position: absolute;
     bottom: 2px;
-    left: 2px;
-    font-size: 7pt;
+    left: 50%;
+    font-size: 8pt;
     color: #616161; /* 濃いグレー */
     white-space: nowrap;
-    z-index: 3;
+    z-index: 10;
     transform: scale(0.8);
-    transform-origin: left bottom;
+    transform-origin: right bottom;
 }
 
 .container {
     position: relative;
 }
 
-.col-title { width: 320px; }
-.col-owner { width: 120px; }
-.col-date { width: 110px; }
-.col-status { width: 100px; }
+
