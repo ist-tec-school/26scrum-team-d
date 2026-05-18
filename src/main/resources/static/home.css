@@ -825,26 +825,16 @@ input:invalid:focus {
     display: inline-flex;
 }
 
-/* 「タスク一覧」見出しとガントチャートボタンを横並びにする設定 */
-.title-with-btn {
+/* タブメニュー全体のコンテナ */
+.page-tabs {
     display: flex;
     align-items: center;
-    gap: 15px; /* 見出しとボタンの間の隙間 */
+    margin-bottom: 25px;
+    padding-left: 10px;
+    margin-top: 10px;
+    gap: 40px;
 }
 
-.title-with-btn h2 {
-    margin: 0; /* 余計な余白をリセットして高さを揃える */
-}
-
-/* ガントチャートボタン単体の見た目調整（検索ボタン等のデザインに合わせる） */
-.gantt-link-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none; /* 下線を消す */
-    font-size: 14px;
-    font-weight: bold;
-    padding: 6px 15px;
-    height: auto;
-    white-space: nowrap;
+.gantt.tab{
+    font-size: 14px;!important;
 }
