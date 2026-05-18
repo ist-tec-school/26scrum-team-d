@@ -40,7 +40,7 @@ public class HomeController {
             @Size(max=200)String description,
             @NotBlank String deadline,
             Integer done,
-            String start_date
+            @NotBlank String start_date
     ) {}
 
     private List<TaskItem> taskItems = new ArrayList<>();
