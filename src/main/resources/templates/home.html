@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="ja">
 <head>
     <meta charset="UTF-8">
     <title>タスク管理アプリケーション</title>
@@ -92,7 +92,10 @@
 <form action="/list#task-list-top" method="get" id="mainFilterForm">
 
     <div class="list_header" id="task-list-top">
-        <h2>タスク一覧</h2>
+        <div class="title-with-btn">
+            <h2>タスク一覧</h2>
+            <a th:href="@{/gantt}" class="btn-base btn-primary gantt-link-btn">ガントチャート</a>
+        </div>
         <div class="filter_area">
 
             <div class="scope-toggle">
@@ -230,7 +233,9 @@
         </tr>
         </tbody>
     </table>
+</dialog>
 </div>
+
 
     <div th:if="${keyword != null and !keyword.isEmpty() and #lists.size(taskList) == 0}"
          class="no-result-message">

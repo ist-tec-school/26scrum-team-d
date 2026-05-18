@@ -24,9 +24,10 @@ public class TaskListDao {
     @Transactional
     public void add(TaskItem taskItem) {
         jdbcTemplate.update(
-                "INSERT INTO tasklist (id, task, project_id, description, deadline, start_date, done) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO tasklist (id, task, project_id, description, deadline, done,start_date) VALUES (?, ?, ?, ?, ?, ?,?)",
                 taskItem.id(), taskItem.task(), taskItem.projectId(),
-                taskItem.description(), taskItem.deadline(), taskItem.startDate(),taskItem.done()
+                taskItem.description(), taskItem.deadline(), taskItem.done(),
+                taskItem.start_date()
         );
 
         if (taskItem.taskUserIds() != null) {
@@ -117,8 +118,8 @@ public class TaskListDao {
     @Transactional
     public int update(TaskItem taskItem) {
         int number = jdbcTemplate.update(
-                "UPDATE tasklist SET task = ?, project_id = ?, description = ?, deadline = ?,  start_date = ?, done = ? WHERE id = ?",
-                taskItem.task(), taskItem.projectId(), taskItem.description(), taskItem.deadline(), taskItem.startDate(), taskItem.done(), taskItem.id());
+                "UPDATE tasklist SET task = ?, project_id = ?, description = ?, deadline = ?, done = ?, start_date = ? WHERE id = ?",
+                taskItem.task(), taskItem.projectId(), taskItem.description(), taskItem.deadline(), taskItem.done(), taskItem.start_date(), taskItem.id());
 
         jdbcTemplate.update("DELETE FROM task_assignments WHERE task_id = ?", taskItem.id());
         if (taskItem.taskUserIds() != null) {
@@ -167,8 +168,8 @@ public class TaskListDao {
                             row.get("project_name") != null ? row.get("project_name").toString() : "未割当",
                             row.get("description") != null ? row.get("description").toString() : "",
                             row.get("deadline").toString(),
-                            row.get("start_date") != null ? row.get("start_date").toString() : "",
-                            ((Number) row.get("done")).intValue()
+                            ((Number) row.get("done")).intValue(),
+                            row.get("start_date")!=null?row.get("start_date").toString():""
                     );
                 })
                 .toList();
