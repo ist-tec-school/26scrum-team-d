@@ -32,6 +32,18 @@ input {
     display: none;
 }
 
+dialog {
+    position: relative;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    border: none;
+    padding: 1em;
+    margin: 0;
+    background: none;
+}
+
 /* --- 共通ボタンベース --- */
 .btn-base {
     display: inline-block;
@@ -247,7 +259,6 @@ th:nth-child(4),
     cursor: pointer;
 }
 
-/* --- home.css の既存の場所付近を修正 --- */
 
 /* 全文表示ではない（溢れている）時：「全文を開く」を表示 */
 .tasklist td:nth-child(6).has-overflow:not(.is-expanded)::after {
