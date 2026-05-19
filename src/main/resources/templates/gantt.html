@@ -18,19 +18,26 @@
     <form action="/gantt" method="get" id="mainFilterForm">
     <div class="list_header">
         <div class="time-scale">
-                <label>タイムスケール表示切替:</label>
-                <div class="btn-group">
-                    <button type="button" class="btn active">日</button>
-                    <button type="button" class="btn">週</button>
-                    <button type="button" class="btn">月</button>
-                </div>
-                <label class="label-start-date">表示開始日:</label>
-                <input type="date"
-                       name="startDate"
-                       th:value="${selectedStartDate != null ? selectedStartDate : today}"
-                       class="input-date"
-                       onchange="this.form.submit()">
+            <label>タイムスケール表示切替:</label>
+            <input type="hidden" name="timeScale" id="timeScaleInput" th:value="${selectedTimeScale != null ? selectedTimeScale : 'day'}">
+            <div class="btn-group" id="timeScaleBtnGroup">
+                <button type="button" class="btn"
+                        th:classappend="${selectedTimeScale == 'day' || selectedTimeScale == null} ? 'active' : ''"
+                        data-scale="day">日</button>
+                <button type="button" class="btn"
+                        th:classappend="${selectedTimeScale == 'week'} ? 'active' : ''"
+                        data-scale="week">週</button>
+                <button type="button" class="btn"
+                        th:classappend="${selectedTimeScale == 'month'} ? 'active' : ''"
+                        data-scale="month">月</button>
             </div>
+            <label class="label-start-date">表示開始日:</label>
+            <input type="date"
+                   name="startDate"
+                   th:value="${selectedStartDate != null ? selectedStartDate : today}"
+                   class="input-date"
+                   onchange="this.form.submit()">
+        </div>
 
                 <div class="list_header">
 
@@ -114,10 +121,8 @@
                 <th class="sticky-col sticky-col-5 col-status">状態</th>
 
                 <th:block th:each="headerLabel : ${timeScaleHeaders}">
-                    <th class="timeline-header"
-                        th:data-date="${headerLabel}"
-                        th:text="${#strings.length(headerLabel) >= 10 ? #strings.replace(#strings.substring(headerLabel, 5, 10), '-', '/') : headerLabel}">
-                        05/12
+                    <th class="timeline-header" th:data-date="${headerLabel}" th:text="${headerLabel}">
+                        2026-05-12
                     </th>
                 </th:block>
             </tr>
@@ -126,7 +131,7 @@
             <th:block th:each="item : ${taskList}">
                 <tr th:if="${item.isGroup}" class="row-group">
                     <td colspan="5" class="group-title-cell">
-                        <span th:text="${item.displayTitle}">プロジェクト名</span>
+                        <span th:text="${item.displayTitle}">プロジェクト名</span></td>
                     <td th:colspan="${5 + #lists.size(timeScaleHeaders)}" class="group-empty-cell"></td>
                 </tr>
 
@@ -149,25 +154,12 @@
                     </td>
 
                     <th:block th:each="headerLabel : ${timeScaleHeaders}">
-                        <th:block th:with="
-                    isInPeriod=${item.task.start_date != null && item.task.deadline != null && headerLabel >= item.task.start_date && headerLabel <= item.task.deadline},
-                    isDeadlineDay=${headerLabel == item.task.deadline}">
-
-                            <td class="chart-cell" th:data-date="${headerLabel}">
-                                <div th:if="${isInPeriod}"
-                                     class="bar-actual"
-                                     th:classappend="${item.task.done == 0} ? 'bar-todo' : (${item.task.done == 1} ? 'bar-working' : 'bar-done')">
-                                </div>
-
-                                <span th:if="${isInPeriod && isDeadlineDay}"
-                                      class="chart-status-text"
-                                      th:switch="${item.task.done}">
-                            <th:block th:case="0">未着手</th:block>
-                            <th:block th:case="1">対応中</th:block>
-                            <th:block th:case="3">完了</th:block>
-                        </span>
-                            </td>
-                        </th:block>
+                        <td class="chart-cell"
+                            th:data-date="${headerLabel}"
+                            th:data-start="${item.task.start_date}"
+                            th:data-deadline="${item.task.deadline}"
+                            th:data-done="${item.task.done}">
+                        </td>
                     </th:block>
                 </tr>
             </th:block>
