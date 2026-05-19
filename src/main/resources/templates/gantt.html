@@ -116,9 +116,11 @@
                 <th:block th:each="headerLabel : ${timeScaleHeaders}">
                     <th class="timeline-header"
                         th:data-date="${headerLabel}"
+                        th:classappend="${headerLabel == today} ? 'today-header' : ''"
                         th:text="${#strings.length(headerLabel) >= 10 ? #strings.replace(#strings.substring(headerLabel, 5, 10), '-', '/') : headerLabel}">
                         05/12
                     </th>
+
                 </th:block>
             </tr>
             </thead>
@@ -153,7 +155,9 @@
                     isInPeriod=${item.task.start_date != null && item.task.deadline != null && headerLabel >= item.task.start_date && headerLabel <= item.task.deadline},
                     isDeadlineDay=${headerLabel == item.task.deadline}">
 
-                            <td class="chart-cell" th:data-date="${headerLabel}">
+                            <td class="chart-cell"
+                                th:data-date="${headerLabel}"
+                                th:classappend="${headerLabel == today} ? 'today-cell' : ''">
                                 <div th:if="${isInPeriod}"
                                      class="bar-actual"
                                      th:classappend="${item.task.done == 0} ? 'bar-todo' : (${item.task.done == 1} ? 'bar-working' : 'bar-done')">

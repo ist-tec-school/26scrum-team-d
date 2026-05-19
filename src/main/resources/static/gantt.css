@@ -338,4 +338,28 @@ th.timeline-header.weekend-sun {
     position: relative;
 }
 
+.gantt-table {
+    position: relative;
+}
+
+.gantt-table th.today-header {
+    background-color: #4a757a !important;
+    position: relative;
+}
+
+.gantt-table th.today-header::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 0;
+    height: 2000px;
+    border-left: 2px dashed #4da6ff;
+    z-index: 50;
+    pointer-events: none;
+}
+
+.chart-cell.today-cell {
+    background-color: #f0f8ff !important;
+}
 
