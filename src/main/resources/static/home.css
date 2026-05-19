@@ -528,22 +528,19 @@ input:invalid:focus {
 
 /* 状態別の背景色 */
 
-/* 未着手 */
-.status-todo {
+.status-notstart {
+    color: #616161;
     background-color: #e0e0e0;
-    color: #616161;
 }
 
-/* 対応中 */
-.status-working {
+.status-ing {
+    color: #7d5927;
     background-color: #fff9c4;
-    color: #616161;
 }
 
-/* 完了 */
-.status-done {
+.status-completed {
+    color: #2f7031;
     background-color: #c8e6c9;
-    color: #616161;
 }
 
 .status-common {
@@ -660,17 +657,16 @@ input:invalid:focus {
     height: 100%;
     cursor: pointer !important;
     z-index: 2;
-    /* background: rgba(0,0,0,0.05); /* デバッグ時はここを外すと範囲が見えます */
 }
 
 
 
 .task-warning td:nth-child(5){
-    background-color: rgba(244, 255, 79, 0.9);
+    background-color: #f9faa5;
 }
 
 .task-overdue-urgent td:nth-child(5){
-    background-color: rgba(255,99,71,0.9);
+    background-color: #fc8f81;
 }
 
 .task-overdue td {
@@ -681,7 +677,7 @@ input:invalid:focus {
 .scope-toggle {
     display: inline-flex;
     margin-right: 15px;
-    background-color: #f4f7f6; /* 背景に馴染む薄いグレー */
+    background-color: #f4f7f6;
     border-radius: 8px;
 }
 
