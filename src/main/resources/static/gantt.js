@@ -16,7 +16,7 @@ window.addEventListener("load", function() {
     const stickyCols = document.querySelectorAll("thead th.sticky-col");
     let stickyWidth = 0;
     stickyCols.forEach(col => stickyWidth += col.offsetWidth);
-    const availableWidth = (wrapper ? wrapper.clientWidth : 1400) - stickyWidth - 25;
+    const availableWidth = (wrapper ? wrapper.clientWidth : 1400) - 590 - 15;
 
     let cellWidth = 40;
     if (timeScale === "day") {

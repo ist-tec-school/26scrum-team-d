@@ -142,7 +142,6 @@ table {
     color: black;
     font-size: 10.5pt;
     text-align: left;
-    /* 💡 左端に確実に固定する */
     position: sticky;
     left: 0;
     z-index: 101;
@@ -156,11 +155,21 @@ table {
     z-index: 1;
 }
 
-.col-title  { width: 320px; min-width: 160px; max-width: 160px; }
-.col-owner  { width: 120px; min-width: 100px; max-width: 100px; }
-.col-sdate  { width: 100px; min-width: 100px; max-width: 100px; }
-.col-edate  { width: 100px; min-width: 100px; max-width: 100px; }
-.col-status { width: 50px; min-width: 10px; max-width: 100px; }
+thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f1f5f9;
+    color: #475569;
+    font-size: 9.5pt;
+    font-weight: 600;
+    z-index: 130;
+}
+
+.col-title {width: 200px;min-width: 200px;max-width: 200px;}
+.col-owner {width: 100px;min-width: 100px;max-width: 100px;}
+.col-sdate {width: 100px;min-width: 100px;max-width: 100px;text-align: center;}
+.col-edate {width: 100px;min-width: 100px;max-width: 100px;text-align: center;}
+.col-status {width: 90px;min-width: 90px;max-width: 90px;text-align: center;}
 
 .gantt-table th {
     position:sticky;
@@ -212,11 +221,11 @@ td.sticky-col {
 }
 
 .sticky-col-1 { left: 0; text-align: center;}
-.sticky-col-2 { left: 160px; text-align: center;}
-.sticky-col-3 { left: 260px; text-align: center;}
-.sticky-col-4 { left: 360px; text-align: center;}
+.sticky-col-2 { left: 200px; text-align: center;}
+.sticky-col-3 { left: 300px; text-align: center;}
+.sticky-col-4 { left: 400px; text-align: center;}
 .sticky-col-5 {
-    left: 460px;
+    left: 500px;
     box-shadow: 4px 0 8px -4px rgba(0,0,0,0.15);
     text-align: center;
 }
