@@ -46,9 +46,9 @@
                         <input type="hidden" name="scope" th:value="${selectedScope}">
 
                         <select name="status" id="status-filter" onchange="this.form.submit()">
-                            <option value="working_group" th:selected="${selectedStatus == 'working_group'}">未完了のタスク</option>
-                            <option value="3" th:selected="${selectedStatus == '3'}">完了済みのタスク</option>
-                            <option value="all" th:selected="${selectedStatus == 'all'}">すべてのタスク</option>
+                            <option value="working_group" th:selected="${selectedStatus == 'working_group'}">タスクの状態：未完了</option>
+                            <option value="3" th:selected="${selectedStatus == '3'}">タスクの状態：完了済み</option>
+                            <option value="all" th:selected="${selectedStatus == 'all'}">タスクの状態：すべて</option>
                         </select>
                     </div>
                 </div>
