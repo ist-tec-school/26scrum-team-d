@@ -382,9 +382,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     targetElement.style.backgroundColor = "#fff9c4";
 
                     setTimeout(() => {
-                        targetElement.style.transition = "background-color 0.3s ease";
+                        targetElement.style.transition = "background-color 0.5s ease";
                         targetElement.style.backgroundColor = "";
-                    }, 400);
+                    }, 1000);
                 }, 0);
             }
         }
