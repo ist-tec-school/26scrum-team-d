@@ -20,11 +20,11 @@ window.addEventListener("load", function() {
 
     let cellWidth = 40;
     if (timeScale === "day") {
-        cellWidth = Math.floor(availableWidth / 15);
+        cellWidth = Math.max(35, Math.floor(availableWidth / 15));
     } else if (timeScale === "week") {
-        cellWidth = Math.floor(availableWidth / 10);
+        cellWidth = Math.max(90, Math.floor(availableWidth / 10));
     } else if (timeScale === "month") {
-        cellWidth = Math.floor(availableWidth / 5);
+        cellWidth = Math.max(120, Math.floor(availableWidth / 5));
     }
 
     const timelineHeaders = document.querySelectorAll("th.timeline-header");
