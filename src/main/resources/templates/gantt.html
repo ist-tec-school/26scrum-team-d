@@ -32,14 +32,16 @@
                        onchange="this.form.submit()">
             </div>
 
-                <div class="list_header" id="task-list-top">
+                <div class="list_header">
 
                     <div class="filter_area">
                         <div class="scope-toggle">
-                            <a th:href="@{/gantt#task-list-top(scope='mine', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
-                               class="scope-btn" th:classappend="${selectedScope == 'mine'} ? 'active' : ''">自分のタスク</a>
-                            <a th:href="@{/gantt#task-list-top(scope='all', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
-                               class="scope-btn" th:classappend="${selectedScope == 'all'} ? 'active' : ''">全てのタスク</a>
+                            <a th:href="@{/gantt(scope='mine', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
+                               class="scope-btn"
+                               th:classappend="${selectedScope == 'mine'} ? 'active' : ''">自分のタスク</a>
+                            <a th:href="@{/gantt(scope='all', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
+                               class="scope-btn"
+                               th:classappend="${selectedScope == 'all'} ? 'active' : ''">全てのタスク</a>
                         </div>
                         <input type="hidden" name="scope" th:value="${selectedScope}">
 
@@ -92,10 +94,7 @@
                     <input type="text" name="keyword" th:value="${keyword}" placeholder="検索ワード タスクを検索できます。">
                     <button type="submit" class="btn-base btn-primary search-button">検索</button>
 
-                    <a th:href="@{/gantt#task-list-top(scope='mine',
-                    status='working_group',
-                    projectId='all', deptId='all',
-                    sectionId='all', keyword='')}"
+                    <a th:href="@{/gantt(scope='all', status='all', projectId='all', deptId='all', sectionId='all', keyword='')}"
                        class="btn-base btn-primary reset-button">
                         条件をリセット
                     </a>
@@ -178,6 +177,14 @@
     </div>
 </div>
 
+<div th:if="${keyword != null and !keyword.isEmpty() and #lists.size(taskList) == 0}"
+     class="no-result-message">
+    <p> 「<span th:text="${keyword}"></span>」での検索結果 — 0件です —</p>
+</div>
+<div th:if="${keyword.isEmpty() and #lists.size(taskList) == 0}"
+     class="status-0message">
+    <p>現在タスクはありません。</p>
+</div>
 
 </body>
 </html>
