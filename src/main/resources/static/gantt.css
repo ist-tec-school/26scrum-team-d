@@ -285,21 +285,6 @@ th.sticky-col-5 { z-index: 121 !important; }
     font-weight: bold;
 }
 
-.status-notstart {
-    color: #616161;
-    background-color: #eee;
-}
-
-.status-ing {
-    color: #7d5927;
-    background-color: #fff9c4;
-}
-
-.status-completed {
-    color: #2f7031;
-    background-color: #c8e6c9;
-}
-
 /* タイムラインセルの描画 */
 .chart-cell {
     padding: 0 !important;
