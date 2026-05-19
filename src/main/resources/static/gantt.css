@@ -143,12 +143,12 @@ table {
     position: sticky;
     left: 0;
     z-index: 101;
-    background-color: #e2e8f0 !important;
+    background-color: #e8f6fc !important;
     white-space: nowrap;
 }
 
 .gantt-table .group-empty-cell {
-    background-color: #e2e8f0 !important;
+    background-color: #e8f6fc !important;
     position: relative;
     z-index: 1;
 }
@@ -262,17 +262,17 @@ th.sticky-col-5 { z-index: 121 !important; }
     padding: 0 !important;
     position: relative;
     background-color: #ffffff;
-    border-right: 1px solid #e2e8f0;
+    border-right: 1px solid #e8f6fc;
 }
 .chart-cell.weekend-sat,
 .chart-cell.weekend-sun {
-    background-color: #f1f5f9 !important;
+    background-color: #f4f7f6 !important;
 }
 th.timeline-header.weekend-sat {
-    color: #2563eb !important;
+    color: #abe0ff !important;
 }
 th.timeline-header.weekend-sun {
-    color: #dc2626 !important;
+    color: #ff9ea9 !important;
 }
 
 /* 期間バーの表現 - 指定カラーコードの適用 */
