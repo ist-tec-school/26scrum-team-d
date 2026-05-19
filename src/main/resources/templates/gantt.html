@@ -20,9 +20,9 @@
         <div class="time-scale">
                 <label>タイムスケール表示切替:</label>
                 <div class="btn-group">
-                    <button type="button" class="btn active">日</button>
-                    <button type="button" class="btn">週</button>
-                    <button type="button" class="btn">月</button>
+                    <button type="button" class="btn" th:classappend="${selectedTimeScale == 'day' || selectedTimeScale == null} ? 'active'" onclick="changeTimeScale('day')">日</button>
+                    <button type="button" class="btn" th:classappend="${selectedTimeScale == 'week'} ? 'active'" onclick="changeTimeScale('week')">週</button>
+                    <button type="button" class="btn" th:classappend="${selectedTimeScale == 'month'} ? 'active'" onclick="changeTimeScale('month')">月</button>
                 </div>
                 <label class="label-start-date">表示開始日:</label>
                 <input type="date"
@@ -115,63 +115,37 @@
                 <th class="sticky-col sticky-col-5 col-status">状態</th>
 
                 <th:block th:each="headerLabel : ${timeScaleHeaders}">
-                    <th class="timeline-header"
-                        th:data-date="${headerLabel}"
-                        th:text="${#strings.length(headerLabel) >= 10 ? #strings.replace(#strings.substring(headerLabel, 5, 10), '-', '/') : headerLabel}">
-                        05/12
+                    <th th:each="header : ${timeScaleHeaders}"
+                        class="timeline-header"
+                        th:text="${header.displayLabel}"
+                        th:data-date="${header.dateStr}">
                     </th>
                 </th:block>
             </tr>
             </thead>
             <tbody>
-            <th:block th:each="item : ${taskList}">
-                <tr th:if="${item.isGroup}" class="row-group">
-                    <td colspan="5" class="group-title-cell">
-                        <span th:text="${item.displayTitle}">プロジェクト名</span>
+            <th:block th:each="header : ${timeScaleHeaders}">
+                <th:block th:with="
+        taskStart=${item.task.start_date != null && !item.task.start_date.isEmpty() ? T(java.time.LocalDate).parse(item.task.start_date) : null},
+        taskEnd=${item.task.deadline != null && !item.task.deadline.isEmpty() ? T(java.time.LocalDate).parse(item.task.deadline) : null},
+        isInPeriod=${taskStart != null && taskEnd != null && !taskStart.isAfter(header.endDate) && !taskEnd.isBefore(header.startDate)},
+        isDeadlineInCell=${taskEnd != null && !taskEnd.isBefore(header.startDate) && !taskEnd.isAfter(header.endDate)}">
+
+                    <td class="chart-cell" th:data-date="${header.dateStr}">
+                        <div th:if="${isInPeriod}"
+                             class="bar-actual"
+                             th:classappend="${item.task.done == 0} ? 'bar-todo' : (${item.task.done == 1} ? 'bar-working' : 'bar-done')">
+                        </div>
+
+                        <span th:if="${isInPeriod && isDeadlineInCell}"
+                              class="chart-status-text"
+                              th:switch="${item.task.done}">
+                <th:block th:case="0">未着手</th:block>
+                <th:block th:case="1">対応中</th:block>
+                <th:block th:case="3">完了</th:block>
+            </span>
                     </td>
-                    <td colspan="100" class="group-empty-cell"></td>
-                </tr>
-
-                <tr th:unless="${item.isGroup}">
-                    <td class="sticky-col sticky-col-1 col-title" th:text="${item.displayTitle}">タスク名</td>
-
-                    <td class="sticky-col sticky-col-2 col-owner user-cell">
-                        <th:block th:each="uid : ${item.task.taskUserIds}">
-                            <div th:each="user : ${userList}" th:if="${user.USER_ID == uid}" th:text="${user.NAME}"></div>
-                        </th:block>
-                        <div th:if="${#lists.isEmpty(item.task.taskUserIds)}">-</div>
-                    </td>
-
-                    <td class="sticky-col sticky-col-3 col-sdate" th:text="${item.task.start_date}">開始日</td>
-                    <td class="sticky-col sticky-col-4 col-edate" th:text="${item.task.deadline}">終了日</td>
-                    <td class="sticky-col sticky-col-5 col-status" th:switch="${item.task.done}">
-                        <span th:case="0" class="status-badge status-notstart">未着手</span>
-                        <span th:case="1" class="status-badge status-ing">対応中</span>
-                        <span th:case="3" class="status-badge status-completed">完了</span>
-                    </td>
-
-                    <th:block th:each="headerLabel : ${timeScaleHeaders}">
-                        <th:block th:with="
-                    isInPeriod=${item.task.start_date != null && item.task.deadline != null && headerLabel >= item.task.start_date && headerLabel <= item.task.deadline},
-                    isDeadlineDay=${headerLabel == item.task.deadline}">
-
-                            <td class="chart-cell" th:data-date="${headerLabel}">
-                                <div th:if="${isInPeriod}"
-                                     class="bar-actual"
-                                     th:classappend="${item.task.done == 0} ? 'bar-todo' : (${item.task.done == 1} ? 'bar-working' : 'bar-done')">
-                                </div>
-
-                                <span th:if="${isInPeriod && isDeadlineDay}"
-                                      class="chart-status-text"
-                                      th:switch="${item.task.done}">
-                            <th:block th:case="0">未着手</th:block>
-                            <th:block th:case="1">対応中</th:block>
-                            <th:block th:case="3">完了</th:block>
-                        </span>
-                            </td>
-                        </th:block>
-                    </th:block>
-                </tr>
+                </th:block>
             </th:block>
             </tbody>
         </table>

@@ -15,3 +15,11 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
+// ボタンクリック時にフォームを送信する関数を追記
+function changeTimeScale(scale) {
+    const input = document.getElementById('timeScaleInput');
+    if (input) {
+        input.value = scale;
+        document.getElementById('mainFilterForm').submit();
+    }
+}
