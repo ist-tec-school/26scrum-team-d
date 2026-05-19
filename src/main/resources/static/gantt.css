@@ -242,7 +242,7 @@ th.sticky-col-5 { z-index: 121 !important; }
     color: #30575c;
 }
 .row-group td {
-    border-bottom: 2px solid #30575c;
+    border-top: 2px solid #30575c;
     position: sticky;
     left: 0;
     background-color: #edfaff;
