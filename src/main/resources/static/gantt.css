@@ -16,7 +16,6 @@ body {
 
 .container {
     max-width: 1400px;
-    margin: 30px auto;
     background: #ffffff;
     padding: 25px;
     border-radius: 8px;
@@ -41,6 +40,22 @@ h1 {
     margin-bottom: 20px;
     font-size: 9.5pt;
     font-weight: bold;
+}
+
+#mainFilterForm {
+    padding: 15px 20px 0 20px;
+    margin-bottom: 20px;
+    background-color: #e8f6fc ;
+    border: 1px solid #30575c;
+    border-radius: 5px;
+}
+
+.filter_area {
+    background-color: transparent; !important;
+}
+
+.filter_container {
+    background-color: transparent; !important;
 }
 
 /* タイムスケール切り替え & フィルターエリア */
@@ -126,6 +141,32 @@ table {
     border-collapse: separate;
     border-spacing: 0;
     font-size: 9pt;
+}
+
+.gantt-table .row-group {
+    display: table-row;
+}
+
+/*プロジェクトセル*/
+.gantt-table .group-title-cell {
+    padding: 10px 15px;
+    border-right: none; !important;
+    font-weight: bold;
+    color: black;
+    font-size: 10.5pt;
+    text-align: left;
+    /* 💡 左端に確実に固定する */
+    position: sticky;
+    left: 0;
+    z-index: 101;
+    background-color: #e8f6fc !important;
+    white-space: nowrap;
+}
+
+.gantt-table .group-empty-cell {
+    background-color: #e8f6fc !important;
+    position: relative;
+    z-index: 1;
 }
 
 .col-title  { width: 320px; min-width: 160px; max-width: 160px; }
@@ -214,7 +255,7 @@ th.sticky-col-5 { z-index: 121 !important; }
     color: #30575c;
 }
 .row-group td {
-    border-bottom: 2px solid #30575c;
+    border-top: 2px solid #30575c;
     position: sticky;
     left: 0;
     background-color: #edfaff;
@@ -232,25 +273,48 @@ th.sticky-col-5 { z-index: 121 !important; }
     font-size: 8pt;
     font-weight: bold;
 }
+
+.status-notstart {
+    color: #616161;
+    background-color: #eee;
+}
+
+.status-ing {
+    color: #7d5927;
+    background-color: #fff9c4;
+}
+
+.status-completed {
+    color: #2f7031;
+    background-color: #c8e6c9;
+}
+
 /* タイムラインセルの描画 */
 .chart-cell {
     padding: 0 !important;
     position: relative;
     background-color: #ffffff;
-    border-right: 1px solid #e2e8f0;
+    border-right: 1px solid #e8f6fc;
 }
-.chart-cell.weekend {
-    background-color: #f8fafc;
+.chart-cell.weekend-sat,
+.chart-cell.weekend-sun {
+    background-color: #f4f7f6 !important;
+}
+th.timeline-header.weekend-sat {
+    color: #abe0ff !important;
+}
+th.timeline-header.weekend-sun {
+    color: #ff9ea9 !important;
 }
 
 /* 期間バーの表現 - 指定カラーコードの適用 */
 .bar-actual {
     position: absolute;
-    top: 10px;
+    top: 14px;
     left: 0;
-    right: 0;
+    width:100%;
     height: 12px;
-    border-radius: 3px;
+    border-radius: 2px;
     z-index: 2;
 }
 .bar-actual.bar-todo    { background-color: #94a3b8; } /* 未着手：グレー */

@@ -33,7 +33,6 @@ public class GanttController {
     @GetMapping
     public String showGantt(Model model,
                             @AuthenticationPrincipal UserDetails userDetails,
-                            @RequestParam(value = "startDate", required = false) String startDateStr,
                             @RequestParam(value = "scope", defaultValue = "all") String scope,
                             @RequestParam(value = "status", defaultValue = "all") String status,
                             @RequestParam(value = "projectId", defaultValue = "all") String projectId,
@@ -42,13 +41,13 @@ public class GanttController {
                             @RequestParam(value = "keyword", defaultValue = "") String keyword,
                             @RequestParam(value = "taskUserId", defaultValue = "all") String taskUserId, // 担当者フィルター用
                             @RequestParam(value = "startDate", required = false) String startDate) {
-        LocalDate baseDate = (startDateStr != null && !startDateStr.isEmpty())
-                ? LocalDate.parse(startDateStr)
+        LocalDate baseDate = (startDate != null && !startDate.isEmpty())
+                ? LocalDate.parse(startDate)
                 : LocalDate.now();
 
         List<String> timeScaleHeaders = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        for (int i = 0; i < 61; i++) {
+        for (int i = 0; i < 365; i++) {
             timeScaleHeaders.add(baseDate.plusDays(i).format(formatter));
         }
 
@@ -67,13 +66,13 @@ public class GanttController {
                 status, projectId, deptId, sectionId, keyword, scope, currentUserId
         );
         List<GanttDisplayItem> displayList = new ArrayList<>();
-        Integer lastProjectId = null;
+        Integer lastProjectId = -1;
 
         for (HomeController.TaskItem item : taskItems) {
             Integer currentProjectId = item.projectId();
 
             // プロジェクトが切り替わったタイミング（または最初のループ）でプロジェクト行を生成
-            if (lastProjectId == null || !lastProjectId.equals(currentProjectId)) {
+            if (!currentProjectId.equals(lastProjectId)) {
                 String projectName = (item.projectName() != null && !item.projectName().isBlank())
                         ? item.projectName()
                         : "プロジェクト未割当";
@@ -81,6 +80,10 @@ public class GanttController {
                 // プロジェクト行を追加
                 displayList.add(new GanttDisplayItem(projectName));
                 lastProjectId = currentProjectId;
+            } else if (currentProjectId == null && lastProjectId != null) {
+                // プロジェクト未割当のタスクが連続する場合の処理
+                displayList.add(new GanttDisplayItem("プロジェクト未割当"));
+                lastProjectId = null;
             }
 
             // 通常のタスク行を追加
@@ -106,7 +109,7 @@ public class GanttController {
         // 5. 日程表示用の初期設定
         String todayStr = LocalDate.now().toString();
         model.addAttribute("today", todayStr);
-        model.addAttribute("selectedStartDate", startDate != null ? startDate : todayStr);
+        model.addAttribute("selectedStartDate", baseDate.toString());
 
         // ※ もしすでに別の日付ヘッダーロジックを実装済みの場合は、以下のif文は削除してください
         model.addAttribute("timeScaleHeaders", timeScaleHeaders);

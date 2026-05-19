@@ -5,6 +5,7 @@
     <title>ガントチャート</title>
     <link rel="stylesheet" th:href="@{/home.css}">
     <link rel="stylesheet" th:href="@{/gantt.css}">
+    <script th:src="@{/gantt.js}" defer></script>
 </head>
 <body>
 
@@ -25,20 +26,22 @@
                 </div>
                 <label class="label-start-date">表示開始日:</label>
                 <input type="date"
-                       name="start_date"
+                       name="startDate"
                        th:value="${selectedStartDate != null ? selectedStartDate : today}"
                        class="input-date"
                        onchange="this.form.submit()">
             </div>
 
-                <div class="list_header" id="task-list-top">
+                <div class="list_header">
 
                     <div class="filter_area">
                         <div class="scope-toggle">
-                            <a th:href="@{/gantt#task-list-top(scope='mine', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
-                               class="scope-btn" th:classappend="${selectedScope == 'mine'} ? 'active' : ''">自分のタスク</a>
-                            <a th:href="@{/gantt#task-list-top(scope='all', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
-                               class="scope-btn" th:classappend="${selectedScope == 'all'} ? 'active' : ''">全てのタスク</a>
+                            <a th:href="@{/gantt(scope='mine', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
+                               class="scope-btn"
+                               th:classappend="${selectedScope == 'mine'} ? 'active' : ''">自分のタスク</a>
+                            <a th:href="@{/gantt(scope='all', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
+                               class="scope-btn"
+                               th:classappend="${selectedScope == 'all'} ? 'active' : ''">全てのタスク</a>
                         </div>
                         <input type="hidden" name="scope" th:value="${selectedScope}">
 
@@ -91,10 +94,7 @@
                     <input type="text" name="keyword" th:value="${keyword}" placeholder="検索ワード タスクを検索できます。">
                     <button type="submit" class="btn-base btn-primary search-button">検索</button>
 
-                    <a th:href="@{/gantt#task-list-top(scope='mine',
-                    status='working_group',
-                    projectId='all', deptId='all',
-                    sectionId='all', keyword='')}"
+                    <a th:href="@{/gantt(scope='all', status='all', projectId='all', deptId='all', sectionId='all', keyword='')}"
                        class="btn-base btn-primary reset-button">
                         条件をリセット
                     </a>
@@ -113,24 +113,25 @@
                 <th class="sticky-col sticky-col-4 col-edate">終了日</th>
                 <th class="sticky-col sticky-col-5 col-status">状態</th>
 
-                <th th:each="headerLabel : ${timeScaleHeaders}"
-                    class="timeline-header"
-                    th:text="${headerLabel}">
-                    5/11
-                </th>
+                <th:block th:each="headerLabel : ${timeScaleHeaders}">
+                    <th class="timeline-header"
+                        th:data-date="${headerLabel}"
+                        th:text="${#strings.length(headerLabel) >= 10 ? #strings.replace(#strings.substring(headerLabel, 5, 10), '-', '/') : headerLabel}">
+                        05/12
+                    </th>
+                </th:block>
             </tr>
             </thead>
-                <tbody>
-                <th:block th:each="item : ${taskList}">
+            <tbody>
+            <th:block th:each="item : ${taskList}">
+                <tr th:if="${item.isGroup}" class="row-group">
+                    <td colspan="5" class="group-title-cell">
+                        <span th:text="${item.displayTitle}">プロジェクト名</span>
+                    <td th:colspan="${5 + #lists.size(timeScaleHeaders)}" class="group-empty-cell"></td>
+                </tr>
 
-                    <tr th:if="${item.isGroup}" class="row-group">
-                        <td colspan="66" class="group-title-cell">
-                            <span th:text="${item.displayTitle}">プロジェクト名</span>
-                        </td>
-                    </tr>
-
-                    <tr th:unless="${item.isGroup}">
-                        <td class="sticky-col sticky-col-1 col-title" th:text="${item.displayTitle}">タスク名</td>
+                <tr th:unless="${item.isGroup}">
+                    <td class="sticky-col sticky-col-1 col-title" th:text="${item.displayTitle}">タスク名</td>
 
                     <td class="sticky-col sticky-col-2 col-owner user-cell">
                         <th:block th:each="uid : ${item.task.taskUserIds}">
@@ -139,44 +140,50 @@
                         <div th:if="${#lists.isEmpty(item.task.taskUserIds)}">-</div>
                     </td>
 
-                        <td class="sticky-col sticky-col-3 col-sdate" th:text="${item.task.start_date != null ? item.task.start_date : '-'}">2026-05-12</td>
-                        <td class="sticky-col sticky-col-4 col-edate" th:text="${item.task.deadline}">2026-05-15</td>
-                        <td class="sticky-col sticky-col-5 col-status" th:switch="${item.task.done}">
-                            <span th:case="0" class="status-badge status-notstart">未着手</span>
-                            <span th:case="1" class="status-badge status-ing">対応中</span>
-                            <span th:case="3" class="status-badge status-completed">完了</span>
-                        </td>
+                    <td class="sticky-col sticky-col-3 col-sdate" th:text="${item.task.start_date}">開始日</td>
+                    <td class="sticky-col sticky-col-4 col-edate" th:text="${item.task.deadline}">終了日</td>
+                    <td class="sticky-col sticky-col-5 col-status" th:switch="${item.task.done}">
+                        <span th:case="0" class="status-badge status-notstart">未着手</span>
+                        <span th:case="1" class="status-badge status-ing">対応中</span>
+                        <span th:case="3" class="status-badge status-completed">完了</span>
+                    </td>
 
-                        <th:block th:each="headerLabel : ${timeScaleHeaders}">
-                            <th:block th:with="
-                isInPeriod=${item.task.start_date != null && item.task.deadline != null && headerLabel >= item.task.start_date && headerLabel <= item.task.deadline},
-                isDeadlineDay=${headerLabel == item.task.deadline}">
+                    <th:block th:each="headerLabel : ${timeScaleHeaders}">
+                        <th:block th:with="
+                    isInPeriod=${item.task.start_date != null && item.task.deadline != null && headerLabel >= item.task.start_date && headerLabel <= item.task.deadline},
+                    isDeadlineDay=${headerLabel == item.task.deadline}">
 
-                                <td class="chart-cell" th:classappend="${#strings.contains(headerLabel, 'Sat') || #strings.contains(headerLabel, 'Sun')} ? 'weekend'">
+                            <td class="chart-cell" th:data-date="${headerLabel}">
+                                <div th:if="${isInPeriod}"
+                                     class="bar-actual"
+                                     th:classappend="${item.task.done == 0} ? 'bar-todo' : (${item.task.done == 1} ? 'bar-working' : 'bar-done')">
+                                </div>
 
-                                    <div th:if="${isInPeriod}"
-                                         class="bar-actual"
-                                         th:classappend="${item.task.done == 0} ? 'bar-todo' : (${item.task.done == 1} ? 'bar-working' : 'bar-done')">
-                                    </div>
-
-                                    <span th:if="${isInPeriod && isDeadlineDay}"
-                                          class="chart-status-text"
-                                          th:switch="${item.task.done}">
-                        <th:block th:case="0">未着手</th:block>
-                        <th:block th:case="1">対応中</th:block>
-                        <th:block th:case="3">完了</th:block>
-                    </span>
-
-                                </td>
-                            </th:block>
+                                <span th:if="${isInPeriod && isDeadlineDay}"
+                                      class="chart-status-text"
+                                      th:switch="${item.task.done}">
+                            <th:block th:case="0">未着手</th:block>
+                            <th:block th:case="1">対応中</th:block>
+                            <th:block th:case="3">完了</th:block>
+                        </span>
+                            </td>
                         </th:block>
-                    </tr>
-                </th:block>
-                </tbody>
+                    </th:block>
+                </tr>
+            </th:block>
+            </tbody>
         </table>
     </div>
 </div>
 
+<div th:if="${keyword != null and !keyword.isEmpty() and #lists.size(taskList) == 0}"
+     class="no-result-message">
+    <p> 「<span th:text="${keyword}"></span>」での検索結果 — 0件です —</p>
+</div>
+<div th:if="${keyword.isEmpty() and #lists.size(taskList) == 0}"
+     class="status-0message">
+    <p>現在タスクはありません。</p>
+</div>
 
 </body>
 </html>
