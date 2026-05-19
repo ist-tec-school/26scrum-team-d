@@ -7,7 +7,6 @@ License: CC0 1.0 Universal
 */
 package jp.gihyo.projava.tasklist;
 
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +23,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Map;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -41,7 +39,8 @@ public class HomeController {
             String projectName,
             @Size(max=200)String description,
             @NotBlank String deadline,
-            Integer done
+            Integer done,
+            @NotBlank String start_date
     ) {}
     private final TaskListDao dao;
     private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
@@ -85,7 +84,7 @@ public class HomeController {
         model.addAttribute("selectedDept", deptId);
         model.addAttribute("selectedSection", sectionId);
         model.addAttribute("keyword", keyword);
-        model.addAttribute("taskItem", new TaskItem("", "", List.of(), null, "", "", "", 0));
+        model.addAttribute("taskItem", new TaskItem("", "", List.of(), null, "", "", "", 0,""));
         // listItems メソッド内
         String today = java.time.LocalDate.now().toString();
         String twoDaysLater = java.time.LocalDate.now().plusDays(2).toString();
@@ -115,13 +114,25 @@ public class HomeController {
 
         boolean isProjectNameTooLong = (newProjectName != null && newProjectName.length()>50);
 
-        if (result.hasErrors()|| isPastDate ||isProjectNameTooLong) {
+        // 開始予定日と期限日の前後関係チェック（保存を阻止する最終ガード）
+        boolean isInvalidDateOrder = false;
+        if (item.start_date() != null && !item.start_date().isEmpty() &&
+                item.deadline() != null && !item.deadline().isEmpty()) {
+            java.time.LocalDate start = java.time.LocalDate.parse(item.start_date());
+            java.time.LocalDate deadline = java.time.LocalDate.parse(item.deadline());
+            if (deadline.isBefore(start)) {
+                isInvalidDateOrder = true;
+            }
+        }
+
+        if (result.hasErrors()|| isPastDate || isProjectNameTooLong || isInvalidDateOrder) {
             List<TaskItem> taskItems = dao.findByCondition(status, "all", "all", "all", keyword, "all", null);
             model.addAttribute("taskList", taskItems);
             model.addAttribute("userList", dao.findAllUsers());
             model.addAttribute("projectList", dao.findAllProjects());
             model.addAttribute("selectedStatus", status);
             model.addAttribute("keyword", keyword);
+
             String msg = "入力内容に不備があります";
             if(isPastDate){
                 msg = "過去の日付は入力できません";
@@ -154,7 +165,8 @@ public class HomeController {
                 "",
                 item.description(),
                 item.deadline(),
-                item.done()
+                item.done(),
+                item.start_date()
         );
 
         dao.add(newItem);
@@ -200,7 +212,17 @@ public class HomeController {
 
         boolean isProjectNameTooLong = (newProjectName != null && newProjectName.length()>50);
 
-        if (result.hasErrors()|| isPastDate || isProjectNameTooLong ) {
+    // 開始予定日と期限日の前後関係チェック
+        boolean isInvalidDateOrder = false;
+        if (item.start_date() != null && !item.start_date().isEmpty() &&
+                item.deadline() != null && !item.deadline().isEmpty()) {
+            java.time.LocalDate start = java.time.LocalDate.parse(item.start_date());
+            java.time.LocalDate deadline = java.time.LocalDate.parse(item.deadline());
+            if (deadline.isBefore(start)) {
+                isInvalidDateOrder = true;
+            }
+        }
+        if (result.hasErrors()|| isPastDate || isProjectNameTooLong || isInvalidDateOrder) {
             // リストの再取得（画面表示を維持するため）
             List<TaskItem> taskItems = dao.findByCondition(status, "all", "all", "all", keyword, "all", null);
             model.addAttribute("taskList", taskItems);
@@ -208,6 +230,10 @@ public class HomeController {
             model.addAttribute("projectList", dao.findAllProjects());
             model.addAttribute("selectedStatus", status);
             model.addAttribute("keyword", keyword);
+            if (isInvalidDateOrder) {
+                model.addAttribute("isUpdateError", true);
+                return "home";
+            }
             // 4. ★追加：エラー内容を具体的に分岐
             String msg = "入力内容に不備があります。";
             if (isPastDate) {
@@ -242,7 +268,10 @@ public class HomeController {
                 "",              // projectName (更新時は空文字またはDAOで取得)
                 item.description(),
                 item.deadline(),
-                item.done());
+                item.done(),
+                item.start_date()
+        );
+
 
         dao.update(updateData);
         // 1. まず日本語のキーワードを安全な形式に変換する

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="ja">
 <head>
     <meta charset="UTF-8">
     <title>タスク管理アプリケーション</title>
@@ -18,7 +18,7 @@
     <div class="logout-area">
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn-base btn-white btn-logout">
-               アウト
+               ログアウト
                 <span class="material-symbols-outlined">exit_to_app</span>
             </button>
         </form>
@@ -67,11 +67,17 @@
                     th:text="${user.NAME}">
             </option>
         </select>
+        <label>開始予定日</label>
+        <input id="add_startDate" name="start_date" type="date"
+               th:value="${taskItem?.start_date}"
+                required
+               onchange="updateDateConstraints('add')"/>
         <label>期限</label>
-        <input name="deadline" type="date"
+        <input id="add_deadline" name="deadline" type="date"
                th:value="${taskItem?.deadline}"
                th:min="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
-               required/>
+               required
+               onchange="updateDateConstraints('add')"/>
         <label>説明</label>
         <textarea name="description" id="add_description" rows="4" maxlength="200"></textarea>
         <div id="add_count" >0 / 200</div>
@@ -89,13 +95,16 @@
 <form action="/list#task-list-top" method="get" id="mainFilterForm">
 
     <div class="list_header" id="task-list-top">
-        <h2>タスク一覧</h2>
+        <div class="page-tabs">
+            <h2>タスク一覧</h2>
+            <a th:href="@{/gantt}" class="btn-base btn-white gantt.tab">ガントチャートを表示</a>
+        </div>
         <div class="filter_area">
 
             <div class="scope-toggle">
-                <a th:href="@{/list(scope='mine', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
+                <a th:href="@{/list#task-list-top(scope='mine', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
                    class="scope-btn" th:classappend="${selectedScope == 'mine'} ? 'active' : ''">自分のタスク</a>
-                <a th:href="@{/list(scope='all', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
+                <a th:href="@{/list#task-list-top(scope='all', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
                    class="scope-btn" th:classappend="${selectedScope == 'all'} ? 'active' : ''">全てのタスク</a>
             </div>
             <input type="hidden" name="scope" th:value="${selectedScope}">
@@ -181,7 +190,8 @@
                     ${task.deadline < today} ? 'task-overdue-urgent' :
                     (${task.deadline <= twoDaysLater} ? 'task-warning' : '')
                 ) : ''
-            )">
+            )"
+            th:data-start-date="${task.start_date}">
             <td class="hidden" th:text="${task.id}"></td>
             <td th:text="${task.projectName}" th:data-project-id="${task.projectId}">プロジェクト名</td>
             <td th:text="${task.task}"></td>
@@ -213,7 +223,7 @@
                         onclick="showUpdateDialog(this)">更新</button>
             </td>
             <td>
-                <form action="/delete">
+                <form th:action="@{/delete}" method="get">
                     <input type="hidden" name="id" th:value="${task.id}">
                     <input type="hidden" name="scope" th:value="${selectedScope}">
                     <input type="hidden" name="status" th:value="${selectedStatus}">
@@ -221,21 +231,15 @@
                     <input type="hidden" name="deptId" th:value="${selectedDept}">
                     <input type="hidden" name="sectionId" th:value="${selectedSection}">
                     <input type="hidden" name="keyword" th:value="${keyword}">
-                    <button type="button" onclick="openDeleteDialog()">削除</button>
-
-                    <dialog id="delete-confirm-dialog" class="task_form modal-content">
-                        <label>本当に削除しますか？</label>
-                        <div class="dialog-buttons">
-                            <button type="submit" class="btn-base btn-primary">削除</button>
-                            <button type="button" class="btn-base btn-white" onclick="closeDeleteDialog()">キャンセル</button>
-                        </div>
-                    </dialog>
+                    <button type="button" onclick="handleDelete(this)">削除</button>
                 </form>
             </td>
         </tr>
         </tbody>
     </table>
+</dialog>
 </div>
+
 
     <div th:if="${keyword != null and !keyword.isEmpty() and #lists.size(taskList) == 0}"
          class="no-result-message">
@@ -286,11 +290,17 @@
                         th:selected="${selectedUserIds != null && selectedUserIds.contains(user.USER_ID)}">
                 </option>
             </select>
+            <label>開始予定日</label>
+            <input id="update_start_date" name="start_date" type="date"
+                   th:value="${updateItem?.start_date}"
+                    required
+                   onchange="updateDateConstraints('update')"/>
             <label>期限</label>
             <input id="update_deadline" name="deadline" type="date"
                    th:value="${updateItem?.deadline}"
                    th:min="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
-                   required/>
+                   required
+                   onchange="updateDateConstraints('update')"/>
 
             <label>説明</label>
             <textarea name="description" id="update_description" rows="4" maxlength="200"
@@ -328,6 +338,19 @@
         <div class="dialog-buttons">
             <button type="button" class="btn-base btn-primary" onclick="submitProjectModal()">登録</button>
             <button type="button" class="btn-base btn-cancel" onclick="closeProjectModal()">キャンセル</button>
+        </div>
+    </div>
+</div>
+
+<div id="delete-modal" class="modal-overlay">
+    <div class="task_form modal-content">
+        <h2>削除の確認</h2>
+        <div class="modal-body">
+            <p>このタスクを削除してもよろしいですか？</p>
+        </div>
+        <div class="dialog-buttons">
+            <button type="button" class="btn-base btn-primary" onclick="deleteModal()">削除</button>
+            <button type="button" class="btn-base btn-cancel" onclick="closeDeleteModal()">キャンセル</button>
         </div>
     </div>
 </div>

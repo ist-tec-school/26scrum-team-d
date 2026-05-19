@@ -6,13 +6,17 @@
 }
 body {
     margin: 0;
-    padding: 20px;
+    padding: 0;
     background-color: #f8f9fa;
     color: #333333;
 }
+.wrapper{
+    padding: 30px;
+}
+
 .container {
     max-width: 1400px;
-    margin: 0 auto;
+    margin: 30px auto;
     background: #ffffff;
     padding: 25px;
     border-radius: 8px;
@@ -24,163 +28,197 @@ h1 {
     font-size: 20pt;
     color: #616161; /* 濃いグレー */
     margin-top: 0;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     border-bottom: 3px solid #B0E0E6; /* 会社カラー */
     padding-bottom: 10px;
 }
 
-/* タイムスケール切り替え & フィルターエリア */
-.control-panel {
-    background-color: #f1f5f9;
-    padding: 15px 20px;
-    border-radius: 6px;
-    margin-bottom: 25px;
-    border: 1px solid #30575c; /* 枠線：濃い色 */
-}
-.panel-row {
-    display: table;
-    width: 100%;
-    margin-bottom: 12px;
-}
-.panel-row:last-child {
-    margin-bottom: 0;
-}
-.panel-row-divider {
+.btn-back-top {
+    display: block;
+    width: max-content;   /* ボタンが横一杯に広がらないように、文字幅に合わせる */
+    margin-left: auto;
     margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px dashed #30575c; /* 枠線：濃い色 */
-}
-.panel-cell {
-    display: table-cell;
-    vertical-align: middle;
-    padding-right: 20px;
-}
-.panel-cell-right {
-    display: table-cell;
-    vertical-align: middle;
-    text-align: right;
-}
-
-label {
+    margin-bottom: 20px;
     font-size: 9.5pt;
     font-weight: bold;
-    color: #616161; /* 濃いグレー */
+}
+
+/* タイムスケール切り替え & フィルターエリア */
+/* タイムスケールと表示開始日の親コンテナ */
+.time-scale {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap; /* 画面幅が非常に狭くなったときにここも安全に折り返す */
+    gap: 15px;       /* ボタングループと「表示開始日」の間の隙間 */
+}
+
+/* タイムスケール内のラベル共通 */
+.time-scale label {
+    font-size: 9.5pt;
+    font-weight: bold;
+    color: #616161;
     margin-right: 8px;
+    white-space: nowrap; /* ラベルの途中改行を防止 */
 }
-.label-start-date {
-    color: #30575c; /* 枠線：濃い色 */
-    margin-left: 10px;
+
+/* 表示開始日のラベル（左側の余白をgapで制御するため、既存の設定がある場合は上書き） */
+.time-scale .label-start-date {
+    margin-left: 5px; /* ボタングループとの距離を微調整 */
+    color: #616161;   /* 他のラベルと色味を統一 */
 }
-select, input[type="text"], .input-date {
-    padding: 6px 10px;
-    border: 1px solid #30575c; /* 枠線：濃い色 */
+
+/* 日・週・月のボタングループ */
+.time-scale .btn-group {
+    display: inline-flex;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid #ced4da;
+}
+
+/* 切り替えボタンの基本スタイル */
+.time-scale .btn {
+    background-color: #ffffff;
+    border: none;
+    border-right: 1px solid #ced4da;
+    padding: 6px 14px;
+    font-size: 9.5pt;
+    color: #495057;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.time-scale .btn:last-child {
+    border-right: none; /* 一番右のボタンの枠線を消す */
+}
+
+/* 「週」など、アクティブ（選択中）なボタンのスタイル */
+.time-scale .btn.active {
+    background-color: #7ba6bc; /* スクショの選択色（くすみブルー）に適合 */
+    color: #ffffff;
+    font-weight: bold;
+}
+
+/* 日付入力欄（input type="date"）の微調整 */
+.time-scale .input-date {
+    padding: 5px 10px;
+    border: 1px solid black;
     border-radius: 4px;
     font-size: 9.5pt;
     background-color: #ffffff;
-    margin-right: 15px;
-    min-width: 120px;
-}
-
-/* ボタン群（会社カラー・ホバーを反映） */
-.btn-group {
-    display: inline-block;
-    background: #e2e8f0;
-    padding: 2px;
-    border-radius: 4px;
-    margin-right: 20px;
-}
-.btn {
-    background: transparent;
-    border: none;
-    padding: 6px 14px;
-    font-size: 9.5pt;
-    font-weight: 500;
-    color: #616161; /* 濃いグレー */
-    cursor: pointer;
-    border-radius: 3px;
-    transition: background-color 0.2s;
-}
-.btn:hover {
-    background-color: #8fc1c7; /* ホバー時 */
-    color: #ffffff;
-}
-.btn.active {
-    background: #B0E0E6; /* 会社カラー */
-    color: #30575c; /* 枠線：濃い色（コントラスト用） */
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    font-weight: bold;
-}
-.btn-primary {
-    background: #B0E0E6; /* 会社カラー */
-    color: #30575c; /* 枠線：濃い色 */
-    border: 1px solid #30575c; /* 枠線：濃い色 */
-    padding: 7px 16px;
-    font-size: 9.5pt;
-    font-weight: bold;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-.btn-primary:hover {
-    background-color: #8fc1c7; /* ホバー時 */
-    color: #ffffff;
+    outline: none;
 }
 
 /* ガントチャートテーブル構造 */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
 .gantt-wrapper {
-    overflow-x: auto;
-    border: 1px solid #30575c; /* 枠線：濃い色 */
+    overflow: auto;
+    max-height: 600px;
+    border: 1px solid #30575c;
     border-radius: 6px;
+    width: 100%;
+    position: relative;
 }
 .gantt-table {
-    width: 100%;
-    border-collapse: collapse;
+    width: max-content;
+    border-collapse: separate;
+    border-spacing: 0;
     font-size: 9pt;
-    min-width: 1100px;
 }
 
-/* ヘッダーデザイン（会社カラーと濃い枠線をマッピング） */
+.col-title  { width: 320px; min-width: 160px; max-width: 160px; }
+.col-owner  { width: 120px; min-width: 100px; max-width: 100px; }
+.col-sdate  { width: 100px; min-width: 100px; max-width: 100px; }
+.col-edate  { width: 100px; min-width: 100px; max-width: 100px; }
+.col-status { width: 50px; min-width: 10px; max-width: 100px; }
+
 .gantt-table th {
-    background-color: #B0E0E6; /* 会社カラー */
-    color: #30575c; /* 枠線：濃い色（文字のコントラスト） */
+    position:sticky;
+    top:0;
+    background-color: #B0E0E6;
+    color: #30575c;
     font-weight: bold;
     padding: 12px 12px;
-    border: 1px solid #30575c; /* 枠線：濃い色 */
+    border-right: 1px solid #30575c;
+    border-bottom: 1px solid #30575c;
     text-align: center;
+    box-sizing: border-box;
+    z-index: 120;
 }
+
 .gantt-table th.timeline-header {
-    background-color: #30575c; /* 枠線：濃い色（メリハリを出すため背景に利用） */
+    position: sticky;
+    top: 0;
+    background-color: #30575c;
     color: #ffffff;
     font-size: 8.5pt;
     padding: 10px 4px;
-    width: 35px;
-    min-width: 35px;
-    border: 1px solid #ffffff;
-}
-.gantt-table th.sat-header {
-    color: #93c5fd; /* 土曜日用ライトブルー */
-}
-.gantt-table th.sun-header {
-    color: #fca5a5; /* 日曜日用ライトレッド */
+    min-width: 60px;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #30575c;
+    text-align: center;
+    z-index: 119;
 }
 
-/* 行スタイル */
+.gantt-table .sticky-col {
+    position: sticky;
+    z-index: 100;
+    box-sizing: border-box;
+}
+
+th.sticky-col {
+    position: sticky !important;
+    top: 0 !important;
+    background-color: #B0E0E6;
+    border-right: 1px solid #30575c !important;
+    border-bottom: 1px solid #30575c !important;
+    z-index: 125 !important;
+}
+td.sticky-col {
+    background-color: #ffffff;
+    border-right: 1px solid #30575c !important;
+    border-bottom: 1px solid #30575c !important;
+    z-index: 100;
+}
+
+.sticky-col-1 { left: 0; text-align: center;}
+.sticky-col-2 { left: 160px; text-align: center;}
+.sticky-col-3 { left: 260px; text-align: center;}
+.sticky-col-4 { left: 360px; text-align: center;}
+.sticky-col-5 {
+    left: 460px;
+    box-shadow: 4px 0 8px -4px rgba(0,0,0,0.15);
+    text-align: center;
+}
+th.sticky-col-1 { z-index: 125 !important; }
+th.sticky-col-2 { z-index: 124 !important; }
+th.sticky-col-3 { z-index: 123 !important; }
+th.sticky-col-4 { z-index: 122 !important; }
+th.sticky-col-5 { z-index: 121 !important; }
+
 .gantt-table td {
     padding: 8px 12px;
-    border: 1px solid #30575c; /* 枠線：濃い色 */
+    border-right: 1px solid #30575c;
+    border-bottom: 1px solid #30575c;
     vertical-align: middle;
     color: #333333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* プロジェクト/フェーズの大項目行 */
 .row-group {
-    background-color: #edfaff; /* 会社カラーの極薄トーン */
     font-weight: bold;
-    color: #30575c; /* 枠線：濃い色 */
+    color: #30575c;
 }
 .row-group td {
-    padding: 10px 12px;
-    border-bottom: 2px solid #30575c; /* 枠線：濃い色 */
+    border-bottom: 2px solid #30575c;
+    position: sticky;
+    left: 0;
+    background-color: #edfaff;
+    z-index: 110;
 }
 
 /* 進捗ステータスバッジ */
@@ -194,10 +232,6 @@ select, input[type="text"], .input-date {
     font-size: 8pt;
     font-weight: bold;
 }
-.status-completed { background-color: #d1fae5; color: #065f46; } /* 緑 */
-.status-ing { background-color: #fef08a; color: #713f12; }       /* 黄 */
-.status-notstart { background-color: #e2e8f0; color: #475569; }  /* グレー */
-
 /* タイムラインセルの描画 */
 .chart-cell {
     padding: 0 !important;
@@ -219,27 +253,25 @@ select, input[type="text"], .input-date {
     border-radius: 3px;
     z-index: 2;
 }
-.bar-actual.completed {
-    background-color: #10b981; /* 完了：緑 */
-}
-.bar-actual.ing {
-    background-color: #eab308; /* 対応中：黄 */
-}
-.bar-actual.notstart {
-    background-color: #94a3b8; /* 未着手：グレー */
-}
+.bar-actual.bar-todo    { background-color: #94a3b8; } /* 未着手：グレー */
+.bar-actual.bar-working { background-color: #eab308; } /* 対応中：黄 */
+.bar-actual.bar-done    { background-color: #10b981; } /* 完了：緑 */
 
 /* 状態テキスト配置 */
 .chart-status-text {
     position: absolute;
     bottom: 2px;
-    left: 2px;
-    font-size: 7pt;
+    left: 50%;
+    font-size: 8pt;
     color: #616161; /* 濃いグレー */
     white-space: nowrap;
-    z-index: 3;
+    z-index: 10;
     transform: scale(0.8);
-    transform-origin: left bottom;
+    transform-origin: right bottom;
 }
-gantt.css
-「gantt.css」を表示しています。
+
+.container {
+    position: relative;
+}
+
+

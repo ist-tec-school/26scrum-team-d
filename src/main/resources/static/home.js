@@ -56,6 +56,7 @@ function showUpdateDialog(button) {
     const description = row.cells[5].innerText;
     const statusMap = { '未着手': 0, '対応中': 1, '完了': 3 };
     const statusText = row.cells[6].innerText.trim();
+    const startDate = row.getAttribute('data-start-date');
 
     // 2. フォームに値をセット
     document.getElementById('update_id').value = id;
@@ -63,6 +64,9 @@ function showUpdateDialog(button) {
     document.getElementById('update_deadline').value = deadline;
     document.getElementById('update_description').value = description;
     document.getElementById('update_status').value = statusMap[statusText] ?? 0;
+    document.getElementById('update_start_date').value = startDate;
+    updateDateConstraints('update');
+
 
     const projectSelect = document.getElementById('update_project');
     if (projectSelect) projectSelect.value = projectId || '';
@@ -78,7 +82,32 @@ function showUpdateDialog(button) {
 
     // 5. ダイアログの表示
     dialog.style.left = "";
-    dialog.style.display = 'flex';
+    dialog.style.display = 'flex'
+}
+
+/**
+ * @param {string} prefix 'add' または 'update'
+ */
+function updateDateConstraints(prefix) {
+    const startInput = document.getElementById(prefix === 'add' ? 'add_startDate' : 'update_start_date');
+    const deadlineInput = document.getElementById(prefix === 'add' ? 'add_deadline' : 'update_deadline');
+
+    if (!startInput || !deadlineInput) return;
+    const today = new Date().toISOString().split('T')[0];
+
+    if (startInput.value) {
+        if (startInput.value > today) {
+            deadlineInput.min = startInput.value;
+        } else {
+            deadlineInput.min = today;
+        }
+    } else {
+        deadlineInput.min = today;
+    }
+
+    if (deadlineInput.value) {
+        startInput.max = deadlineInput.value;
+    }
 }
 
 /**
@@ -340,24 +369,42 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * 削除確認モーダルの制御
+ * 削除確認モーダルを表示し、ユーザーの選択結果を返す
+ * @returns {Promise<boolean>} 削除ならtrue、キャンセルならfalse
  */
-/**
- * 削除確認ダイアログを開く
- */
-function openDeleteDialog() {
-    const dialog = document.getElementById('delete-confirm-dialog');
-    if (dialog) {
-        dialog.showModal();
-    }
+function confirmDelete() {
+    const modal = document.getElementById('delete-modal');
+    modal.style.display = 'flex'; // モーダルを表示
+
+    return new Promise((resolve) => {
+        // 削除ボタンの処理
+        window.deleteModal = () => {
+            // closeDeleteModal();
+            modal.style.display = 'none';
+            resolve(true); // 実行を許可
+        };
+
+        // キャンセルボタンの処理
+        window.closeDeleteModal = () => {
+            modal.style.display = 'none'; // モーダルを非表示
+            resolve(false); // 実行をキャンセル
+        };
+    });
 }
 
 /**
- * 削除確認ダイアログを閉じる
+ * 実際に実行するメインの処理
  */
-function closeDeleteDialog() {
-    const dialog = document.getElementById('delete-confirm-dialog');
-    if (dialog) {
-        dialog.close();
+// 修正ポイント: 引数 button を受け取る
+async function handleDelete(button) {
+    // 1. クリックされたボタンが含まれる <form> を取得しておく
+    const form = button.closest('form');
+
+    // 2. モーダルの確認を待つ
+    const confirmed = await confirmDelete();
+
+    // 3. ユーザーが「削除」を押した場合のみ、JavaScriptから送信を実行
+    if (confirmed && form) {
+        form.submit();
     }
 }
