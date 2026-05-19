@@ -147,7 +147,7 @@ dialog {
 .task_form {
     padding: 0 10px 10px 10px;
     border: 2px solid #30575c;
-    border-radius: 5px;
+    border-radius: 8px;
 }
 .task_form form {
     display: grid;
@@ -185,16 +185,37 @@ dialog {
     contain: paint; /* 描画範囲を限定し、外への影響（フォームの伸び）を抑える */
 }
 
-.tasklist table, .tasklist th, .tasklist td {
-    border: 1px solid black;
-    border-collapse: collapse;
+.tasklist table {
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 8px;        /* ★ 5px から 12px に変更して大きく角を取る */
+    border: 1px solid #30575c; /* ★ 外枠の色をこの色（深緑系）に統一 */
+    overflow: hidden;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.tasklist table th, .tasklist table td {
     padding: 8px;
     vertical-align: middle;
     text-align: center;
+    border-bottom: 1px solid #30575c;
+    border-right: 1px solid #30575c;
+    border-top: none !important;
+    border-left: none !important;
+}
+
+.tasklist table th:last-child,
+.tasklist table td:last-child {
+    border-right: none !important;
+}
+
+.tasklist table tbody tr:last-child td {
+    border-bottom: none !important;
 }
 
 .tasklist th {
-    background-color: #f4f7f6; /* 見出しに色をつける */
+    background-color: #e8f6fc;
 }
 
 /* 各列の幅を指定（合計で100%になるように調整、またはpx指定） */
