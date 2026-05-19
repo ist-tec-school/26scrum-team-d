@@ -33,7 +33,6 @@ public class GanttController {
     @GetMapping
     public String showGantt(Model model,
                             @AuthenticationPrincipal UserDetails userDetails,
-                            @RequestParam(value = "startDate", required = false) String startDateStr,
                             @RequestParam(value = "scope", defaultValue = "all") String scope,
                             @RequestParam(value = "status", defaultValue = "all") String status,
                             @RequestParam(value = "projectId", defaultValue = "all") String projectId,
@@ -42,13 +41,13 @@ public class GanttController {
                             @RequestParam(value = "keyword", defaultValue = "") String keyword,
                             @RequestParam(value = "taskUserId", defaultValue = "all") String taskUserId, // 担当者フィルター用
                             @RequestParam(value = "startDate", required = false) String startDate) {
-        LocalDate baseDate = (startDateStr != null && !startDateStr.isEmpty())
-                ? LocalDate.parse(startDateStr)
+        LocalDate baseDate = (startDate != null && !startDate.isEmpty())
+                ? LocalDate.parse(startDate)
                 : LocalDate.now();
 
         List<String> timeScaleHeaders = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        for (int i = 0; i < 61; i++) {
+        for (int i = 0; i < 365; i++) {
             timeScaleHeaders.add(baseDate.plusDays(i).format(formatter));
         }
 
@@ -106,7 +105,7 @@ public class GanttController {
         // 5. 日程表示用の初期設定
         String todayStr = LocalDate.now().toString();
         model.addAttribute("today", todayStr);
-        model.addAttribute("selectedStartDate", startDate != null ? startDate : todayStr);
+        model.addAttribute("selectedStartDate", baseDate.toString());
 
         // ※ もしすでに別の日付ヘッダーロジックを実装済みの場合は、以下のif文は削除してください
         model.addAttribute("timeScaleHeaders", timeScaleHeaders);
