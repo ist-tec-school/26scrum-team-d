@@ -110,9 +110,9 @@
             <input type="hidden" name="scope" th:value="${selectedScope}">
 
             <select name="status" id="status-filter" onchange="this.form.submit()">
-                <option value="working_group" th:selected="${selectedStatus == 'working_group'}">未完了のタスク</option>
-                <option value="3" th:selected="${selectedStatus == '3'}">完了済みのタスク</option>
-                <option value="all" th:selected="${selectedStatus == 'all'}">すべてのタスク</option>
+                <option value="working_group" th:selected="${selectedStatus == 'working_group'}">タスクの状態：未完了</option>
+                <option value="3" th:selected="${selectedStatus == '3'}">タスクの状態：完了</option>
+                <option value="all" th:selected="${selectedStatus == 'all'}">タスクの状態：すべて</option>
             </select>
         </div>
     </div>
@@ -168,7 +168,7 @@
 
 </form>
 
-<dialog class="tasklist" th:if="${!#lists.isEmpty(taskList)}">
+<div class="tasklist" th:if="${!#lists.isEmpty(taskList)}">
     <table>
         <thead>
         <tr>
@@ -212,15 +212,16 @@
             <td th:switch="${task.done}"
                 class="status-common"
                 th:classappend="${task.done == 0} ?
-                'status-todo' : (${task.done == 1} ?
-                'status-working' : (${task.done == 3} ?
-                'status-done' : ''))">
+                'status-notstart' : (${task.done == 1} ?
+                'status-ing' : (${task.done == 3} ?
+                'status-completed' : ''))">
                 <span th:case="0">未着手</span>
                 <span th:case="1">対応中</span>
                 <span th:case="3">完了</span>
             </td>
             <td>
                 <button type="button"
+                        class="btn-update"
                         onclick="showUpdateDialog(this)">更新</button>
             </td>
             <td>
@@ -232,13 +233,15 @@
                     <input type="hidden" name="deptId" th:value="${selectedDept}">
                     <input type="hidden" name="sectionId" th:value="${selectedSection}">
                     <input type="hidden" name="keyword" th:value="${keyword}">
-                    <button type="button" onclick="handleDelete(this)">削除</button>
+                    <button type="button"
+                            class="btn-delete"
+                            onclick="handleDelete(this)">削除</button>
                 </form>
             </td>
         </tr>
         </tbody>
     </table>
-</dialog    >
+  </div>
 </div>
 
 
