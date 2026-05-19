@@ -89,7 +89,7 @@ public class TaskListDao {
             params.add(wildcardKeyword);
         }
 
-        sql.append(" ORDER BY t.deadline ASC");
+        sql.append(" ORDER BY t.project_id ASC, t.start_date ASC");
 
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql.toString(), params.toArray());
         return mapToTaskItems(result);

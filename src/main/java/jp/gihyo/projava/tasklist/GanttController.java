@@ -66,13 +66,13 @@ public class GanttController {
                 status, projectId, deptId, sectionId, keyword, scope, currentUserId
         );
         List<GanttDisplayItem> displayList = new ArrayList<>();
-        Integer lastProjectId = null;
+        Integer lastProjectId = -1;
 
         for (HomeController.TaskItem item : taskItems) {
             Integer currentProjectId = item.projectId();
 
             // プロジェクトが切り替わったタイミング（または最初のループ）でプロジェクト行を生成
-            if (lastProjectId == null || !lastProjectId.equals(currentProjectId)) {
+            if (!currentProjectId.equals(lastProjectId)) {
                 String projectName = (item.projectName() != null && !item.projectName().isBlank())
                         ? item.projectName()
                         : "プロジェクト未割当";
@@ -80,6 +80,10 @@ public class GanttController {
                 // プロジェクト行を追加
                 displayList.add(new GanttDisplayItem(projectName));
                 lastProjectId = currentProjectId;
+            } else if (currentProjectId == null && lastProjectId != null) {
+                // プロジェクト未割当のタスクが連続する場合の処理
+                displayList.add(new GanttDisplayItem("プロジェクト未割当"));
+                lastProjectId = null;
             }
 
             // 通常のタスク行を追加
