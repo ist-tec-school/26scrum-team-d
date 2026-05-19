@@ -360,7 +360,7 @@ th.timeline-header.weekend-sun {
 .gantt-table tbody tr.row-delayed td.weekend-sun,
 .gantt-table tbody tr.row-urgent td.weekend-sat,
 .gantt-table tbody tr.row-urgent td.weekend-sun {
-    background-color: #f4f7f6 !important;
+    background-color: #f4f7f6;
 }
 
 /* 💡 行全体の背景色も薄く変えたい場合（お好みで適用してください） */
