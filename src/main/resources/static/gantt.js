@@ -150,5 +150,40 @@ window.addEventListener("load", function() {
             });
         });
     }
+
+    const edateCells = document.querySelectorAll("td.col-edate");
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    edateCells.forEach(td => {
+        const container = td.querySelector(".edate-container");
+        if (!container) return;
+        const oldBadge = container.querySelector(".days-badge");
+        if (oldBadge) oldBadge.remove();
+
+        const deadlineStr = td.getAttribute("data-deadline");
+        const doneStr = td.getAttribute("data-done");
+
+        if (!deadlineStr || doneStr === "3") return;
+
+        const deadlineDate = new Date(deadlineStr);
+        deadlineDate.setHours(0, 0, 0, 0);
+
+        const diffTime = deadlineDate.getTime() - today.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        const badge = document.createElement("div");
+        badge.classList.add("days-badge");
+
+        if (diffDays < 0) {
+            badge.innerHTML = `＋<span class="badge-num">${Math.abs(diffDays)}</span>日`;
+            badge.classList.add("badge-delay");
+            container.appendChild(badge);
+        } else if (diffDays <= 3) {
+            badge.innerHTML = `残<span class="badge-num">${diffDays}</span>日`;
+            badge.classList.add("badge-near");
+            container.appendChild(badge);
+        }
+    });
 });
 window.addEventListener("resize", () => window.dispatchEvent(new Event("load")));
