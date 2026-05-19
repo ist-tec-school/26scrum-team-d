@@ -128,6 +128,32 @@ table {
     font-size: 9pt;
 }
 
+.gantt-table .row-group {
+    display: table-row;
+}
+
+/*プロジェクトセル*/
+.gantt-table .group-title-cell {
+    padding: 10px 15px;
+    border-right: none; !important;
+    font-weight: bold;
+    color: black;
+    font-size: 10.5pt;
+    text-align: left;
+    /* 💡 左端に確実に固定する */
+    position: sticky;
+    left: 0;
+    z-index: 101;
+    background-color: #e2e8f0 !important;
+    white-space: nowrap;
+}
+
+.gantt-table .group-empty-cell {
+    background-color: #e2e8f0 !important;
+    position: relative;
+    z-index: 1;
+}
+
 .col-title  { width: 320px; min-width: 160px; max-width: 160px; }
 .col-owner  { width: 120px; min-width: 100px; max-width: 100px; }
 .col-sdate  { width: 100px; min-width: 100px; max-width: 100px; }

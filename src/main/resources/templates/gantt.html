@@ -26,7 +26,7 @@
                 </div>
                 <label class="label-start-date">表示開始日:</label>
                 <input type="date"
-                       name="start_date"
+                       name="startDate"
                        th:value="${selectedStartDate != null ? selectedStartDate : today}"
                        class="input-date"
                        onchange="this.form.submit()">
@@ -126,9 +126,9 @@
             <tbody>
             <th:block th:each="item : ${taskList}">
                 <tr th:if="${item.isGroup}" class="row-group">
-                    <td th:colspan="${5 + #lists.size(timeScaleHeaders)}" class="group-title-cell">
+                    <td colspan="5" class="group-title-cell">
                         <span th:text="${item.displayTitle}">プロジェクト名</span>
-                    </td>
+                    <td colspan="100" class="group-empty-cell"></td>
                 </tr>
 
                 <tr th:unless="${item.isGroup}">
@@ -169,7 +169,10 @@
                         </span>
                             </td>
                         </th:block>
-                    </th:block> </tr> </th:block> </tbody>
+                    </th:block>
+                </tr>
+            </th:block>
+            </tbody>
         </table>
     </div>
 </div>
