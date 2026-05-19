@@ -130,6 +130,8 @@ table {
 
 .gantt-table .row-group {
     display: table-row;
+    table-layout: fixed;
+    width: 100%;
 }
 
 /*プロジェクトセル*/
