@@ -132,9 +132,10 @@
 
                 <tr th:unless="${item.isGroup}">
                     <td class="sticky-col sticky-col-1 col-title">
-                        <a th:href="@{/list(scope='all')} + '#' + ${item.task.id}"
-                           th:text="${item.displayTitle}"
-                           class="gantt-task-link"></a>
+                        <a th:href="@{/list(scope='all', status='all')} + '#' + ${item.task.id}"
+                           th:text="${item.displayTitle}">
+                            タスク名
+                        </a>
                     </td>
 
                     <td class="sticky-col sticky-col-2 col-owner user-cell">
