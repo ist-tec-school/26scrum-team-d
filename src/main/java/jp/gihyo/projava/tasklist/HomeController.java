@@ -43,8 +43,6 @@ public class HomeController {
             @NotBlank String deadline,
             Integer done
     ) {}
-
-    private List<TaskItem> taskItems = new ArrayList<>();
     private final TaskListDao dao;
     private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
     @Autowired
@@ -56,7 +54,7 @@ public class HomeController {
     @GetMapping("/list")
     String listItems(Model model,
                      @AuthenticationPrincipal UserDetails userDetails, // ★ログイン情報を取得
-                     @RequestParam(value = "scope", defaultValue = "mine") String scope, // ★デフォルトはmine
+                     @RequestParam(value = "scope", defaultValue = "mine") String scope,
                      @RequestParam(value = "status", defaultValue = "working_group") String status,
                      @RequestParam(value = "projectId", defaultValue = "all") String projectId,
                      @RequestParam(value = "deptId", defaultValue = "all") String deptId,
