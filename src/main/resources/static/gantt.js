@@ -16,18 +16,23 @@ window.addEventListener("load", function() {
     const stickyCols = document.querySelectorAll("thead th.sticky-col");
     let stickyWidth = 0;
     stickyCols.forEach(col => stickyWidth += col.offsetWidth);
-    const availableWidth = (wrapper ? wrapper.clientWidth : 1400) - 590 - 15;
+    const availableWidth = (wrapper ? wrapper.clientWidth : 1400) - 590 -1;
 
     let cellWidth = 40;
     if (timeScale === "day") {
         cellWidth = Math.max(35, Math.floor(availableWidth / 15));
     } else if (timeScale === "week") {
-        cellWidth = Math.max(90, Math.floor(availableWidth / 10));
+        cellWidth = Math.max(65, Math.floor(availableWidth / 10));
     } else if (timeScale === "month") {
         cellWidth = Math.max(120, Math.floor(availableWidth / 5));
     }
 
     const timelineHeaders = document.querySelectorAll("th.timeline-header");
+
+    const tableEl = document.querySelector(".gantt-table");
+    if (tableEl && timelineHeaders.length>0) {
+        tableEl.style.width = `${590 + (timelineHeaders.length * cellWidth)}px`;
+    }
     timelineHeaders.forEach(th => {
         th.style.minWidth = `${cellWidth}px`;
         th.style.maxWidth = `${cellWidth}px`;
