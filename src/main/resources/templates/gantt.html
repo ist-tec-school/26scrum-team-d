@@ -126,7 +126,8 @@
             <tbody>
             <th:block th:each="item : ${taskList}">
                 <tr th:if="${item.isGroup}" class="row-group">
-                    <td colspan="100" class="group-title-cell"> <span th:text="${item.displayTitle}">プロジェクト名</span>
+                    <td th:colspan="${5 + #lists.size(timeScaleHeaders)}" class="group-title-cell">
+                        <span th:text="${item.displayTitle}">プロジェクト名</span>
                     </td>
                 </tr>
 

@@ -48,7 +48,7 @@ public class GanttController {
 
         List<String> timeScaleHeaders = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        for (int i = 0; i < 61; i++) {
+        for (int i = 0; i < 365; i++) {
             timeScaleHeaders.add(baseDate.plusDays(i).format(formatter));
         }
 
