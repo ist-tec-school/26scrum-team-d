@@ -18,19 +18,20 @@
     <form action="/gantt" method="get" id="mainFilterForm">
     <div class="list_header">
         <div class="time-scale">
-                <label>タイムスケール表示切替:</label>
-                <div class="btn-group">
-                    <button type="button" class="btn active">日</button>
-                    <button type="button" class="btn">週</button>
-                    <button type="button" class="btn">月</button>
-                </div>
-                <label class="label-start-date">表示開始日:</label>
-                <input type="date"
-                       name="startDate"
-                       th:value="${selectedStartDate != null ? selectedStartDate : today}"
-                       class="input-date"
-                       onchange="this.form.submit()">
+            <label>タイムスケール表示切替:</label>
+            <input type="hidden" name="timeScale" id="timeScaleInput" th:value="${selectedTimeScale != null ? selectedTimeScale : 'day'}">
+            <div class="btn-group">
+                <button type="button" class="btn" th:classappend="${selectedTimeScale == 'day' || selectedTimeScale == null} ? 'active' : ''" onclick="changeTimeScale('day')">日</button>
+                <button type="button" class="btn" th:classappend="${selectedTimeScale == 'week'} ? 'active' : ''" onclick="changeTimeScale('week')">週</button>
+                <button type="button" class="btn" th:classappend="${selectedTimeScale == 'month'} ? 'active' : ''" onclick="changeTimeScale('month')">月</button>
             </div>
+            <label class="label-start-date">表示開始日:</label>
+            <input type="date"
+                   name="startDate"
+                   th:value="${selectedStartDate != null ? selectedStartDate : today}"
+                   class="input-date"
+                   onchange="this.form.submit()">
+        </div>
 
                 <div class="list_header" id="task-list-top">
 
@@ -151,8 +152,8 @@
 
                     <th:block th:each="headerLabel : ${timeScaleHeaders}">
                         <th:block th:with="
-                    isInPeriod=${item.task.start_date != null && item.task.deadline != null && headerLabel >= item.task.start_date && headerLabel <= item.task.deadline},
-                    isDeadlineDay=${headerLabel == item.task.deadline}">
+                            isInPeriod=${item.task.start_date != null && item.task.deadline != null && headerLabel >= #strings.substring(item.task.start_date, 0, #strings.length(headerLabel)) && headerLabel <= #strings.substring(item.task.deadline, 0, #strings.length(headerLabel))},
+                            isDeadlineDay=${#strings.startsWith(item.task.deadline, headerLabel)}">
 
                             <td class="chart-cell" th:data-date="${headerLabel}">
                                 <div th:if="${isInPeriod}"
@@ -163,10 +164,10 @@
                                 <span th:if="${isInPeriod && isDeadlineDay}"
                                       class="chart-status-text"
                                       th:switch="${item.task.done}">
-                            <th:block th:case="0">未着手</th:block>
-                            <th:block th:case="1">対応中</th:block>
-                            <th:block th:case="3">完了</th:block>
-                        </span>
+                                    <th:block th:case="0">未着手</th:block>
+                                    <th:block th:case="1">対応中</th:block>
+                                    <th:block th:case="3">完了</th:block>
+                                </span>
                             </td>
                         </th:block>
                     </th:block>

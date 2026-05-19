@@ -33,6 +33,7 @@ public class GanttController {
     @GetMapping
     public String showGantt(Model model,
                             @AuthenticationPrincipal UserDetails userDetails,
+                            @RequestParam(value = "timeScale", defaultValue = "day") String timeScale,
                             @RequestParam(value = "scope", defaultValue = "all") String scope,
                             @RequestParam(value = "status", defaultValue = "all") String status,
                             @RequestParam(value = "projectId", defaultValue = "all") String projectId,
@@ -46,9 +47,21 @@ public class GanttController {
                 : LocalDate.now();
 
         List<String> timeScaleHeaders = new ArrayList<>();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        for (int i = 0; i < 365; i++) {
-            timeScaleHeaders.add(baseDate.plusDays(i).format(formatter));
+        if ("week".equals(timeScale)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            for (int i = 0; i < 53; i++) {
+                timeScaleHeaders.add(baseDate.plusWeeks(i).format(formatter));
+            }
+        } else if ("month".equals(timeScale)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
+            for (int i = 0; i < 12; i++) {
+                timeScaleHeaders.add(baseDate.plusMonths(i).format(formatter));
+            }
+        } else {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            for (int i = 0; i < 365; i++) {
+                timeScaleHeaders.add(baseDate.plusDays(i).format(formatter));
+            }
         }
 
 
@@ -101,6 +114,7 @@ public class GanttController {
         model.addAttribute("selectedDept", deptId);
         model.addAttribute("selectedSection", sectionId);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("selectedTimeScale", timeScale);
 
         // 5. 日程表示用の初期設定
         String todayStr = LocalDate.now().toString();
