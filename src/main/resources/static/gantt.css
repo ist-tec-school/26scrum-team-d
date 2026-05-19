@@ -259,18 +259,25 @@ th.sticky-col-5 { z-index: 121 !important; }
     background-color: #ffffff;
     border-right: 1px solid #e2e8f0;
 }
-.chart-cell.weekend {
-    background-color: #f8fafc;
+.chart-cell.weekend-sat,
+.chart-cell.weekend-sun {
+    background-color: #f1f5f9 !important;
+}
+th.timeline-header.weekend-sat {
+    color: #2563eb !important;
+}
+th.timeline-header.weekend-sun {
+    color: #dc2626 !important;
 }
 
 /* 期間バーの表現 - 指定カラーコードの適用 */
 .bar-actual {
     position: absolute;
-    top: 10px;
+    top: 14px;
     left: 0;
-    right: 0;
+    width:100%;
     height: 12px;
-    border-radius: 3px;
+    border-radius: 2px;
     z-index: 2;
 }
 .bar-actual.bar-todo    { background-color: #94a3b8; } /* 未着手：グレー */

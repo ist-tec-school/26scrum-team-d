@@ -123,17 +123,15 @@
                 </th:block>
             </tr>
             </thead>
-                <tbody>
-                <th:block th:each="item : ${taskList}">
+            <tbody>
+            <th:block th:each="item : ${taskList}">
+                <tr th:if="${item.isGroup}" class="row-group">
+                    <td colspan="100" class="group-title-cell"> <span th:text="${item.displayTitle}">プロジェクト名</span>
+                    </td>
+                </tr>
 
-                    <tr th:if="${item.isGroup}" class="row-group">
-                        <td colspan="5" class="group-title-cell">
-                            <span th:text="${item.displayTitle}">プロジェクト名</span>
-                        </td>
-                    </tr>
-
-                    <tr th:unless="${item.isGroup}">
-                        <td class="sticky-col sticky-col-1 col-title" th:text="${item.displayTitle}">タスク名</td>
+                <tr th:unless="${item.isGroup}">
+                    <td class="sticky-col sticky-col-1 col-title" th:text="${item.displayTitle}">タスク名</td>
 
                     <td class="sticky-col sticky-col-2 col-owner user-cell">
                         <th:block th:each="uid : ${item.task.taskUserIds}">
@@ -142,31 +140,38 @@
                         <div th:if="${#lists.isEmpty(item.task.taskUserIds)}">-</div>
                     </td>
 
+                    <td class="sticky-col sticky-col-3 col-sdate" th:text="${item.task.start_date}">開始日</td>
+                    <td class="sticky-col sticky-col-4 col-edate" th:text="${item.task.deadline}">終了日</td>
+                    <td class="sticky-col sticky-col-5 col-status" th:switch="${item.task.done}">
+                        <span th:case="0" class="status-badge status-notstart">未着手</span>
+                        <span th:case="1" class="status-badge status-ing">対応中</span>
+                        <span th:case="3" class="status-badge status-completed">完了</span>
+                    </td>
+
                     <th:block th:each="headerLabel : ${timeScaleHeaders}">
                         <th:block th:with="
-                            isInPeriod=${task.start_date != null && task.deadline != null && headerLabel >= task.start_date && headerLabel <= task.deadline},
-                            isDeadlineDay=${headerLabel == task.deadline}">
+                    isInPeriod=${item.task.start_date != null && item.task.deadline != null && headerLabel >= item.task.start_date && headerLabel <= item.task.deadline},
+                    isDeadlineDay=${headerLabel == item.task.deadline}">
 
                             <td class="chart-cell" th:data-date="${headerLabel}">
-
                                 <div th:if="${isInPeriod}"
                                      class="bar-actual"
-                                     th:classappend="${task.done == 0} ? 'bar-todo' : (${task.done == 1} ? 'bar-working' : 'bar-done')">
+                                     th:classappend="${item.task.done == 0} ? 'bar-todo' : (${item.task.done == 1} ? 'bar-working' : 'bar-done')">
                                 </div>
 
                                 <span th:if="${isInPeriod && isDeadlineDay}"
                                       class="chart-status-text"
-                                      th:switch="${task.done}">
-                                    <th:block th:case="0">未着手</th:block>
-                                    <th:block th:case="1">対応中</th:block>
-                                    <th:block th:case="3">完了</th:block>
-                                </span>
-
+                                      th:switch="${item.task.done}">
+                            <th:block th:case="0">未着手</th:block>
+                            <th:block th:case="1">対応中</th:block>
+                            <th:block th:case="3">完了</th:block>
+                        </span>
                             </td>
                         </th:block>
-                    </tr>
-                </th:block>
-                </tbody>
+                    </th:block>
+                </tr>
+            </th:block>
+            </tbody>
         </table>
     </div>
 </div>
