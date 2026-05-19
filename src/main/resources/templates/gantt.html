@@ -16,8 +16,8 @@
 
     <!-- コントロールパネル（タイムスケール切り替え、開始日表示選択 ＆ 5軸フィルター） -->
     <form action="/gantt" method="get" id="mainFilterForm">
-    <div class="list_header">
-        <div class="time-scale">
+        <div class="list_header">
+            <div class="time-scale">
                 <label>タイムスケール表示切替:</label>
                 <div class="btn-group">
                     <button type="button" class="btn active">日</button>
@@ -32,75 +32,75 @@
                        onchange="this.form.submit()">
             </div>
 
-                <div class="list_header">
+            <div class="list_header">
 
-                    <div class="filter_area">
-                        <div class="scope-toggle">
-                            <a th:href="@{/gantt(scope='mine', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
-                               class="scope-btn"
-                               th:classappend="${selectedScope == 'mine'} ? 'active' : ''">自分のタスク</a>
-                            <a th:href="@{/gantt(scope='all', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
-                               class="scope-btn"
-                               th:classappend="${selectedScope == 'all'} ? 'active' : ''">全てのタスク</a>
-                        </div>
-                        <input type="hidden" name="scope" th:value="${selectedScope}">
-
-                        <select name="status" id="status-filter" onchange="this.form.submit()">
-                            <option value="working_group" th:selected="${selectedStatus == 'working_group'}">未完了のタスク</option>
-                            <option value="3" th:selected="${selectedStatus == '3'}">完了済みのタスク</option>
-                            <option value="all" th:selected="${selectedStatus == 'all'}">すべてのタスク</option>
-                        </select>
+                <div class="filter_area">
+                    <div class="scope-toggle">
+                        <a th:href="@{/gantt(scope='mine', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
+                           class="scope-btn"
+                           th:classappend="${selectedScope == 'mine'} ? 'active' : ''">自分のタスク</a>
+                        <a th:href="@{/gantt(scope='all', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
+                           class="scope-btn"
+                           th:classappend="${selectedScope == 'all'} ? 'active' : ''">全てのタスク</a>
                     </div>
+                    <input type="hidden" name="scope" th:value="${selectedScope}">
+
+                    <select name="status" id="status-filter" onchange="this.form.submit()">
+                        <option value="working_group" th:selected="${selectedStatus == 'working_group'}">未完了のタスク</option>
+                        <option value="3" th:selected="${selectedStatus == '3'}">完了済みのタスク</option>
+                        <option value="all" th:selected="${selectedStatus == 'all'}">すべてのタスク</option>
+                    </select>
                 </div>
             </div>
+        </div>
 
-                <div class="filter_container">
-                    <div class="filter_item">
-                        <select name="deptId" onchange="this.form.submit()">
-                            <option value="all" th:selected="${selectedDept == 'all'}">すべての部署</option>
-                            <option th:each="dept : ${deptList}"
-                                    th:value="${dept.DEPT_ID}"
-                                    th:text="${dept.DEPT_NAME}"
-                                    th:selected="${selectedDept == dept.DEPT_ID.toString()}">
-                            </option>
-                        </select>
-                    </div>
+        <div class="filter_container">
+            <div class="filter_item">
+                <select name="deptId" onchange="this.form.submit()">
+                    <option value="all" th:selected="${selectedDept == 'all'}">すべての部署</option>
+                    <option th:each="dept : ${deptList}"
+                            th:value="${dept.DEPT_ID}"
+                            th:text="${dept.DEPT_NAME}"
+                            th:selected="${selectedDept == dept.DEPT_ID.toString()}">
+                    </option>
+                </select>
+            </div>
 
-                    <div class="filter_item">
-                        <select name="sectionId" onchange="this.form.submit()">
-                            <option value="all" th:selected="${selectedSection == 'all'}">すべての課</option>
-                            <option th:each="sec : ${sectionList}"
-                                    th:value="${sec.SECTION_ID}"
-                                    th:text="${sec.SECTION_NAME}"
-                                    th:data-dept="${sec.DEPT_ID}"
-                                    th:selected="${selectedSection == sec.SECTION_ID.toString()}">
-                            </option>
-                        </select>
-                    </div>
+            <div class="filter_item">
+                <select name="sectionId" onchange="this.form.submit()">
+                    <option value="all" th:selected="${selectedSection == 'all'}">すべての課</option>
+                    <option th:each="sec : ${sectionList}"
+                            th:value="${sec.SECTION_ID}"
+                            th:text="${sec.SECTION_NAME}"
+                            th:data-dept="${sec.DEPT_ID}"
+                            th:selected="${selectedSection == sec.SECTION_ID.toString()}">
+                    </option>
+                </select>
+            </div>
 
-                    <div class="filter_item">
-                        <select name="projectId" onchange="this.form.submit()">
-                            <option value="all" th:selected="${selectedProject == 'all'}">すべてのプロジェクト</option>
-                            <option th:each="project : ${projectList}"
-                                    th:value="${project.id}"
-                                    th:text="${project.name}"
-                                    th:selected="${selectedProject == project.id.toString()}">
-                            </option>
-                        </select>
-                    </div>
-                </div>
+            <div class="filter_item">
+                <select name="projectId" onchange="this.form.submit()">
+                    <option value="all" th:selected="${selectedProject == 'all'}">すべてのプロジェクト</option>
+                    <option th:each="project : ${projectList}"
+                            th:value="${project.id}"
+                            th:text="${project.name}"
+                            th:selected="${selectedProject == project.id.toString()}">
+                    </option>
+                </select>
+            </div>
+        </div>
 
-                <div class="search_area">
-                    <input type="text" name="keyword" th:value="${keyword}" placeholder="検索ワード タスクを検索できます。">
-                    <button type="submit" class="btn-base btn-primary search-button">検索</button>
+        <div class="search_area">
+            <input type="text" name="keyword" th:value="${keyword}" placeholder="検索ワード タスクを検索できます。">
+            <button type="submit" class="btn-base btn-primary search-button">検索</button>
 
-                    <a th:href="@{/gantt(scope='all', status='all', projectId='all', deptId='all', sectionId='all', keyword='')}"
-                       class="btn-base btn-primary reset-button">
-                        条件をリセット
-                    </a>
-                </div>
+            <a th:href="@{/gantt(scope='all', status='all', projectId='all', deptId='all', sectionId='all', keyword='')}"
+               class="btn-base btn-primary reset-button">
+                条件をリセット
+            </a>
+        </div>
 
-            </form>
+    </form>
 
     <!-- ガントチャート本体 -->
     <div class="gantt-wrapper">
@@ -115,10 +115,10 @@
 
                 <th:block th:each="headerLabel : ${timeScaleHeaders}">
                     <th class="timeline-header"
-                        th:data-date="${headerLabel}"
                         th:classappend="${headerLabel == today} ? 'today-header' : ''"
-                        th:text="${#strings.length(headerLabel) >= 10 ? #strings.replace(#strings.substring(headerLabel, 5, 10), '-', '/') : headerLabel}">
-                        05/12
+                        th:data-date="${headerLabel}">
+                        <span th:text="${#strings.length(headerLabel) >= 10 ? #strings.replace(#strings.substring(headerLabel, 5, 10), '-', '/') : headerLabel}">05/12</span>
+                        <div th:if="${headerLabel == today}" class="today-label">本日</div>
                     </th>
 
                 </th:block>
@@ -129,7 +129,12 @@
                 <tr th:if="${item.isGroup}" class="row-group">
                     <td colspan="5" class="group-title-cell">
                         <span th:text="${item.displayTitle}">プロジェクト名</span>
-                    <td th:colspan="${5 + #lists.size(timeScaleHeaders)}" class="group-empty-cell"></td>
+                    </td>
+                    <th:block th:each="headerLabel : ${timeScaleHeaders}">
+                        <td class="group-empty-cell"
+                            th:classappend="${headerLabel == today} ? 'today-cell' : ''">
+                        </td>
+                    </th:block>
                 </tr>
 
                 <tr th:unless="${item.isGroup}">
@@ -191,3 +196,5 @@
 
 </body>
 </html>
+gantt.html
+「gantt.html」を表示しています。

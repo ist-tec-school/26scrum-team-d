@@ -1,5 +1,4 @@
-
-/* 全体基本スタイル */
+ /* 全体基本スタイル */
 * {
     box-sizing: border-box;
     font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
@@ -337,29 +336,30 @@ th.timeline-header.weekend-sun {
 .container {
     position: relative;
 }
-
-.gantt-table {
-    position: relative;
-}
-
-.gantt-table th.today-header {
-    background-color: #4a757a !important;
-    position: relative;
-}
-
-.gantt-table th.today-header::after {
+.chart-cell.today-cell::after {
     content: "";
     position: absolute;
-    top: 100%;
+    top: 0;
+    bottom: 2px;
     left: 50%;
     width: 0;
-    height: 2000px;
     border-left: 2px dashed #4da6ff;
-    z-index: 50;
+    z-index: 5;
     pointer-events: none;
 }
 
-.chart-cell.today-cell {
-    background-color: #f0f8ff !important;
-}
 
+.today-label {
+    display: block;
+    width: max-content;
+    margin: 0 auto 3px auto;
+    background-color: #4da6ff;
+    color: #ffffff;
+    font-size: 8pt;
+    font-weight: bold;
+    padding: 3px 6px;
+    border-radius: 3px;
+    line-height: 1.2;
+    pointer-events: none;
+    transform: translateY(8px);
+}
