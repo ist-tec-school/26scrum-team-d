@@ -136,7 +136,12 @@
                 </tr>
 
                 <tr th:unless="${item.isGroup}">
-                    <td class="sticky-col sticky-col-1 col-title" th:text="${item.displayTitle}">タスク名</td>
+                    <td class="sticky-col sticky-col-1 col-title">
+                        <a th:href="@{/list(scope='all', status='all')} + '#' + ${item.task.id}"
+                           th:text="${item.displayTitle}">
+                            タスク名
+                        </a>
+                    </td>
 
                     <td class="sticky-col sticky-col-2 col-owner user-cell">
                         <th:block th:each="uid : ${item.task.taskUserIds}">
