@@ -83,6 +83,32 @@ dialog {
     background-color: #e0e0e0;
 }
 
+.btn-update {
+    padding: 5px;
+    background-color: white;
+    border: 2px solid #30575c;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+.btn-update:hover {
+    background-color: #B0E0E6;
+}
+
+.btn-delete {
+    padding: 5px;
+    background-color: #e0e0e0;
+    border: 2px solid #30575c;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+.btn-delete:hover {
+    background-color: #CCCCCC;
+}
+
 
 .header h1 {
     margin: 0;
@@ -381,7 +407,7 @@ th:nth-child(4),
 
 .filter_area {
     padding: 5px 10px;
-    background-color: #f4f7f6;
+    background-color: #e8f6fc;
     border-radius: 5px;
 }
 
@@ -399,7 +425,7 @@ th:nth-child(4),
     gap: 20px;                    /* 要素間に一定の隙間を作ります */
     margin-bottom: 20px;          /* 下にあるテーブルとの間に余白を作ります */
     padding: 15px;                /* 内側の余白です */
-    background-color: #f4f7f6;    /* 背景色を薄いグレーにして「フィルターエリア」であることを強調します */
+    background-color: #e8f6fc;
     border-radius: 8px;           /* 角を少し丸くしておしゃれにします */
 }
 

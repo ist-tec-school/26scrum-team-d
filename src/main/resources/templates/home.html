@@ -220,6 +220,7 @@
             </td>
             <td>
                 <button type="button"
+                        class="btn-update"
                         onclick="showUpdateDialog(this)">更新</button>
             </td>
             <td>
@@ -231,7 +232,9 @@
                     <input type="hidden" name="deptId" th:value="${selectedDept}">
                     <input type="hidden" name="sectionId" th:value="${selectedSection}">
                     <input type="hidden" name="keyword" th:value="${keyword}">
-                    <button type="button" onclick="handleDelete(this)">削除</button>
+                    <button type="button"
+                            class="btn-delete"
+                            onclick="handleDelete(this)">削除</button>
                 </form>
             </td>
         </tr>
