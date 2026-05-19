@@ -151,4 +151,4 @@ window.addEventListener("load", function() {
         });
     }
 });
-
+window.addEventListener("resize", () => window.dispatchEvent(new Event("load")));
