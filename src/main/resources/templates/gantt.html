@@ -130,7 +130,12 @@
                     <td th:colspan="${5 + #lists.size(timeScaleHeaders)}" class="group-empty-cell"></td>
                 </tr>
 
-                <tr th:unless="${item.isGroup}">
+                <tr th:unless="${item.isGroup}"
+                    th:with="
+        isDelayed=${(item.task.start_date &lt; today && item.task.done == 0) || (item.task.deadline &lt; today && item.task.done != 3)},
+        isUrgent=${!isDelayed && item.task.deadline &gt;= today && item.task.deadline &lt;= threeDaysLater && item.task.done != 3}"
+                    th:classappend="${isDelayed} ? 'row-delayed' : (${isUrgent} ? 'row-urgent' : '')">
+
                     <td class="sticky-col sticky-col-1 col-title" th:text="${item.displayTitle}">タスク名</td>
 
                     <td class="sticky-col sticky-col-2 col-owner user-cell">
@@ -156,7 +161,7 @@
                             <td class="chart-cell" th:data-date="${headerLabel}">
                                 <div th:if="${isInPeriod}"
                                      class="bar-actual"
-                                     th:classappend="${item.task.done == 0} ? 'bar-todo' : (${item.task.done == 1} ? 'bar-working' : 'bar-done')">
+                                     th:classappend="${isDelayed} ? 'bar-delayed' : (${isUrgent} ? 'bar-urgent' : (${item.task.done == 0} ? 'bar-todo' : (${item.task.done == 1} ? 'bar-working' : 'bar-done')))">
                                 </div>
 
                                 <span th:if="${isInPeriod && isDeadlineDay}"

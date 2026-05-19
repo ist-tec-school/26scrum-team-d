@@ -108,7 +108,9 @@ public class GanttController {
 
         // 5. 日程表示用の初期設定
         String todayStr = LocalDate.now().toString();
+        String threeDaysLaterStr = LocalDate.now().plusDays(3).toString();
         model.addAttribute("today", todayStr);
+        model.addAttribute("threeDaysLater", threeDaysLaterStr);
         model.addAttribute("selectedStartDate", baseDate.toString());
 
         // ※ もしすでに別の日付ヘッダーロジックを実装済みの場合は、以下のif文は削除してください

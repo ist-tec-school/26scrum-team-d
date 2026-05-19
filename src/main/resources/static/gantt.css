@@ -338,4 +338,20 @@ th.timeline-header.weekend-sun {
     position: relative;
 }
 
+/* 💡 ガントチャートのバー（棒）自体の色を変える場合 */
+.bar-delayed {
+    background-color: #ff4d4d !important; /* 遅延：鮮やかな赤 */
+}
+.bar-urgent {
+    background-color: #ffcc00 !important; /* 期限3日以内：黄色 */
+}
+
+/* 💡 行全体の背景色も薄く変えたい場合（お好みで適用してください） */
+.row-delayed {
+    background-color: #fff0f0; /* 薄い赤 */
+}
+.row-urgent {
+    background-color: #ffffe0; /* 薄い黄色 */
+}
+
 
