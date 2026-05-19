@@ -53,7 +53,7 @@ public class GanttController {
         }
 
 
-        // 1. ログインユーザーのIDを取得（「自分のタスク」絞り込み用）
+        // 1. ログイン中のユーザーIDを取得（引数の7番目で利用）
         Integer currentUserId = null;
         if (userDetails != null) {
             Map<String, Object> user = dao.findUserByEmail(userDetails.getUsername());
@@ -62,38 +62,48 @@ public class GanttController {
             }
         }
 
-        // 2. 担当者フィルターとscopeの連動ロジック
-        String targetScope = scope;
-        Integer targetUserId = currentUserId;
+        // 2. 画面から送られてきた5軸条件でSQLを実行
+        List<HomeController.TaskItem> taskItems = dao.findByCondition(
+                status, projectId, deptId, sectionId, keyword, scope, currentUserId
+        );
+        List<GanttDisplayItem> displayList = new ArrayList<>();
+        Integer lastProjectId = null;
 
-        // 「担当者」セレクトボックスで特定のユーザーが選ばれた場合、DAOの「mine」の仕組みを流用してその人で絞り込む
-        if (!"all".equals(taskUserId)) {
-            targetScope = "mine";
-            targetUserId = Integer.parseInt(taskUserId);
+        for (HomeController.TaskItem item : taskItems) {
+            Integer currentProjectId = item.projectId();
+
+            // プロジェクトが切り替わったタイミング（または最初のループ）でプロジェクト行を生成
+            if (lastProjectId == null || !lastProjectId.equals(currentProjectId)) {
+                String projectName = (item.projectName() != null && !item.projectName().isBlank())
+                        ? item.projectName()
+                        : "プロジェクト未割当";
+
+                // プロジェクト行を追加
+                displayList.add(new GanttDisplayItem(projectName));
+                lastProjectId = currentProjectId;
+            }
+
+            // 通常のタスク行を追加
+            displayList.add(new GanttDisplayItem(item));
         }
 
-        // 3. 選択された条件をそのままDAOに引き渡して、タスクをSQLで絞り込む
-        List<HomeController.TaskItem> taskItems = dao.findByCondition(
-                status, projectId, deptId, sectionId, keyword, targetScope, targetUserId
-        );
-        model.addAttribute("taskList", taskItems);
+        model.addAttribute("taskList", displayList);
 
-        // 4. セレクトボックス（th:each）に表示するためのマスターデータをDBから取得してセット
+        // 3. セレクトボックスを表示するための各マスターデータをDBから取得してセット
         model.addAttribute("projectList", dao.findAllProjects());
         model.addAttribute("deptList", dao.findAllDepartments());
         model.addAttribute("sectionList", dao.findAllSections());
         model.addAttribute("userList", dao.findAllUsers());
 
-        // 5. 現在選択されているフィルターの値をセット（th:selected で選択状態を維持するため）
+        // 4. 現在選ばれているフィルターの値を画面に戻す（選択状態をキープするため）
         model.addAttribute("selectedScope", scope);
         model.addAttribute("selectedStatus", status);
         model.addAttribute("selectedProject", projectId);
         model.addAttribute("selectedDept", deptId);
         model.addAttribute("selectedSection", sectionId);
-        model.addAttribute("selectedTaskUserId", taskUserId);
         model.addAttribute("keyword", keyword);
 
-        // 6. タイムライン表示に必要な日付の初期値をセット（画面エラー防止）
+        // 5. 日程表示用の初期設定
         String todayStr = LocalDate.now().toString();
         model.addAttribute("today", todayStr);
         model.addAttribute("selectedStartDate", startDate != null ? startDate : todayStr);
@@ -101,5 +111,33 @@ public class GanttController {
         // ※ もしすでに別の日付ヘッダーロジックを実装済みの場合は、以下のif文は削除してください
         model.addAttribute("timeScaleHeaders", timeScaleHeaders);
         return "gantt";
+    }
+
+    // =================================================================
+    // 💡 【新設】ガントチャート表示専用のタスク情報保持クラス
+    // =================================================================
+    public static class GanttDisplayItem {
+        private final HomeController.TaskItem originalTask;
+        private final boolean isGroup;
+        private final String displayTitle;
+
+        // 通常タスク用のコンストラクタ
+        public GanttDisplayItem(HomeController.TaskItem task) {
+            this.originalTask = task;
+            this.isGroup = false;
+            this.displayTitle = task.task();
+        }
+
+        // プロジェクト（グループ）行用のコンストラクタ
+        public GanttDisplayItem(String projectName) {
+            this.originalTask = null;
+            this.isGroup = true;
+            this.displayTitle = projectName;
+        }
+
+        // HTML（Thymeleaf）から呼び出すためのGetter群
+        public HomeController.TaskItem getTask() { return originalTask; }
+        public boolean isGroup() { return isGroup; }
+        public String getDisplayTitle() { return displayTitle; }
     }
 }
