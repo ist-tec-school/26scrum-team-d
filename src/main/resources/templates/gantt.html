@@ -5,6 +5,7 @@
     <title>ガントチャート</title>
     <link rel="stylesheet" th:href="@{/home.css}">
     <link rel="stylesheet" th:href="@{/gantt.css}">
+    <script th:src="@{/gantt.js}" defer></script>
 </head>
 <body>
 
@@ -35,9 +36,9 @@
 
                     <div class="filter_area">
                         <div class="scope-toggle">
-                            <a th:href="@{/gantt(scope='mine', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
+                            <a th:href="@{/gantt#task-list-top(scope='mine', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
                                class="scope-btn" th:classappend="${selectedScope == 'mine'} ? 'active' : ''">自分のタスク</a>
-                            <a th:href="@{/gantt(scope='all', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
+                            <a th:href="@{/gantt#task-list-top(scope='all', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
                                class="scope-btn" th:classappend="${selectedScope == 'all'} ? 'active' : ''">全てのタスク</a>
                         </div>
                         <input type="hidden" name="scope" th:value="${selectedScope}">
@@ -113,38 +114,40 @@
                 <th class="sticky-col sticky-col-4 col-edate">終了日</th>
                 <th class="sticky-col sticky-col-5 col-status">状態</th>
 
-                <th th:each="headerLabel : ${timeScaleHeaders}"
-                    class="timeline-header"
-                    th:text="${headerLabel}">
-                    5/11
-                </th>
+                <th:block th:each="headerLabel : ${timeScaleHeaders}">
+                    <th class="timeline-header"
+                        th:data-date="${headerLabel}"
+                        th:text="${#strings.length(headerLabel) >= 10 ? #strings.replace(#strings.substring(headerLabel, 5, 10), '-', '/') : headerLabel}">
+                        05/12
+                    </th>
+                </th:block>
             </tr>
             </thead>
                 <tbody>
-                <tr th:each="task : ${taskList}">
-                    <td class="sticky-col sticky-col-1 col-title" th:text="${task.task}">タスク名</td>
+                <th:block th:each="item : ${taskList}">
+
+                    <tr th:if="${item.isGroup}" class="row-group">
+                        <td colspan="5" class="group-title-cell">
+                            <span th:text="${item.displayTitle}">プロジェクト名</span>
+                        </td>
+                    </tr>
+
+                    <tr th:unless="${item.isGroup}">
+                        <td class="sticky-col sticky-col-1 col-title" th:text="${item.displayTitle}">タスク名</td>
 
                     <td class="sticky-col sticky-col-2 col-owner user-cell">
-                        <th:block th:each="uid : ${task.taskUserIds}">
+                        <th:block th:each="uid : ${item.task.taskUserIds}">
                             <div th:each="user : ${userList}" th:if="${user.USER_ID == uid}" th:text="${user.NAME}"></div>
                         </th:block>
-                        <div th:if="${#lists.isEmpty(task.taskUserIds)}">-</div>
-                    </td>
-
-                    <td class="sticky-col sticky-col-3 col-sdate" th:text="${task.start_date != null ? task.start_date : '-'}">2026-05-12</td>
-                    <td class="sticky-col sticky-col-4 col-edate" th:text="${task.deadline}">2026-05-15</td>
-                    <td class="sticky-col sticky-col-5 col-status" th:switch="${task.done}">
-                        <span th:case="0" class="status-badge status-notstart">未着手</span>
-                        <span th:case="1" class="status-badge status-ing">対応中</span>
-                        <span th:case="3" class="status-badge status-completed">完了</span>
+                        <div th:if="${#lists.isEmpty(item.task.taskUserIds)}">-</div>
                     </td>
 
                     <th:block th:each="headerLabel : ${timeScaleHeaders}">
                         <th:block th:with="
-                    isInPeriod=${task.start_date != null && task.deadline != null && headerLabel >= task.start_date && headerLabel <= task.deadline},
-                    isDeadlineDay=${headerLabel == task.deadline}">
+                            isInPeriod=${task.start_date != null && task.deadline != null && headerLabel >= task.start_date && headerLabel <= task.deadline},
+                            isDeadlineDay=${headerLabel == task.deadline}">
 
-                            <td class="chart-cell" th:classappend="${#strings.contains(headerLabel, 'Sat') || #strings.contains(headerLabel, 'Sun')} ? 'weekend'">
+                            <td class="chart-cell" th:data-date="${headerLabel}">
 
                                 <div th:if="${isInPeriod}"
                                      class="bar-actual"
@@ -161,8 +164,8 @@
 
                             </td>
                         </th:block>
-                    </th:block>
-                </tr>
+                    </tr>
+                </th:block>
                 </tbody>
         </table>
     </div>
