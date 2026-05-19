@@ -169,6 +169,11 @@
 </form>
 
 <div class="tasklist" th:if="${!#lists.isEmpty(taskList)}">
+    <div id="home-loading-overlay">
+        <div class="home-spinner"></div>
+        <p class="home-loading-text">タスクを読み込み中...</p>
+    </div>
+
     <table>
         <thead>
         <tr>
