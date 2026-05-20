@@ -369,6 +369,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ガントチャートのタスクからホーム画面へ遷移するときの挙動
     window.onload = () => {
+        if (!document.referrer || !document.referrer.includes('/gantt')) {
+            return;
+        }
         const hash = window.location.hash;
         if (hash) {
             const targetId = hash.substring(1);
