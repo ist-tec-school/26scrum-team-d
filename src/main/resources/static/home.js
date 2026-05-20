@@ -366,6 +366,32 @@ document.addEventListener('DOMContentLoaded', () => {
             rows.forEach(row => refreshRowStatus(row));
         }, 150);
     });
+
+    // ガントチャートのタスクからホーム画面へ遷移するときの挙動
+    window.onload = () => {
+        if (!document.referrer || !document.referrer.includes('/gantt')) {
+            return;
+        }
+        const hash = window.location.hash;
+        if (hash) {
+            const targetId = hash.substring(1);
+            const targetElement = document.getElementById(targetId);
+
+            if (targetElement) {
+                setTimeout(() => {
+                    targetElement.scrollIntoView({ behavior: 'auto', block: 'center' });
+
+                    targetElement.style.transition = "none";
+                    targetElement.style.backgroundColor = "#fff9c4";
+
+                    setTimeout(() => {
+                        targetElement.style.transition = "background-color 0.5s ease";
+                        targetElement.style.backgroundColor = "";
+                    }, 1000);
+                }, 0);
+            }
+        }
+    };
 });
 
 /**

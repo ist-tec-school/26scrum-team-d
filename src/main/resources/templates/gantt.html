@@ -18,19 +18,26 @@
     <form action="/gantt" method="get" id="mainFilterForm">
     <div class="list_header">
         <div class="time-scale">
-                <label>タイムスケール表示切替:</label>
-                <div class="btn-group">
-                    <button type="button" class="btn active">日</button>
-                    <button type="button" class="btn">週</button>
-                    <button type="button" class="btn">月</button>
-                </div>
-                <label class="label-start-date">表示開始日:</label>
-                <input type="date"
-                       name="startDate"
-                       th:value="${selectedStartDate != null ? selectedStartDate : today}"
-                       class="input-date"
-                       onchange="this.form.submit()">
+            <label>タイムスケール表示切替:</label>
+            <input type="hidden" name="timeScale" id="timeScaleInput" th:value="${selectedTimeScale != null ? selectedTimeScale : 'day'}">
+            <div class="btn-group" id="timeScaleBtnGroup">
+                <button type="button" class="btn"
+                        th:classappend="${selectedTimeScale == 'day' || selectedTimeScale == null} ? 'active' : ''"
+                        data-scale="day">日</button>
+                <button type="button" class="btn"
+                        th:classappend="${selectedTimeScale == 'week'} ? 'active' : ''"
+                        data-scale="week">週</button>
+                <button type="button" class="btn"
+                        th:classappend="${selectedTimeScale == 'month'} ? 'active' : ''"
+                        data-scale="month">月</button>
             </div>
+            <label class="label-start-date">表示開始日:</label>
+            <input type="date"
+                   name="startDate"
+                   th:value="${selectedStartDate != null ? selectedStartDate : today}"
+                   class="input-date"
+                   onchange="this.form.submit()">
+        </div>
 
                 <div class="list_header">
 
@@ -46,9 +53,9 @@
                         <input type="hidden" name="scope" th:value="${selectedScope}">
 
                         <select name="status" id="status-filter" onchange="this.form.submit()">
-                            <option value="working_group" th:selected="${selectedStatus == 'working_group'}">未完了のタスク</option>
-                            <option value="3" th:selected="${selectedStatus == '3'}">完了済みのタスク</option>
-                            <option value="all" th:selected="${selectedStatus == 'all'}">すべてのタスク</option>
+                            <option value="working_group" th:selected="${selectedStatus == 'working_group'}">タスクの状態：未完了</option>
+                            <option value="3" th:selected="${selectedStatus == '3'}">タスクの状態：完了済み</option>
+                            <option value="all" th:selected="${selectedStatus == 'all'}">タスクの状態：すべて</option>
                         </select>
                     </div>
                 </div>
@@ -110,14 +117,12 @@
                 <th class="sticky-col sticky-col-1 col-title">タスクのタイトル</th>
                 <th class="sticky-col sticky-col-2 col-owner">担当者</th>
                 <th class="sticky-col sticky-col-3 col-sdate">開始日</th>
-                <th class="sticky-col sticky-col-4 col-edate">終了日</th>
+                <th class="sticky-col sticky-col-4 col-edate">期限</th>
                 <th class="sticky-col sticky-col-5 col-status">状態</th>
 
                 <th:block th:each="headerLabel : ${timeScaleHeaders}">
-                    <th class="timeline-header"
-                        th:data-date="${headerLabel}"
-                        th:text="${#strings.length(headerLabel) >= 10 ? #strings.replace(#strings.substring(headerLabel, 5, 10), '-', '/') : headerLabel}">
-                        05/12
+                    <th class="timeline-header" th:data-date="${headerLabel}" th:text="${headerLabel}">
+                        2026-05-12
                     </th>
                 </th:block>
             </tr>
@@ -126,12 +131,19 @@
             <th:block th:each="item : ${taskList}">
                 <tr th:if="${item.isGroup}" class="row-group">
                     <td colspan="5" class="group-title-cell">
-                        <span th:text="${item.displayTitle}">プロジェクト名</span>
+                        <span th:text="${item.displayTitle}">プロジェクト名</span></td>
                     <td th:colspan="${5 + #lists.size(timeScaleHeaders)}" class="group-empty-cell"></td>
                 </tr>
 
-                <tr th:unless="${item.isGroup}">
-                    <td class="sticky-col sticky-col-1 col-title" th:text="${item.displayTitle}">タスク名</td>
+                <tr th:unless="${item.isGroup}"
+                    th:with="
+        isDelayed=${(item.task.start_date &lt; today && item.task.done == 0) || (item.task.deadline &lt; today && item.task.done != 3)},
+isUrgent=${!isDelayed && item.task.deadline &gt;= today && item.task.deadline &lt;= threeDaysLater && item.task.done != 3}"
+                    th:classappend="${isDelayed} ? 'row-delayed' : (${isUrgent} ? 'row-urgent' : '')">
+
+                    <td class="sticky-col sticky-col-1 col-title">
+                        <a th:href="@{/list(scope='all', status='all', fromGantt='true')} + '#' + ${item.task.id}"
+                           th:text="${item.displayTitle}">タスク名</a></td>
 
                     <td class="sticky-col sticky-col-2 col-owner user-cell">
                         <th:block th:each="uid : ${item.task.taskUserIds}">
@@ -141,7 +153,11 @@
                     </td>
 
                     <td class="sticky-col sticky-col-3 col-sdate" th:text="${item.task.start_date}">開始日</td>
-                    <td class="sticky-col sticky-col-4 col-edate" th:text="${item.task.deadline}">終了日</td>
+                    <td class="sticky-col sticky-col-4 col-edate" th:data-deadline="${item.task.deadline}" th:data-done="${item.task.done}">
+                        <div class="edate-container">
+                            <div class="date-text" th:text="${item.task.deadline}">終了日</div>
+                        </div>
+                    </td>
                     <td class="sticky-col sticky-col-5 col-status" th:switch="${item.task.done}">
                         <span th:case="0" class="status-badge status-notstart">未着手</span>
                         <span th:case="1" class="status-badge status-ing">対応中</span>
@@ -149,25 +165,12 @@
                     </td>
 
                     <th:block th:each="headerLabel : ${timeScaleHeaders}">
-                        <th:block th:with="
-                    isInPeriod=${item.task.start_date != null && item.task.deadline != null && headerLabel >= item.task.start_date && headerLabel <= item.task.deadline},
-                    isDeadlineDay=${headerLabel == item.task.deadline}">
-
-                            <td class="chart-cell" th:data-date="${headerLabel}">
-                                <div th:if="${isInPeriod}"
-                                     class="bar-actual"
-                                     th:classappend="${item.task.done == 0} ? 'bar-todo' : (${item.task.done == 1} ? 'bar-working' : 'bar-done')">
-                                </div>
-
-                                <span th:if="${isInPeriod && isDeadlineDay}"
-                                      class="chart-status-text"
-                                      th:switch="${item.task.done}">
-                            <th:block th:case="0">未着手</th:block>
-                            <th:block th:case="1">対応中</th:block>
-                            <th:block th:case="3">完了</th:block>
-                        </span>
-                            </td>
-                        </th:block>
+                        <td class="chart-cell"
+                            th:data-date="${headerLabel}"
+                            th:data-start="${item.task.start_date}"
+                            th:data-deadline="${item.task.deadline}"
+                            th:data-done="${item.task.done}">
+                        </td>
                     </th:block>
                 </tr>
             </th:block>
