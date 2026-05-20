@@ -60,6 +60,12 @@ public class HomeController {
                      @RequestParam(value = "sectionId", defaultValue = "all") String sectionId,
                      @RequestParam(value = "keyword", defaultValue = "") String keyword) {
 
+        // ガントチャートのタスクからホーム画面への遷移
+        if (status == null || status.isEmpty()) {
+            status = "all";
+            scope = "all";
+        }
+
         // ★ログイン中のメールアドレスから、DB上のユーザー情報を取得してIDを取り出す
         Map<String, Object> user = dao.findUserByEmail(userDetails.getUsername());
         Integer currentUserId = (Integer) user.get("user_id");

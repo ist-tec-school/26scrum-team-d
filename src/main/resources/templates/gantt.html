@@ -16,91 +16,98 @@
 
     <!-- コントロールパネル（タイムスケール切り替え、開始日表示選択 ＆ 5軸フィルター） -->
     <form action="/gantt" method="get" id="mainFilterForm">
-        <div class="list_header">
-            <div class="time-scale">
-                <label>タイムスケール表示切替:</label>
-                <div class="btn-group">
-                    <button type="button" class="btn active">日</button>
-                    <button type="button" class="btn">週</button>
-                    <button type="button" class="btn">月</button>
-                </div>
-                <label class="label-start-date">表示開始日:</label>
-                <input type="date"
-                       name="startDate"
-                       th:value="${selectedStartDate != null ? selectedStartDate : today}"
-                       class="input-date"
-                       onchange="this.form.submit()">
+    <div class="list_header">
+        <div class="time-scale">
+            <label>タイムスケール表示切替:</label>
+            <input type="hidden" name="timeScale" id="timeScaleInput" th:value="${selectedTimeScale != null ? selectedTimeScale : 'day'}">
+            <div class="btn-group" id="timeScaleBtnGroup">
+                <button type="button" class="btn"
+                        th:classappend="${selectedTimeScale == 'day' || selectedTimeScale == null} ? 'active' : ''"
+                        data-scale="day">日</button>
+                <button type="button" class="btn"
+                        th:classappend="${selectedTimeScale == 'week'} ? 'active' : ''"
+                        data-scale="week">週</button>
+                <button type="button" class="btn"
+                        th:classappend="${selectedTimeScale == 'month'} ? 'active' : ''"
+                        data-scale="month">月</button>
             </div>
+            <label class="label-start-date">表示開始日:</label>
+            <input type="date"
+                   name="startDate"
+                   th:value="${selectedStartDate != null ? selectedStartDate : today}"
+                   class="input-date"
+                   onchange="this.form.submit()">
+        </div>
 
-            <div class="list_header">
+                <div class="list_header">
 
-                <div class="filter_area">
-                    <div class="scope-toggle">
-                        <a th:href="@{/gantt(scope='mine', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
-                           class="scope-btn"
-                           th:classappend="${selectedScope == 'mine'} ? 'active' : ''">自分のタスク</a>
-                        <a th:href="@{/gantt(scope='all', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
-                           class="scope-btn"
-                           th:classappend="${selectedScope == 'all'} ? 'active' : ''">全てのタスク</a>
+                    <div class="filter_area">
+                        <div class="scope-toggle">
+                            <a th:href="@{/gantt(scope='mine', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
+                               class="scope-btn"
+                               th:classappend="${selectedScope == 'mine'} ? 'active' : ''">自分のタスク</a>
+                            <a th:href="@{/gantt(scope='all', status=${selectedStatus}, projectId=${selectedProject}, deptId=${selectedDept}, sectionId=${selectedSection}, keyword=${keyword})}"
+                               class="scope-btn"
+                               th:classappend="${selectedScope == 'all'} ? 'active' : ''">全てのタスク</a>
+                        </div>
+                        <input type="hidden" name="scope" th:value="${selectedScope}">
+
+                        <select name="status" id="status-filter" onchange="this.form.submit()">
+                            <option value="working_group" th:selected="${selectedStatus == 'working_group'}">タスクの状態：未完了</option>
+                            <option value="3" th:selected="${selectedStatus == '3'}">タスクの状態：完了済み</option>
+                            <option value="all" th:selected="${selectedStatus == 'all'}">タスクの状態：すべて</option>
+                        </select>
                     </div>
-                    <input type="hidden" name="scope" th:value="${selectedScope}">
-
-                    <select name="status" id="status-filter" onchange="this.form.submit()">
-                        <option value="working_group" th:selected="${selectedStatus == 'working_group'}">未完了のタスク</option>
-                        <option value="3" th:selected="${selectedStatus == '3'}">完了済みのタスク</option>
-                        <option value="all" th:selected="${selectedStatus == 'all'}">すべてのタスク</option>
-                    </select>
                 </div>
             </div>
-        </div>
 
-        <div class="filter_container">
-            <div class="filter_item">
-                <select name="deptId" onchange="this.form.submit()">
-                    <option value="all" th:selected="${selectedDept == 'all'}">すべての部署</option>
-                    <option th:each="dept : ${deptList}"
-                            th:value="${dept.DEPT_ID}"
-                            th:text="${dept.DEPT_NAME}"
-                            th:selected="${selectedDept == dept.DEPT_ID.toString()}">
-                    </option>
-                </select>
-            </div>
+                <div class="filter_container">
+                    <div class="filter_item">
+                        <select name="deptId" onchange="this.form.submit()">
+                            <option value="all" th:selected="${selectedDept == 'all'}">すべての部署</option>
+                            <option th:each="dept : ${deptList}"
+                                    th:value="${dept.DEPT_ID}"
+                                    th:text="${dept.DEPT_NAME}"
+                                    th:selected="${selectedDept == dept.DEPT_ID.toString()}">
+                            </option>
+                        </select>
+                    </div>
 
-            <div class="filter_item">
-                <select name="sectionId" onchange="this.form.submit()">
-                    <option value="all" th:selected="${selectedSection == 'all'}">すべての課</option>
-                    <option th:each="sec : ${sectionList}"
-                            th:value="${sec.SECTION_ID}"
-                            th:text="${sec.SECTION_NAME}"
-                            th:data-dept="${sec.DEPT_ID}"
-                            th:selected="${selectedSection == sec.SECTION_ID.toString()}">
-                    </option>
-                </select>
-            </div>
+                    <div class="filter_item">
+                        <select name="sectionId" onchange="this.form.submit()">
+                            <option value="all" th:selected="${selectedSection == 'all'}">すべての課</option>
+                            <option th:each="sec : ${sectionList}"
+                                    th:value="${sec.SECTION_ID}"
+                                    th:text="${sec.SECTION_NAME}"
+                                    th:data-dept="${sec.DEPT_ID}"
+                                    th:selected="${selectedSection == sec.SECTION_ID.toString()}">
+                            </option>
+                        </select>
+                    </div>
 
-            <div class="filter_item">
-                <select name="projectId" onchange="this.form.submit()">
-                    <option value="all" th:selected="${selectedProject == 'all'}">すべてのプロジェクト</option>
-                    <option th:each="project : ${projectList}"
-                            th:value="${project.id}"
-                            th:text="${project.name}"
-                            th:selected="${selectedProject == project.id.toString()}">
-                    </option>
-                </select>
-            </div>
-        </div>
+                    <div class="filter_item">
+                        <select name="projectId" onchange="this.form.submit()">
+                            <option value="all" th:selected="${selectedProject == 'all'}">すべてのプロジェクト</option>
+                            <option th:each="project : ${projectList}"
+                                    th:value="${project.id}"
+                                    th:text="${project.name}"
+                                    th:selected="${selectedProject == project.id.toString()}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
 
-        <div class="search_area">
-            <input type="text" name="keyword" th:value="${keyword}" placeholder="検索ワード タスクを検索できます。">
-            <button type="submit" class="btn-base btn-primary search-button">検索</button>
+                <div class="search_area">
+                    <input type="text" name="keyword" th:value="${keyword}" placeholder="検索ワード タスクを検索できます。">
+                    <button type="submit" class="btn-base btn-primary search-button">検索</button>
 
-            <a th:href="@{/gantt(scope='all', status='all', projectId='all', deptId='all', sectionId='all', keyword='')}"
-               class="btn-base btn-primary reset-button">
-                条件をリセット
-            </a>
-        </div>
+                    <a th:href="@{/gantt(scope='all', status='all', projectId='all', deptId='all', sectionId='all', keyword='')}"
+                       class="btn-base btn-primary reset-button">
+                        条件をリセット
+                    </a>
+                </div>
 
-    </form>
+            </form>
 
     <!-- ガントチャート本体 -->
     <div class="gantt-wrapper">
@@ -110,17 +117,16 @@
                 <th class="sticky-col sticky-col-1 col-title">タスクのタイトル</th>
                 <th class="sticky-col sticky-col-2 col-owner">担当者</th>
                 <th class="sticky-col sticky-col-3 col-sdate">開始日</th>
-                <th class="sticky-col sticky-col-4 col-edate">終了日</th>
+                <th class="sticky-col sticky-col-4 col-edate">期限</th>
                 <th class="sticky-col sticky-col-5 col-status">状態</th>
 
                 <th:block th:each="headerLabel : ${timeScaleHeaders}">
                     <th class="timeline-header"
                         th:classappend="${headerLabel == today} ? 'today-header' : ''"
                         th:data-date="${headerLabel}">
-                        <span th:text="${#strings.length(headerLabel) >= 10 ? #strings.replace(#strings.substring(headerLabel, 5, 10), '-', '/') : headerLabel}">05/12</span>
+                        <span th:text="${#strings.length(headerLabel) >= 10 ? #strings.replace(#strings.substring(headerLabel, 5, 10), '-', '/') : headerLabel}">2026-05-12</span>
                         <div th:if="${headerLabel == today}" class="today-label">本日</div>
                     </th>
-
                 </th:block>
             </tr>
             </thead>
@@ -137,8 +143,15 @@
                     </th:block>
                 </tr>
 
-                <tr th:unless="${item.isGroup}">
-                    <td class="sticky-col sticky-col-1 col-title" th:text="${item.displayTitle}">タスク名</td>
+                <tr th:unless="${item.isGroup}"
+                    th:with="
+        isDelayed=${(item.task.start_date &lt; today && item.task.done == 0) || (item.task.deadline &lt; today && item.task.done != 3)},
+isUrgent=${!isDelayed && item.task.deadline &gt;= today && item.task.deadline &lt;= threeDaysLater && item.task.done != 3}"
+                    th:classappend="${isDelayed} ? 'row-delayed' : (${isUrgent} ? 'row-urgent' : '')">
+
+                    <td class="sticky-col sticky-col-1 col-title">
+                        <a th:href="@{/list(scope='all', status='all', fromGantt='true')} + '#' + ${item.task.id}"
+                           th:text="${item.displayTitle}">タスク名</a></td>
 
                     <td class="sticky-col sticky-col-2 col-owner user-cell">
                         <th:block th:each="uid : ${item.task.taskUserIds}">
@@ -148,7 +161,11 @@
                     </td>
 
                     <td class="sticky-col sticky-col-3 col-sdate" th:text="${item.task.start_date}">開始日</td>
-                    <td class="sticky-col sticky-col-4 col-edate" th:text="${item.task.deadline}">終了日</td>
+                    <td class="sticky-col sticky-col-4 col-edate" th:data-deadline="${item.task.deadline}" th:data-done="${item.task.done}">
+                        <div class="edate-container">
+                            <div class="date-text" th:text="${item.task.deadline}">終了日</div>
+                        </div>
+                    </td>
                     <td class="sticky-col sticky-col-5 col-status" th:switch="${item.task.done}">
                         <span th:case="0" class="status-badge status-notstart">未着手</span>
                         <span th:case="1" class="status-badge status-ing">対応中</span>
@@ -162,7 +179,10 @@
 
                             <td class="chart-cell"
                                 th:data-date="${headerLabel}"
-                                th:classappend="${headerLabel == today} ? 'today-cell' : ''">
+                                th:classappend="${headerLabel == today} ? 'today-cell' : ''"
+                                th:data-start="${item.task.start_date}"
+                                th:data-deadline="${item.task.deadline}"
+                                th:data-done="${item.task.done}">
                                 <div th:if="${isInPeriod}"
                                      class="bar-actual"
                                      th:classappend="${item.task.done == 0} ? 'bar-todo' : (${item.task.done == 1} ? 'bar-working' : 'bar-done')">
