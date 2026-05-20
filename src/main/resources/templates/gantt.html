@@ -153,7 +153,11 @@ isUrgent=${!isDelayed && item.task.deadline &gt;= today && item.task.deadline &l
                     </td>
 
                     <td class="sticky-col sticky-col-3 col-sdate" th:text="${item.task.start_date}">開始日</td>
-                    <td class="sticky-col sticky-col-4 col-edate" th:text="${item.task.deadline}">終了日</td>
+                    <td class="sticky-col sticky-col-4 col-edate" th:data-deadline="${item.task.deadline}" th:data-done="${item.task.done}">
+                        <div class="edate-container">
+                            <div class="date-text" th:text="${item.task.deadline}">終了日</div>
+                        </div>
+                    </td>
                     <td class="sticky-col sticky-col-5 col-status" th:switch="${item.task.done}">
                         <span th:case="0" class="status-badge status-notstart">未着手</span>
                         <span th:case="1" class="status-badge status-ing">対応中</span>
