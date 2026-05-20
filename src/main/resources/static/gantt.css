@@ -282,6 +282,20 @@ td.sticky-col {
     z-index: 100;
 }
 
+/*タスクのリンク*/
+
+.task-link-text {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.task-link-text:hover {
+    color: #30575c;
+    text-decoration: underline;
+    transition: 0.5s;
+}
+
 .sticky-col-1 { left: 0; text-align: center;}
 .sticky-col-2 { left: 200px; text-align: center;}
 .sticky-col-3 { left: 300px; text-align: center;}
