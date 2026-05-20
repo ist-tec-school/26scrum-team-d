@@ -409,7 +409,7 @@ th.timeline-header.weekend-sun {
 /* 期間バーの表現 - 指定カラーコードの適用 */
 .bar-actual {
     position: absolute;
-    top: 14px;
+    top: 30%;
     left: 0;
     width:100%;
     height: 12px;
@@ -424,7 +424,9 @@ th.timeline-header.weekend-sun {
 .chart-status-text {
     position: absolute;
     bottom: 2px;
-    left: 50%;
+    right: 2%;
+    top: 100%;
+    left: auto;
     font-size: 8pt;
     color: #616161; /* 濃いグレー */
     white-space: nowrap;
