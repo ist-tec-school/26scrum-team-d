@@ -167,7 +167,9 @@
                            class="task-link-text"
                            th:text="${item.displayTitle}">タスク名</a></td>
 
-                    <td class="sticky-col sticky-col-2 col-owner user-cell">
+                    <td class="sticky-col sticky-col-2 col-owner user-cell"
+                        th:data-user-ids="${item.task.taskUserIds}"
+                        th:data-more-text="${#lists.size(item.task.taskUserIds) > 2} ? '他' + (${#lists.size(item.task.taskUserIds)} - 2) + '名' : ''">
                         <th:block th:each="uid : ${item.task.taskUserIds}">
                             <div th:each="user : ${userList}" th:if="${user.USER_ID == uid}" th:text="${user.NAME}"></div>
                         </th:block>
