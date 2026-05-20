@@ -24,7 +24,9 @@
         お手数ですが、一度トップ画面に戻るか、時間を置いて再度お試しください。
       </p>
 
-      <div style="margin-top: 30px; padding: 10px; background: #f5f5f5; border-radius: 4px; text-align: left;">
+      <div th:if="${@environment.getProperty('spring.profiles.active') == 'dev'}"
+           style="margin-top: 30px; padding: 10px; background: #f5f5f5; border-radius: 4px; text-align: left;">
+        <p style="margin: 0 0 5px 0; font-size: 12px; color: #ff0000; font-weight: bold;">【開発者向けデバッグ情報】</p>
         <code style="font-size: 12px; color: #333;" th:text="${detailMessage}">Error details</code>
       </div>
 
