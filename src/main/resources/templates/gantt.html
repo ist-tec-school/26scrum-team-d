@@ -135,6 +135,13 @@
                     <td th:colspan="${5 + #lists.size(timeScaleHeaders)}" class="group-empty-cell"></td>
                 </tr>
 
+                <tr th:unless="${item.isGroup}"
+                    th:with="
+        isDelayed=${(item.task.start_date &lt; today && item.task.done == 0) || (item.task.deadline &lt; today && item.task.done != 3)},
+isUrgent=${!isDelayed && item.task.deadline &gt;= today && item.task.deadline &lt;= threeDaysLater && item.task.done != 3}"
+                    th:classappend="${isDelayed} ? 'row-delayed' : (${isUrgent} ? 'row-urgent' : '')">
+
+                    <td class="sticky-col sticky-col-1 col-title" th:text="${item.displayTitle}">タスク名</td>
                 <tr th:unless="${item.isGroup}">
                     <td class="sticky-col sticky-col-1 col-title">
                         <a th:href="@{/list(scope='all', status='all')} + '#' + ${item.task.id}"

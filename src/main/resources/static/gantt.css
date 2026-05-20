@@ -340,9 +340,38 @@ th.timeline-header.weekend-sun {
     position: relative;
 }
 
-/* ==========================================
-   追加：終了日セル内のバッジ表示安全調整スタイル
-   ========================================== */
+/* 💡 ガントチャートのバー（棒）自体の色を変える場合 */
+.gantt-table .bar-actual.bar-delayed {
+    background-color: #ff4d4d !important; /* 遅延：鮮やかな赤 */
+}
+.gantt-table .bar-actual.bar-urgent {
+    background-color: #ffcc00 !important; /* 期限3日以内：黄色 */
+}
+
+/* 💡 行全体の背景色も薄く染める（固定列のtdもまとめて染める設定） */
+.gantt-table tbody tr.row-delayed td {
+    background-color: #fff0f0 !important; /* 薄い赤 */
+}
+.gantt-table tbody tr.row-urgent td {
+    background-color: #ffffe0 !important; /* 薄い黄色 */
+}
+
+/* 土日セルの背景色はアラート時もグレーを優先させる設定 */
+.gantt-table tbody tr.row-delayed td.weekend-sat,
+.gantt-table tbody tr.row-delayed td.weekend-sun,
+.gantt-table tbody tr.row-urgent td.weekend-sat,
+.gantt-table tbody tr.row-urgent td.weekend-sun {
+    background-color: #f4f7f6;
+}
+
+/* 💡 行全体の背景色も薄く変えたい場合（お好みで適用してください） */
+.row-delayed {
+    background-color: #fff0f0; /* 薄い赤 */
+}
+.row-urgent {
+    background-color: #ffffe0; /* 薄い黄色 */
+}
+
 
 .col-edate .edate-container {
     display: flex;
