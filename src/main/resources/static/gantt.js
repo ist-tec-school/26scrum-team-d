@@ -112,6 +112,15 @@ window.addEventListener("load", function() {
                 const deadlineMonth = deadlineStr.substring(0, 7);
                 isInPeriod = (cellMonth >= startMonth && cellMonth <= deadlineMonth);
                 isDeadlineDay = (cellMonth === deadlineMonth);
+            } else if (timeScale === "week") {
+                const cellDate = new Date(cellDateStr);
+                if (!isNaN(cellDate.getTime())) {
+                    const end = new Date(cellDate);
+                    end.setDate(cellDate.getDate() + 6);
+                    const weekEndStr = end.toISOString().split('T')[0];
+                    isInPeriod = (startDateStr <= weekEndStr && deadlineStr >= cellDateStr);
+                    isDeadlineDay = (deadlineStr >= cellDateStr && deadlineStr <= weekEndStr);
+                }
             } else {
                 isInPeriod = (cellDateStr >= startDateStr && cellDateStr <= deadlineStr);
                 isDeadlineDay = (cellDateStr === deadlineStr);
@@ -123,6 +132,8 @@ window.addEventListener("load", function() {
                 if (doneStr === "0") bar.classList.add("bar-todo");
                 else if (doneStr === "1") bar.classList.add("bar-working");
                 else if (doneStr === "3") bar.classList.add("bar-done");
+                if (td.parentElement.classList.contains("row-delayed")) bar.classList.add("bar-delayed");
+                else if (td.parentElement.classList.contains("row-urgent")) bar.classList.add("bar-urgent");
                 td.appendChild(bar);
 
                 if (isDeadlineDay) {
@@ -131,7 +142,8 @@ window.addEventListener("load", function() {
                     if (doneStr === "0") txtSpan.textContent = "未着手";
                     else if (doneStr === "1") txtSpan.textContent = "対応中";
                     else if (doneStr === "3") txtSpan.textContent = "完了";
-                    td.appendChild(txtSpan);
+
+                    bar.appendChild(txtSpan);
                 }
             }
         }
@@ -195,6 +207,35 @@ window.addEventListener("load", function() {
             badge.classList.add("badge-near");
             container.appendChild(badge);
         }
+    });
+    // 担当者の折りたたみ状態を更新する関数
+    const refreshUserRowStatus = (row) => {
+        const userCell = row.querySelector('.user-cell');
+        if (!userCell) return;
+
+        const users = userCell.querySelectorAll('div:not(.more-btn)');
+        if (users && users.length >= 3) {
+            userCell.classList.add('has-overflow');
+        } else {
+            userCell.classList.remove('has-overflow');
+            userCell.classList.remove('is-expanded');
+        }
+    };
+
+// 担当者セルにクリックイベントを登録する
+    const userRows = document.querySelectorAll('tr'); // テーブルの全行を取得
+    userRows.forEach(row => {
+        const userCell = row.querySelector('.user-cell');
+        if (!userCell) return;
+
+        userCell.addEventListener('click', () => {
+            if (userCell.classList.contains('has-overflow')) {
+                userCell.classList.toggle('is-expanded');
+            }
+        });
+
+        // 初期読み込み時に3人以上いるか判定をかける
+        setTimeout(() => refreshUserRowStatus(row), 200);
     });
     const overlay = document.getElementById("gantt-loading-overlay");
     if (overlay) {
