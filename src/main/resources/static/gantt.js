@@ -112,6 +112,15 @@ window.addEventListener("load", function() {
                 const deadlineMonth = deadlineStr.substring(0, 7);
                 isInPeriod = (cellMonth >= startMonth && cellMonth <= deadlineMonth);
                 isDeadlineDay = (cellMonth === deadlineMonth);
+            } else if (timeScale === "week") {
+                const cellDate = new Date(cellDateStr);
+                if (!isNaN(cellDate.getTime())) {
+                    const end = new Date(cellDate);
+                    end.setDate(cellDate.getDate() + 6);
+                    const weekEndStr = end.toISOString().split('T')[0];
+                    isInPeriod = (startDateStr <= weekEndStr && deadlineStr >= cellDateStr);
+                    isDeadlineDay = (deadlineStr >= cellDateStr && deadlineStr <= weekEndStr);
+                }
             } else {
                 isInPeriod = (cellDateStr >= startDateStr && cellDateStr <= deadlineStr);
                 isDeadlineDay = (cellDateStr === deadlineStr);
@@ -123,6 +132,8 @@ window.addEventListener("load", function() {
                 if (doneStr === "0") bar.classList.add("bar-todo");
                 else if (doneStr === "1") bar.classList.add("bar-working");
                 else if (doneStr === "3") bar.classList.add("bar-done");
+                if (td.parentElement.classList.contains("row-delayed")) bar.classList.add("bar-delayed");
+                else if (td.parentElement.classList.contains("row-urgent")) bar.classList.add("bar-urgent");
                 td.appendChild(bar);
 
                 if (isDeadlineDay) {
@@ -131,7 +142,8 @@ window.addEventListener("load", function() {
                     if (doneStr === "0") txtSpan.textContent = "未着手";
                     else if (doneStr === "1") txtSpan.textContent = "対応中";
                     else if (doneStr === "3") txtSpan.textContent = "完了";
-                    td.appendChild(txtSpan);
+
+                    bar.appendChild(txtSpan);
                 }
             }
         }

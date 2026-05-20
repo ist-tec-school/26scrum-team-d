@@ -190,8 +190,8 @@
 
                     <th:block th:each="headerLabel : ${timeScaleHeaders}">
                         <th:block th:with="
-                    isInPeriod=${item.task.start_date != null && item.task.deadline != null && headerLabel >= item.task.start_date && headerLabel <= item.task.deadline},
-                    isDeadlineDay=${headerLabel == item.task.deadline}">
+                            isInPeriod=${item.task.start_date != null && item.task.deadline != null && headerLabel >= item.task.start_date && headerLabel <= item.task.deadline},
+                            isDeadlineDay=${headerLabel == item.task.deadline}">
 
                             <td class="chart-cell"
                                 th:data-date="${headerLabel}"
@@ -199,18 +199,6 @@
                                 th:data-start="${item.task.start_date}"
                                 th:data-deadline="${item.task.deadline}"
                                 th:data-done="${item.task.done}">
-                                <div th:if="${isInPeriod}"
-                                     class="bar-actual"
-                                     th:classappend="${item.task.done == 0} ? 'bar-todo' : (${item.task.done == 1} ? 'bar-working' : 'bar-done')">
-                                </div>
-
-                                <span th:if="${isInPeriod && isDeadlineDay}"
-                                      class="chart-status-text"
-                                      th:switch="${item.task.done}">
-                            <th:block th:case="0">未着手</th:block>
-                            <th:block th:case="1">対応中</th:block>
-                            <th:block th:case="3">完了</th:block>
-                        </span>
                             </td>
                         </th:block>
                     </th:block>
