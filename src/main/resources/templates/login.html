@@ -17,13 +17,19 @@
 
         <div class="form_body">
             <p th:if="${signupSuccess}" class="success-text" th:text="${signupSuccess}"></p>
+
         <p th:if="${param.error}" class="error-text">
             IDまたはパスワードが正しくありません。
         </p>
 
+            <p th:if="${param.pwChanged}" class="success-text">
+                パスワードを変更しました。再度ログインしてください。
+            </p>
+
         <p th:if="${param.logout}" class="success-text">
             ログアウトしました。
         </p>
+
         <form th:action="@{/login}" method="post">
             <div class="form-group">
                 <label for="username">ID（メールアドレス）</label>

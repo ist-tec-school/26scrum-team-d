@@ -323,6 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (profileTrigger && profileModal) {
         profileTrigger.addEventListener('click', () => {
             profileModal.style.display = 'flex';
+            hidePasswordChangeForm();
         });
     }
 
@@ -337,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pwChangeBtn = document.querySelector('.password-change-btn');
     if (pwChangeBtn) {
         pwChangeBtn.addEventListener('click', () => {
-            // 必要に応じてパスワード変更の処理をここに記述
+            showPasswordChangeForm();
         });
     }
 
@@ -461,9 +462,72 @@ async function handleDelete(button) {
  * 💡 グローバル関数として「閉じる」処理を定義
  * HTML側の onclick="closeUserProfileModal()" から呼び出されます
  */
+/**
+ * 💡 ユーザー情報モーダル関連の制御関数
+ */
 function closeUserProfileModal() {
     const profileModal = document.getElementById('userProfileModal');
     if (profileModal) {
         profileModal.style.display = 'none';
     }
+}
+
+// パスワード入力フォームに切り替え
+function showPasswordChangeForm() {
+    document.getElementById('profileView').style.display = 'none';
+    document.getElementById('passwordChangeForm').style.display = 'block';
+}
+
+// プロフィール表示に戻す
+function hidePasswordChangeForm() {
+    document.getElementById('profileView').style.display = 'block';
+    document.getElementById('passwordChangeForm').style.display = 'none';
+    // 入力クリア
+    document.getElementById('currentPasswordInput').value = '';
+    document.getElementById('newPasswordInput').value = '';
+    const errorArea = document.getElementById('pwErrorArea');
+    if (errorArea) errorArea.style.display = 'none';
+}
+
+// パスワード変更の実行（API通信）
+function submitPasswordChange() {
+    const currentPw = document.getElementById('currentPasswordInput').value;
+    const newPw = document.getElementById('newPasswordInput').value;
+    const errorArea = document.getElementById('pwErrorArea');
+
+    if (!currentPw || !newPw) {
+        errorArea.innerText = "パスワードを入力してください";
+        errorArea.style.display = "block";
+        return;
+    }
+
+    const params = new URLSearchParams();
+    params.append('currentPassword', currentPw);
+    params.append('newPassword', newPw);
+
+    fetch('/api/user/update-password', {
+        method: 'POST',
+        body: params
+    })
+        .then(response => response.text())
+        .then(data => {
+            if (data === 'success') {
+                fetch('/logout', { method: 'POST' }).finally(() => {
+                    window.location.href = '/login?pwChanged=true';
+                });
+            } else {
+                errorArea.style.display = "block";
+                if (data === "error: current_password_incorrect") {
+                    errorArea.innerText = "現在のパスワードが正しくありません";
+                } else if (data === "error: password_too_short") {
+                    errorArea.innerText = "新しいパスワードは8文字以上必要です";
+                } else {
+                    errorArea.innerText = "エラーが発生しました";
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('システムエラーが発生しました');
+        });
 }
