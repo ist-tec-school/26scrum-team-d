@@ -396,8 +396,9 @@ th:nth-child(4),
     cursor: pointer;
 }
 
-/* 青文字ラベルの基本設定（説明列と共通のデザイン） */
-.tasklist td:nth-child(4).has-overflow::after {
+/* 折りたたみ表示（home・ガントチャート共通） */
+.user-cell.has-overflow::after,
+.tasklist .user-cell.has-overflow::after {
     font-size: 0.8em;
     color: #4D648D;
     font-weight: normal;
@@ -405,30 +406,32 @@ th:nth-child(4),
     margin-top: 5px;
 }
 
-/* 折りたたみ時：他○名 ＋ （全文を表示） */
-.tasklist td:nth-child(4).has-overflow:not(.is-expanded)::after {
-    content: attr(data-more-text) " （全文を表示）";
+.user-cell.has-overflow:not(.is-expanded)::after,
+.tasklist .user-cell.has-overflow:not(.is-expanded)::after {
+    content: attr(data-more-text);
 }
 
-.tasklist td:nth-child(4).has-overflow.is-expanded {
+.user-cell.has-overflow.is-expanded,
+.tasklist .user-cell.has-overflow.is-expanded {
     vertical-align: middle;
     text-align: center;
 }
 
-/* 展開時：（一部表示に戻す） */
-.tasklist td:nth-child(4).has-overflow.is-expanded::after {
+.user-cell.has-overflow.is-expanded::after,
+.tasklist .user-cell.has-overflow.is-expanded::after {
     content: "（一部表示に戻す）";
 }
 
-/* 4人目以降のdivを非表示にする制御 */
-.tasklist td:nth-child(4).has-overflow:not(.is-expanded) div:nth-child(n+4) {
+.user-cell.has-overflow:not(.is-expanded) div:nth-child(n+3),
+.tasklist .user-cell.has-overflow:not(.is-expanded) div:nth-child(n+3) {
     display: none !important;
 }
 
-/* 展開時の背景色と配置の調整 */
-.tasklist td:nth-child(4).is-expanded {
+.user-cell.is-expanded,
+.tasklist .user-cell.is-expanded {
     vertical-align: center;
 }
+
 /* 期限列（5番目）の見出しとデータの両方を中央寄せにする */
 .tasklist th:nth-child(5),
 .tasklist td:nth-child(5) {
