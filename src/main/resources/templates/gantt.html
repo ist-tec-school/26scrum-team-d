@@ -127,10 +127,10 @@
 
                 <th:block th:each="headerLabel : ${timeScaleHeaders}">
                     <th class="timeline-header"
-                        th:classappend="${headerLabel == today} ? 'today-header' : ''"
+                        th:classappend="${selectedTimeScale == 'month' ? (#strings.substring(headerLabel, 0, 7) == #strings.substring(today, 0, 7)) : (headerLabel == today)} ? 'today-header' : ''"
                         th:data-date="${headerLabel}">
                         <span th:text="${#strings.length(headerLabel) >= 10 ? #strings.replace(#strings.substring(headerLabel, 5, 10), '-', '/') : headerLabel}">2026-05-12</span>
-                        <div th:if="${headerLabel == today}" class="today-label">本日</div>
+                        <div th:if="${selectedTimeScale == 'month' ? (#strings.substring(headerLabel, 0, 7) == #strings.substring(today, 0, 7)) : (headerLabel == today)}" class="today-label">本日</div>
                     </th>
                 </th:block>
             </tr>
@@ -143,7 +143,7 @@
                     </td>
                     <th:block th:each="headerLabel : ${timeScaleHeaders}">
                         <td class="group-empty-cell"
-                            th:classappend="${headerLabel == today} ? 'today-cell' : ''">
+                            th:classappend="${selectedTimeScale == 'month' ? (#strings.substring(headerLabel, 0, 7) == #strings.substring(today, 0, 7)) : (headerLabel == today)} ? 'today-cell' : ''">
                         </td>
                     </th:block>
                 </tr>
@@ -185,7 +185,7 @@ isUrgent=${!isDelayed && item.task.deadline &gt;= today && item.task.deadline &l
 
                             <td class="chart-cell"
                                 th:data-date="${headerLabel}"
-                                th:classappend="${headerLabel == today} ? 'today-cell' : ''"
+                                th:classappend="${selectedTimeScale == 'month' ? (#strings.substring(headerLabel, 0, 7) == #strings.substring(today, 0, 7)) : (headerLabel == today)} ? 'today-cell' : ''"
                                 th:data-start="${item.task.start_date}"
                                 th:data-deadline="${item.task.deadline}"
                                 th:data-done="${item.task.done}">
