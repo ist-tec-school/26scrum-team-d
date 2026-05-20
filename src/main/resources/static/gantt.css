@@ -387,4 +387,80 @@ th.timeline-header.weekend-sun {
     position: relative;
 }
 
+/* 💡 ガントチャートのバー（棒）自体の色を変える場合 */
+.gantt-table .bar-actual.bar-delayed {
+    background-color: #ff4d4d !important; /* 遅延：鮮やかな赤 */
+}
+.gantt-table .bar-actual.bar-urgent {
+    background-color: #ffcc00 !important; /* 期限3日以内：黄色 */
+}
 
+/* 💡 行全体の背景色も薄く染める（固定列のtdもまとめて染める設定） */
+.gantt-table tbody tr.row-delayed td {
+    background-color: #fff0f0 !important; /* 薄い赤 */
+}
+.gantt-table tbody tr.row-urgent td {
+    background-color: #ffffe0 !important; /* 薄い黄色 */
+}
+
+/* 土日セルの背景色はアラート時もグレーを優先させる設定 */
+.gantt-table tbody tr.row-delayed td.weekend-sat,
+.gantt-table tbody tr.row-delayed td.weekend-sun,
+.gantt-table tbody tr.row-urgent td.weekend-sat,
+.gantt-table tbody tr.row-urgent td.weekend-sun {
+    background-color: #f4f7f6;
+}
+
+/* 💡 行全体の背景色も薄く変えたい場合（お好みで適用してください） */
+.row-delayed {
+    background-color: #fff0f0; /* 薄い赤 */
+}
+.row-urgent {
+    background-color: #ffffe0; /* 薄い黄色 */
+}
+
+
+.col-edate .edate-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    width: 100%;
+    height: 100%;
+}
+
+.col-edate .date-text {
+    font-size: 8.5pt;
+    line-height: 1.2;
+}
+
+.days-badge {
+    display: inline-block;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 7.5pt;
+    font-weight: bold;
+    line-height: 1;
+    white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.days-badge .badge-num {
+    font-size: 10pt;
+    font-weight: 900;
+    margin: 0 1px;
+    vertical-align: baseline;
+}
+
+.badge-delay {
+    margin-top: 5px;
+    color: #ffffff;
+    background-color: #ef4444;
+}
+
+.badge-near {
+    margin-top: 5px;
+    color: #ffffff;
+    background-color: #eab308;
+}
