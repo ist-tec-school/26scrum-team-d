@@ -373,3 +373,47 @@ th.timeline-header.weekend-sun {
 }
 
 
+.col-edate .edate-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    width: 100%;
+    height: 100%;
+}
+
+.col-edate .date-text {
+    font-size: 8.5pt;
+    line-height: 1.2;
+}
+
+.days-badge {
+    display: inline-block;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 7.5pt;
+    font-weight: bold;
+    line-height: 1;
+    white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.days-badge .badge-num {
+    font-size: 10pt;
+    font-weight: 900;
+    margin: 0 1px;
+    vertical-align: baseline;
+}
+
+.badge-delay {
+    margin-top: 5px;
+    color: #ffffff;
+    background-color: #ef4444;
+}
+
+.badge-near {
+    margin-top: 5px;
+    color: #ffffff;
+    background-color: #eab308;
+}
