@@ -151,7 +151,7 @@ public class TaskListDao {
     }
 
     /**
-     * パスワード更新メソッド (今回追加分)
+     * パスワード更新メソッド
      */
     public void updatePassword(String email, String encodedPassword) {
         String sql = "UPDATE users SET password = ? WHERE email = ?";
