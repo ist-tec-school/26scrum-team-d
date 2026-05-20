@@ -126,8 +126,11 @@
                 <th class="sticky-col sticky-col-5 col-status">状態</th>
 
                 <th:block th:each="headerLabel : ${timeScaleHeaders}">
-                    <th class="timeline-header" th:data-date="${headerLabel}" th:text="${headerLabel}">
-                        2026-05-12
+                    <th class="timeline-header"
+                        th:classappend="${selectedTimeScale == 'month' ? (#strings.substring(headerLabel, 0, 7) == #strings.substring(today, 0, 7)) : (headerLabel == today)} ? 'today-header' : ''"
+                        th:data-date="${headerLabel}">
+                        <span th:text="${#strings.length(headerLabel) >= 10 ? #strings.replace(#strings.substring(headerLabel, 5, 10), '-', '/') : headerLabel}">2026-05-12</span>
+                        <div th:if="${selectedTimeScale == 'month' ? (#strings.substring(headerLabel, 0, 7) == #strings.substring(today, 0, 7)) : (headerLabel == today)}" class="today-label">本日</div>
                     </th>
                 </th:block>
             </tr>
@@ -136,8 +139,13 @@
             <th:block th:each="item : ${taskList}">
                 <tr th:if="${item.isGroup}" class="row-group">
                     <td colspan="5" class="group-title-cell">
-                        <span th:text="${item.displayTitle}">プロジェクト名</span></td>
-                    <td th:colspan="${5 + #lists.size(timeScaleHeaders)}" class="group-empty-cell"></td>
+                        <span th:text="${item.displayTitle}">プロジェクト名</span>
+                    </td>
+                    <th:block th:each="headerLabel : ${timeScaleHeaders}">
+                        <td class="group-empty-cell"
+                            th:classappend="${selectedTimeScale == 'month' ? (#strings.substring(headerLabel, 0, 7) == #strings.substring(today, 0, 7)) : (headerLabel == today)} ? 'today-cell' : ''">
+                        </td>
+                    </th:block>
                 </tr>
 
                 <tr th:unless="${item.isGroup}"
@@ -171,12 +179,30 @@ isUrgent=${!isDelayed && item.task.deadline &gt;= today && item.task.deadline &l
                     </td>
 
                     <th:block th:each="headerLabel : ${timeScaleHeaders}">
-                        <td class="chart-cell"
-                            th:data-date="${headerLabel}"
-                            th:data-start="${item.task.start_date}"
-                            th:data-deadline="${item.task.deadline}"
-                            th:data-done="${item.task.done}">
-                        </td>
+                        <th:block th:with="
+                    isInPeriod=${item.task.start_date != null && item.task.deadline != null && headerLabel >= item.task.start_date && headerLabel <= item.task.deadline},
+                    isDeadlineDay=${headerLabel == item.task.deadline}">
+
+                            <td class="chart-cell"
+                                th:data-date="${headerLabel}"
+                                th:classappend="${selectedTimeScale == 'month' ? (#strings.substring(headerLabel, 0, 7) == #strings.substring(today, 0, 7)) : (headerLabel == today)} ? 'today-cell' : ''"
+                                th:data-start="${item.task.start_date}"
+                                th:data-deadline="${item.task.deadline}"
+                                th:data-done="${item.task.done}">
+                                <div th:if="${isInPeriod}"
+                                     class="bar-actual"
+                                     th:classappend="${item.task.done == 0} ? 'bar-todo' : (${item.task.done == 1} ? 'bar-working' : 'bar-done')">
+                                </div>
+
+                                <span th:if="${isInPeriod && isDeadlineDay}"
+                                      class="chart-status-text"
+                                      th:switch="${item.task.done}">
+                            <th:block th:case="0">未着手</th:block>
+                            <th:block th:case="1">対応中</th:block>
+                            <th:block th:case="3">完了</th:block>
+                        </span>
+                            </td>
+                        </th:block>
                     </th:block>
                 </tr>
             </th:block>

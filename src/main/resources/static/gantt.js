@@ -41,10 +41,15 @@ window.addEventListener("load", function() {
         const dateStr = th.getAttribute("data-date");
         if (!dateStr) return;
 
+
+        const dateSpan = th.querySelector("span");
+
         if (timeScale === "month") {
             const parts = dateStr.split("-");
             if (parts.length >= 2) {
-                th.textContent = `${parseInt(parts[1], 10)}月`;
+
+                if (dateSpan) dateSpan.textContent = `${parseInt(parts[1], 10)}月`;
+                else th.textContent = `${parseInt(parts[1], 10)}月`;
             }
         } else if (timeScale === "week") {
             const startDate = new Date(dateStr);
@@ -56,12 +61,18 @@ window.addEventListener("load", function() {
                 const sDate = startDate.getDate();
                 const eMonth = endDate.getMonth() + 1;
                 const eDate = endDate.getDate();
-                th.textContent = `${sMonth}/${sDate}~${eMonth}/${eDate}`;
+
+
+                if (dateSpan) dateSpan.textContent = `${sMonth}/${sDate}~${eMonth}/${eDate}`;
+                else th.textContent = `${sMonth}/${sDate}~${eMonth}/${eDate}`;
             }
         } else {
             const date = new Date(dateStr);
             if (!isNaN(date.getTime())) {
-                th.textContent = `${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
+
+                if (dateSpan) dateSpan.textContent = `${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
+                else th.textContent = `${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
+
                 const day = date.getDay();
                 if (day === 6) th.classList.add("weekend-sat");
                 if (day === 0) th.classList.add("weekend-sun");
