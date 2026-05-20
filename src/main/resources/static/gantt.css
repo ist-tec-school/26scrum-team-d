@@ -206,15 +206,51 @@ table {
     text-align: left;
     position: sticky;
     left: 0;
-    z-index: 101;
+    z-index: 130;
     background-color: #e8f6fc !important;
     white-space: nowrap;
 }
-
-.gantt-table .group-empty-cell {
+/* =================================================================
+   プロジェクトヘッダー（グループ行）のステータス集計スタイル
+   ================================================================= */
+.gantt-table tbody tr.row-group td.sticky-group-summary {
+    position: sticky !important;
+    left: 400px;
+    z-index: 130;
     background-color: #e8f6fc !important;
-    position: relative;
-    z-index: 1;
+    text-align: right;
+    white-space: nowrap;
+    padding-right: 15px;
+    font-size: 0.9em;
+    border-right: 1px solid #dee2e6;
+}
+.group-status-summary-cell .summary-main-text {
+    font-weight: bold;
+    color: #333333;
+}
+.group-status-summary-cell .summary-count {
+    margin-right: 12px;
+}
+.group-status-summary-cell .summary-count.count-urgent {
+    margin-right: 0;
+}
+.group-status-summary-cell .count-total {
+    color: #333333;
+}
+.group-status-summary-cell .count-completed {
+    color: #28a745;
+}
+.group-status-summary-cell .count-delayed,
+.group-status-summary-cell .count-urgent {
+    color: #666666;
+}
+.group-status-summary-cell .count-delayed.has-items {
+    color: #dc3545;
+    font-weight: bold;
+}
+.group-status-summary-cell .count-urgent.has-items {
+    color: #ffc107;
+    font-weight: bold;
 }
 
 thead th {
@@ -244,7 +280,7 @@ thead th {
     border-bottom: 1px solid #30575c;
     text-align: center;
     box-sizing: border-box;
-    z-index: 120;
+    z-index: 150;
 }
 
 .gantt-table th.timeline-header {
@@ -258,7 +294,7 @@ thead th {
     border-right: 1px solid #ffffff;
     border-bottom: 1px solid #30575c;
     text-align: center;
-    z-index: 119;
+    z-index: 120;
 }
 
 .gantt-table .sticky-col {
@@ -273,7 +309,7 @@ th.sticky-col {
     background-color: #B0E0E6;
     border-right: 1px solid #30575c !important;
     border-bottom: 1px solid #30575c !important;
-    z-index: 125 !important;
+    z-index: 1 !important;
 }
 td.sticky-col {
     background-color: #ffffff;
@@ -305,11 +341,11 @@ td.sticky-col {
     box-shadow: 4px 0 8px -4px rgba(0,0,0,0.15);
     text-align: center;
 }
-th.sticky-col-1 { z-index: 125 !important; }
-th.sticky-col-2 { z-index: 124 !important; }
-th.sticky-col-3 { z-index: 123 !important; }
-th.sticky-col-4 { z-index: 122 !important; }
-th.sticky-col-5 { z-index: 121 !important; }
+th.sticky-col-1 { z-index: 140 !important; }
+th.sticky-col-2 { z-index: 140 !important; }
+th.sticky-col-3 { z-index: 140 !important; }
+th.sticky-col-4 { z-index: 140 !important; }
+th.sticky-col-5 { z-index: 140 !important; }
 
 .gantt-table td {
     padding: 8px 12px;
