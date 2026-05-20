@@ -395,19 +395,59 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 150);
     });
 
+    window.addEventListener('load', () => {
+        // --- ガントチャートからの遷移演出ロジック ---
+        const urlParams = new URLSearchParams(window.location.search);
+        const fromGantt = urlParams.get('fromGantt');
+        const hash = window.location.hash;
 
-    setTimeout(() => {
-        const homeOverlay = document.getElementById("home-loading-overlay");
-        if (homeOverlay) {
-            homeOverlay.classList.add("fade-out");
+        if (fromGantt === 'true' && hash) {
+            // A. ガントチャートから来た場合：対象タスクを中央へ表示して強調
+            const targetId = hash.substring(1);
+            const targetElement = document.getElementById(targetId);
 
-            setTimeout(() => {
-                homeOverlay.remove();
-            }, 200);
+            if (targetElement) {
+                setTimeout(() => {
+                    // 中央へ一瞬で移動
+                    targetElement.scrollIntoView({ behavior: 'auto', block: 'center' });
+
+                    // 強調表示（パッと色をつけて、1秒後から1.5秒かけてふわっと消す）
+                    targetElement.style.transition = "none";
+                    targetElement.style.backgroundColor = "#fff9c4";
+
+                    setTimeout(() => {
+                        targetElement.style.transition = "background-color 1.5s ease";
+                        targetElement.style.backgroundColor = "";
+                    }, 1000);
+
+                    // URLからfromGanttフラグを削除（リロード時に再発するのを防ぐ）
+                    const newUrl = window.location.pathname + window.location.search.replace(/[&?]fromGantt=true/, '').replace(/^&/, '?') + window.location.hash;
+                    window.history.replaceState(null, '', newUrl);
+                }, 0);
+            }
+        } else {
+            // B. 通常の読み込み時：既存のトップスクロール処理
+            const scrollTarget = document.getElementById("task-list-top");
+            if (scrollTarget) {
+                scrollTarget.scrollIntoView({
+                    behavior: "instant",
+                    block: "start"
+                });
+            }
         }
-    }, 250);
-});
 
+        setTimeout(() => {
+            const homeOverlay = document.getElementById("home-loading-overlay");
+            if (homeOverlay) {
+                homeOverlay.classList.add("fade-out");
+
+                setTimeout(() => {
+                    homeOverlay.remove();
+                }, 200);
+            }
+        }, 250);
+    });
+});
 /**
  * 削除確認モーダルを表示し、ユーザーの選択結果を返す
  * @returns {Promise<boolean>} 削除ならtrue、キャンセルならfalse
