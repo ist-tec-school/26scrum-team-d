@@ -395,6 +395,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 150);
     });
 
+window.addEventListener('load', () => {
+    // --- 【追加・修正】ガントチャートからの遷移演出ロジック ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromGantt = urlParams.get('fromGantt');
+    const hash = window.location.hash;
+
+    if (fromGantt === 'true' && hash) {
+        // A. ガントチャートから来た場合：対象タスクを中央へ表示して強調
+        const targetId = hash.substring(1);
+        const targetElement = document.getElementById(targetId);
+
+        if (targetElement) {
+            setTimeout(() => {
+                targetElement.scrollIntoView({ behavior: 'auto', block: 'center' });
+
+                // 強調表示（パッと色をつけて、1秒後からふわっと消す）
+                targetElement.style.transition = "none";
+                targetElement.style.backgroundColor = "#fff9c4";
+
+                setTimeout(() => {
+                    targetElement.style.transition = "background-color 1.5s ease";
+                    targetElement.style.backgroundColor = "";
+                }, 1000);
+
+                // URLからフラグを削除（履歴に残さないため）
+                const newUrl = window.location.pathname + window.location.search.replace(/[&?]fromGantt=true/, '').replace(/^&/, '?') + window.location.hash;
+                window.history.replaceState(null, '', newUrl);
+            }, 0);
+        }
+    } else {
+        // B. 通常の読み込み時：既存のトップスクロール処理
+        const scrollTarget = document.getElementById("task-list-top");
+        if (scrollTarget) {
+            scrollTarget.scrollIntoView({
+                behavior: "instant",
+                block: "start"
+            });
+        }
+    }
 
     setTimeout(() => {
         const homeOverlay = document.getElementById("home-loading-overlay");
