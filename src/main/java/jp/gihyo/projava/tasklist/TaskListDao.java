@@ -150,6 +150,14 @@ public class TaskListDao {
         jdbcTemplate.update(sql, name, email, encodedPassword);
     }
 
+    /**
+     * パスワード更新メソッド (今回追加分)
+     */
+    public void updatePassword(String email, String encodedPassword) {
+        String sql = "UPDATE users SET password = ? WHERE email = ?";
+        jdbcTemplate.update(sql, encodedPassword, email);
+    }
+
     private List<TaskItem> mapToTaskItems(List<Map<String, Object>> result) {
         return result.stream()
                 .map((Map<String, Object> row) -> {
