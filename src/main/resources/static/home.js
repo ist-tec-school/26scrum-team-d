@@ -314,6 +314,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // =================================================================
+    // 💡 【追加】ユーザー情報モーダルの開閉制御イベント登録
+    // =================================================================
+    const profileTrigger = document.getElementById('userProfileTrigger');
+    const profileModal = document.getElementById('userProfileModal');
+
+    if (profileTrigger && profileModal) {
+        profileTrigger.addEventListener('click', () => {
+            profileModal.style.display = 'flex';
+        });
+    }
+
+    if (profileModal) {
+        profileModal.addEventListener('click', (e) => {
+            if (e.target === profileModal) {
+                closeUserProfileModal();
+            }
+        });
+    }
+
+    const pwChangeBtn = document.querySelector('.password-change-btn');
+    if (pwChangeBtn) {
+        pwChangeBtn.addEventListener('click', () => {
+            // 必要に応じてパスワード変更の処理をここに記述
+        });
+    }
+
     // --- ここからが折り畳み判定ロジック ---
     const refreshRowStatus = (row) => {
         const userCell = row.cells[3];
@@ -366,36 +393,9 @@ document.addEventListener('DOMContentLoaded', () => {
             rows.forEach(row => refreshRowStatus(row));
         }, 150);
     });
-
-    // ガントチャートのタスクからホーム画面へ遷移するときの挙動
-    window.onload = () => {
-        if (!document.referrer || !document.referrer.includes('/gantt')) {
-            return;
-        }
-        const hash = window.location.hash;
-        if (hash) {
-            const targetId = hash.substring(1);
-            const targetElement = document.getElementById(targetId);
-
-            if (targetElement) {
-                setTimeout(() => {
-                    targetElement.scrollIntoView({ behavior: 'auto', block: 'center' });
-
-                    targetElement.style.transition = "none";
-                    targetElement.style.backgroundColor = "#fff9c4";
-
-                    setTimeout(() => {
-                        targetElement.style.transition = "background-color 0.5s ease";
-                        targetElement.style.backgroundColor = "";
-                    }, 1000);
-                }, 0);
-            }
-        }
-    };
 });
 
-window.addEventListener("load", function() {
-    // 1. URLアンカー廃止に伴う、タスク一覧エリアへの自動スクロール
+window.addEventListener('load', () => {
     const scrollTarget = document.getElementById("task-list-top");
     if (scrollTarget) {
         scrollTarget.scrollIntoView({
@@ -404,8 +404,6 @@ window.addEventListener("load", function() {
         });
     }
 
-    // 2. テーブル展開と折り畳み判定（200ms秒のラグ）が完全に終わった段階でローディング幕を外す
-    // 既存の折り畳み計算（setTimeout 200ms）を追い越さないよう、少しだけ余裕を持たせます
     setTimeout(() => {
         const homeOverlay = document.getElementById("home-loading-overlay");
         if (homeOverlay) {
@@ -415,7 +413,7 @@ window.addEventListener("load", function() {
                 homeOverlay.remove();
             }, 200);
         }
-    }, 250); // 折り畳みの200ms処理が確定した直後に綺麗にフェードアウトさせる
+    }, 250);
 });
 
 /**
@@ -456,5 +454,16 @@ async function handleDelete(button) {
     // 3. ユーザーが「削除」を押した場合のみ、JavaScriptから送信を実行
     if (confirmed && form) {
         form.submit();
+    }
+}
+
+/**
+ * 💡 グローバル関数として「閉じる」処理を定義
+ * HTML側の onclick="closeUserProfileModal()" から呼び出されます
+ */
+function closeUserProfileModal() {
+    const profileModal = document.getElementById('userProfileModal');
+    if (profileModal) {
+        profileModal.style.display = 'none';
     }
 }

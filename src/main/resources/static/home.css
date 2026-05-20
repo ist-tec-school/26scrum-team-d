@@ -134,14 +134,126 @@ dialog {
     font-size: 20px;
     vertical-align: middle;
 }
+/* 削除とユーザー情報　モーダル全体の背景（暗くなる部分） */
+.modal-overlay {
+    display: none; /* 初期状態は非表示 */
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 背景を暗くする */
+}
 
-.login-name {
+#custom_newProjectName {
+    width: 90%;
+}
+/* モーダル本体の配置 */
+.modal-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 450px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+}
+
+
+.login-name-container {
     margin-top: 10px;
-    font-size: 0.9em;
-    color: #616161;
-    font-weight: bold;
     white-space: nowrap;
 }
+
+.login-name-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.9em;
+    font-family: inherit;
+    font-weight: bold;
+    color: #30575c; /* 会社カラー濃い色 */
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.login-name-btn:hover {
+    color: black; /* ホバー色 */
+}
+
+/* 💡 他のモーダルとサイズ・枠線を完全に統一 */
+.user-profile-card {
+    max-width: 450px;
+    width: 100%;
+}
+
+div.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #B0E0E6;
+}
+
+div.modal-header h2 {
+    margin: 0;
+    font-size: 1.3em;
+    color: #30575c;
+}
+
+.modal-close-x {
+    background: none;
+    border: none;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.modal-close-x:hover {
+    color: #30575c;
+}
+
+.profile-body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.profile-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed #e2e8f0;
+    padding-bottom: 8px;
+}
+
+.profile-item:last-child {
+    border-bottom: none;
+}
+
+.profile-label {
+    font-size: 0.9em;
+    color: #666;
+    font-weight: bold;
+}
+
+.profile-value {
+    font-size: 1em;
+    color: #333;
+    font-weight: 500;
+}
+
 
 /* タスク入力フォーム */
 .task_form {
@@ -849,35 +961,6 @@ input:invalid:focus {
     visibility: visible;     /* ★表示する */
 }
 
-/* モーダル全体の背景（暗くなる部分） */
-.modal-overlay {
-    display: none; /* 初期状態は非表示 */
-    position: fixed;
-    z-index: 2000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* 背景を暗くする */
-}
-
-#custom_newProjectName {
-    width: 90%;
-}
-/* モーダル本体の配置 */
-.modal-content {
-    position: fixed;
-    top: 39%;
-    left: 30%;
-    width: 40%; /* 更新モーダルに合わせたサイズ */
-    align-content: center;
-    transform: scale(1.5);
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
 /* 文字数カウントのスタイル */
 #project_count {
     text-align: right;
@@ -895,16 +978,17 @@ input:invalid:focus {
 }
 
 .btn-cancel {
-    background-color: #999;
-    color: white;
-    border: none;
+    background-color: #EEEEEE;
+    color: #888;
+    border: 2px solid #888;
     padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
 }
 
 .btn-cancel:hover {
-    background-color: #777;
+   opacity: 0.8;
+    transition: 0.5s;
 }
 
 /*本当に削除しますか*/

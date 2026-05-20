@@ -22,8 +22,39 @@
                 <span class="material-symbols-outlined">exit_to_app</span>
             </button>
         </form>
-        <div class="login-name">
-            ログイン中：<span th:text="${loginUserName}"></span> さん
+        <div class="login-name-container">
+            <button type="button" class="login-name-btn" id="userProfileTrigger">
+                ログイン中：<span th:text="${loginUserName}"></span> さん
+            </button>
+        </div>
+    </div>
+</div>
+
+<!--ユーザー情報モーダル-->
+<div id="userProfileModal" class="modal-overlay" style="display: none;">
+    <div class="task_form modal-content">
+        <div class="modal-header">
+            <h2>ユーザー情報</h2>
+        </div>
+
+        <div class="modal-body profile-body">
+            <div class="profile-item">
+                <span class="profile-label">ユーザー名</span>
+                <span class="profile-value" th:text="${loginUserName} + ' さん'">-</span>
+            </div>
+            <div class="profile-item">
+                <span class="profile-label">メールアドレス</span>
+                <span class="profile-value" th:text="${loginUserEmail}">-</span>
+            </div>
+            <div class="profile-item">
+                <span class="profile-label">所属部署</span>
+                <span class="profile-value" th:text="${loginUserDept}">-</span>
+            </div>
+        </div>
+
+        <div class="dialog-buttons">
+            <button type="button" class="btn-base btn-primary">パスワード変更</button>
+            <button type="button" class="btn-base btn-cancel" onclick="closeUserProfileModal()">閉じる</button>
         </div>
     </div>
 </div>
@@ -168,6 +199,7 @@
 
 </form>
 
+    <!--    タスク一覧本体-->
 <div class="tasklist" th:if="${!#lists.isEmpty(taskList)}">
     <div id="home-loading-overlay">
         <div class="home-spinner"></div>
@@ -323,8 +355,8 @@
                 <option value="3" th:selected="${updateItem?.done == 3}">完了</option>
             </select>
             <div class="dialog-buttons">
-                <button type="submit">更新</button>
-                <button type="button" onclick="closeUpdateDialog()">キャンセル</button>
+                <button type="submit" class="btn-base btn-primary">更新</button>
+                <button type="button" class="btn-base btn-cancel" onclick="closeUpdateDialog()">キャンセル</button>
             </div>
         </form>
     </div>
@@ -353,7 +385,9 @@
 
 <div id="delete-modal" class="modal-overlay">
     <div class="task_form modal-content">
-        <h2>削除の確認</h2>
+        <div class="modal-header">
+            <h2>削除の確認</h2>
+        </div>
         <div class="modal-body">
             <p>このタスクを削除してもよろしいですか？</p>
         </div>
