@@ -394,6 +394,30 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 });
 
+window.addEventListener("load", function() {
+    // 1. URLアンカー廃止に伴う、タスク一覧エリアへの自動スクロール
+    const scrollTarget = document.getElementById("task-list-top");
+    if (scrollTarget) {
+        scrollTarget.scrollIntoView({
+            behavior: "instant",
+            block: "start"
+        });
+    }
+
+    // 2. テーブル展開と折り畳み判定（200ms秒のラグ）が完全に終わった段階でローディング幕を外す
+    // 既存の折り畳み計算（setTimeout 200ms）を追い越さないよう、少しだけ余裕を持たせます
+    setTimeout(() => {
+        const homeOverlay = document.getElementById("home-loading-overlay");
+        if (homeOverlay) {
+            homeOverlay.classList.add("fade-out");
+
+            setTimeout(() => {
+                homeOverlay.remove();
+            }, 200);
+        }
+    }, 250); // 折り畳みの200ms処理が確定した直後に綺麗にフェードアウトさせる
+});
+
 /**
  * 削除確認モーダルを表示し、ユーザーの選択結果を返す
  * @returns {Promise<boolean>} 削除ならtrue、キャンセルならfalse
