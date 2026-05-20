@@ -411,13 +411,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     // 中央へ一瞬で移動
                     targetElement.scrollIntoView({ behavior: 'auto', block: 'center' });
 
-                    // 強調表示（パッと色をつけて、1秒後から1.5秒かけてふわっと消す）
-                    targetElement.style.transition = "none";
-                    targetElement.style.backgroundColor = "#fff9c4";
+                    targetElement.classList.add('highlight-task');
 
                     setTimeout(() => {
-                        targetElement.style.transition = "background-color 1.5s ease";
-                        targetElement.style.backgroundColor = "";
+                        targetElement.classList.add('fade-out-highlight');
+
+                        setTimeout(() => {
+                            targetElement.classList.remove('highlight-task', 'fade-out-highlight');
+                        }, 1600);
                     }, 1000);
 
                     // URLからfromGanttフラグを削除（リロード時に再発するのを防ぐ）
