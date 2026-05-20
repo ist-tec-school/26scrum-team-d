@@ -196,6 +196,35 @@ window.addEventListener("load", function() {
             container.appendChild(badge);
         }
     });
+    // 担当者の折りたたみ状態を更新する関数
+    const refreshUserRowStatus = (row) => {
+        const userCell = row.querySelector('.user-cell');
+        if (!userCell) return;
+
+        const users = userCell.querySelectorAll('div:not(.more-btn)');
+        if (users && users.length >= 3) {
+            userCell.classList.add('has-overflow');
+        } else {
+            userCell.classList.remove('has-overflow');
+            userCell.classList.remove('is-expanded');
+        }
+    };
+
+// 担当者セルにクリックイベントを登録する
+    const userRows = document.querySelectorAll('tr'); // テーブルの全行を取得
+    userRows.forEach(row => {
+        const userCell = row.querySelector('.user-cell');
+        if (!userCell) return;
+
+        userCell.addEventListener('click', () => {
+            if (userCell.classList.contains('has-overflow')) {
+                userCell.classList.toggle('is-expanded');
+            }
+        });
+
+        // 初期読み込み時に3人以上いるか判定をかける
+        setTimeout(() => refreshUserRowStatus(row), 200);
+    });
     const overlay = document.getElementById("gantt-loading-overlay");
     if (overlay) {
         // opacityを0にしてフワッと消す

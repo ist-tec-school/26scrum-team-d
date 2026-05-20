@@ -258,7 +258,9 @@
             <td class="hidden" th:text="${task.id}"></td>
             <td th:text="${task.projectName}" th:data-project-id="${task.projectId}">プロジェクト名</td>
             <td th:text="${task.task}"></td>
-            <td class="user-cell" th:data-user-ids="${task.taskUserIds}">
+            <td class="user-cell"
+                th:data-user-ids="${task.taskUserIds}"
+                th:data-more-text="${#lists.size(task.taskUserIds) > 2} ? '他' + (${#lists.size(task.taskUserIds)} - 2) + '名' : ''">
                 <th:block th:each="uid : ${task.taskUserIds}">
                     <div th:each="user : ${userList}"
                          th:if="${user.USER_ID == uid}"

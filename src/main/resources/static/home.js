@@ -394,16 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
             rows.forEach(row => refreshRowStatus(row));
         }, 150);
     });
-});
 
-window.addEventListener('load', () => {
-    const scrollTarget = document.getElementById("task-list-top");
-    if (scrollTarget) {
-        scrollTarget.scrollIntoView({
-            behavior: "instant",
-            block: "start"
-        });
-    }
 
     setTimeout(() => {
         const homeOverlay = document.getElementById("home-loading-overlay");
