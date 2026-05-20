@@ -235,7 +235,7 @@
             <td th:text="${task.task}"></td>
             <td class="user-cell"
                 th:data-user-ids="${task.taskUserIds}"
-                th:data-more-text="${#lists.size(task.taskUserIds) > 3} ? '他' + (${#lists.size(task.taskUserIds)} - 3) + '名' : ''">
+                th:data-more-text="${#lists.size(task.taskUserIds) > 2} ? '他' + (${#lists.size(task.taskUserIds)} - 2) + '名' : ''">
                 <th:block th:each="uid : ${task.taskUserIds}">
                     <div th:each="user : ${userList}"
                          th:if="${user.USER_ID == uid}"
