@@ -79,28 +79,36 @@ public class GanttController {
                 status, projectId, deptId, sectionId, keyword, scope, currentUserId
         );
         List<GanttDisplayItem> displayList = new ArrayList<>();
-        Integer lastProjectId = -1;
+        LocalDate today = LocalDate.now();
+        LocalDate threeDaysLater = today.plusDays(3);
 
-        for (HomeController.TaskItem item : taskItems) {
-            Integer currentProjectId = item.projectId();
+        int i = 0;
+        while (i < taskItems.size()) {
+            HomeController.TaskItem firstItem = taskItems.get(i);
+            Integer currentProjectId = firstItem.projectId();
 
-            // プロジェクトが切り替わったタイミング（または最初のループ）でプロジェクト行を生成
-            if (!currentProjectId.equals(lastProjectId)) {
-                String projectName = (item.projectName() != null && !item.projectName().isBlank())
-                        ? item.projectName()
-                        : "プロジェクト未割当";
-
-                // プロジェクト行を追加
-                displayList.add(new GanttDisplayItem(projectName));
-                lastProjectId = currentProjectId;
-            } else if (currentProjectId == null && lastProjectId != null) {
-                // プロジェクト未割当のタスクが連続する場合の処理
-                displayList.add(new GanttDisplayItem("プロジェクト未割当"));
-                lastProjectId = null;
+            // 現在のプロジェクト（または未割当）に属するタスクを切り出す
+            List<HomeController.TaskItem> projectTasks = new ArrayList<>();
+            while (i < taskItems.size() &&
+                    ((currentProjectId == null && taskItems.get(i).projectId() == null) ||
+                            (currentProjectId != null && currentProjectId.equals(taskItems.get(i).projectId())))) {
+                projectTasks.add(taskItems.get(i));
+                i++;
             }
 
-            // 通常のタスク行を追加
-            displayList.add(new GanttDisplayItem(item));
+            // プロジェクトヘッダー行の作成と集計
+            String projectName = (firstItem.projectName() != null && !firstItem.projectName().isBlank())
+                    ? firstItem.projectName()
+                    : "プロジェクト未割当";
+
+            GanttDisplayItem groupHeader = new GanttDisplayItem(projectName);
+            groupHeader.aggregateStatus(projectTasks, today, threeDaysLater);
+            displayList.add(groupHeader);
+
+            // 子タスク行を順次追加
+            for (HomeController.TaskItem task : projectTasks) {
+                displayList.add(new GanttDisplayItem(task));
+            }
         }
 
         model.addAttribute("taskList", displayList);
@@ -139,6 +147,10 @@ public class GanttController {
         private final HomeController.TaskItem originalTask;
         private final boolean isGroup;
         private final String displayTitle;
+        private int totalCount = 0;
+        private int completedCount = 0;
+        private int delayedCount = 0;
+        private int urgentCount = 0;
 
         // 通常タスク用のコンストラクタ
         public GanttDisplayItem(HomeController.TaskItem task) {
@@ -154,9 +166,41 @@ public class GanttController {
             this.displayTitle = projectName;
         }
 
+        public void aggregateStatus(List<HomeController.TaskItem> tasks, LocalDate today, LocalDate threeDaysLater) {
+            this.totalCount = tasks.size();
+
+            for (HomeController.TaskItem t : tasks) {
+                LocalDate startDate = (t.start_date() != null && !t.start_date().isBlank()) ? LocalDate.parse(t.start_date()) : null;
+                LocalDate deadline = (t.deadline() != null && !t.deadline().isBlank()) ? LocalDate.parse(t.deadline()) : null;
+                int done = t.done();
+
+                if (done == 3) {
+                    this.completedCount++;
+                } else {
+                    boolean isDelayed = false;
+                    if (startDate != null && startDate.isBefore(today) && done == 0) {
+                        isDelayed = true;
+                    } else if (deadline != null && deadline.isBefore(today)) {
+                        isDelayed = true;
+                    }
+
+                    if (isDelayed) {
+                        this.delayedCount++;
+                    } else if (deadline != null && !deadline.isBefore(today) && !deadline.isAfter(threeDaysLater)) {
+                        this.urgentCount++;
+                    }
+                }
+            }
+        }
+
         // HTML（Thymeleaf）から呼び出すためのGetter群
         public HomeController.TaskItem getTask() { return originalTask; }
         public boolean isGroup() { return isGroup; }
         public String getDisplayTitle() { return displayTitle; }
+
+        public int getTotalCount() { return totalCount; }
+        public int getCompletedCount() { return completedCount; }
+        public int getDelayedCount() { return delayedCount; }
+        public int getUrgentCount() { return urgentCount; }
     }
 }

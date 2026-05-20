@@ -42,8 +42,6 @@ public class HomeController {
             Integer done,
             @NotBlank String start_date
     ) {}
-
-    private List<TaskItem> taskItems = new ArrayList<>();
     private final TaskListDao dao;
     private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
     @Autowired
@@ -55,7 +53,7 @@ public class HomeController {
     @GetMapping("/list")
     String listItems(Model model,
                      @AuthenticationPrincipal UserDetails userDetails, // ★ログイン情報を取得
-                     @RequestParam(value = "scope", defaultValue = "mine") String scope, // ★デフォルトはmine
+                     @RequestParam(value = "scope", defaultValue = "mine") String scope,
                      @RequestParam(value = "status", defaultValue = "working_group") String status,
                      @RequestParam(value = "projectId", defaultValue = "all") String projectId,
                      @RequestParam(value = "deptId", defaultValue = "all") String deptId,
@@ -72,11 +70,17 @@ public class HomeController {
         Map<String, Object> user = dao.findUserByEmail(userDetails.getUsername());
         Integer currentUserId = (Integer) user.get("user_id");
         String loginUserName = (String) user.get("name");
+        String loginUserEmail = (String) user.get("email");
+        String deptName = (String) user.get("dept_name");
+        String sectionName = (String) user.get("section_name");
+        String loginUserDept = deptName + " " + sectionName;
 
         List<TaskItem> taskItems = dao.findByCondition(status, projectId, deptId, sectionId, keyword, scope, currentUserId);
 
         // 2. 画面（Thymeleaf）に渡すデータをセット
         model.addAttribute("loginUserName", loginUserName);
+        model.addAttribute("loginUserEmail", loginUserEmail);
+        model.addAttribute("loginUserDept", loginUserDept);
         model.addAttribute("taskList", taskItems);
         model.addAttribute("userList", dao.findAllUsers());
         model.addAttribute("projectList", dao.findAllProjects());

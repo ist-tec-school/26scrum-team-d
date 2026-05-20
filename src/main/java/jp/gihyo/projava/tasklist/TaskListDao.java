@@ -139,7 +139,11 @@ public class TaskListDao {
     }
 
     public Map<String, Object> findUserByEmail(String email) {
-        String sql = "SELECT user_id AS user_id,name AS name, email AS email, password AS password FROM users WHERE email = ?";
+        String sql = "SELECT u.user_id, u.name, u.email, u.password, d.dept_name, s.section_name " +
+                "FROM users u " +
+                "LEFT JOIN sections s ON u.section_id = s.section_id " +
+                "LEFT JOIN departments d ON s.dept_id = d.dept_id " +
+                "WHERE u.email = ?";
         List<Map<String, Object>> users = jdbcTemplate.queryForList(sql, email);
         return users.isEmpty() ? null : users.get(0);
     }
