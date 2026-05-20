@@ -185,5 +185,15 @@ window.addEventListener("load", function() {
             container.appendChild(badge);
         }
     });
+    const overlay = document.getElementById("gantt-loading-overlay");
+    if (overlay) {
+        // opacityを0にしてフワッと消す
+        overlay.classList.add("fade-out");
+
+        // アニメーション完了後にDOMツリーから完全に削除（display: noneの代わり）
+        setTimeout(() => {
+            overlay.remove();
+        }, 200);
+    }
 });
 window.addEventListener("resize", () => window.dispatchEvent(new Event("load")));
