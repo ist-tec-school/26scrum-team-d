@@ -108,7 +108,7 @@
             プロジェクト名は50文字以内で入力してください。
         </div>
         <label>タスク</label>
-        <input name="task" type="text"
+        <input name="task" type="text" maxlength="255"
                th:value="${taskItem?.task}" required
                oninput="checkTaskLength(this, 'add_task_warn')"/>
 
@@ -343,7 +343,7 @@
                 </option>
             </select>
             <input type="hidden" name="newProjectName" id="update_newProjectName_hidden">
-            <label>タスク</label><input id="update_task" name="task" type="text"
+            <label>タスク</label><input id="update_task" name="task" type="text" maxlength="255"
                    th:value="${updateItem?.task}" required
                    oninput="checkTaskLength(this,'update_task_warn')"/>
 
@@ -396,7 +396,7 @@
         <div class="modal-body">
             <label>プロジェクト名</label>
             <input type="text" id="custom_newProjectName" required
-                   placeholder="プロジェクト名を入力してください"
+                   placeholder="プロジェクト名を入力してください（50文字以内）"
                    oninput="updateProjectCountLabel()">
             <div id="project_count">0 / 50</div>
             <div id="project_error" class="error-text" style="display: none;">
