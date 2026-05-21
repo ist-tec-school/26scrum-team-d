@@ -11,8 +11,10 @@
 </head>
 <body>
 <div class="header">
-    <h1>タスク管理アプリケーション</h1>
-
+    <div class="header-title-area">
+        <img src="/img/d-icon.png" alt="DYNAMITE NAGASHIMA ICON" class="header-icon">
+        <h1>タスク管理アプリケーション</h1>
+    </div>
 <input type="hidden" id="isUpdateError" th:value="${isUpdateError}">
 
     <div class="logout-area">
@@ -445,4 +447,11 @@
 </div>
 
 </body>
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-logo">
+            <img src="/img/d-logo-long.jpg" alt="DYNAMITE NAGASHIMA ">
+        </div>
+    </div>
+</footer>
 </html>
