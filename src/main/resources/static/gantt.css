@@ -304,12 +304,12 @@ thead th {
 }
 
 th.sticky-col {
-    position: sticky !important;
-    top: 0 !important;
+    position: sticky ;
+    top: 0 ;
     background-color: #B0E0E6;
-    border-right: 1px solid #30575c !important;
-    border-bottom: 1px solid #30575c !important;
-    z-index: 1 !important;
+    border-right: 1px solid #30575c ;
+    border-bottom: 1px solid #30575c ;
+    z-index: 130;
 }
 td.sticky-col {
     background-color: #ffffff;
@@ -368,12 +368,17 @@ th.sticky-col-5 { z-index: 130 !important; }
     font-weight: bold;
     color: #30575c;
 }
-.row-group td {
-    border-top: 2px solid #30575c;
-    position: sticky;
-    left: 0;
-    background-color: #edfaff;
-    z-index: 110;
+/*.row-group td {*/
+/*    border-top: 2px solid #30575c;*/
+/*    position: sticky;*/
+/*    left: 0;*/
+/*    background-color: #edfaff;*/
+/*    z-index: 110;*/
+/*}*/
+/* 右側セルへの干渉を消し、左側固定列のみに適用されるよう修正 */
+.gantt-table tbody tr.row-group td.group-title-cell,
+.gantt-table tbody tr.row-group td.sticky-group-summary {
+    border-top: 2px solid #30575c !important;
 }
 
 /* 進捗ステータスバッジ */
