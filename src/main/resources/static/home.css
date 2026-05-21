@@ -493,6 +493,17 @@ th:nth-child(4),
     vertical-align: center !important;
 }
 
+/* ガントチャートから遷移してきた際の強調ターゲット */
+.highlight-task {
+    background-color: #e8f6fc   ;
+}
+
+/* 徐々に背景色を元に戻すアニメーション用クラス */
+.fade-out-highlight {
+    transition: background-color 0.5s ease;
+    background-color: transparent;
+}
+
 /* 状態・更新・削除ボタン列 */
 .tasklist th:nth-child(7),
 .tasklist td:nth-child(7)  {
