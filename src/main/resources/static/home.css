@@ -290,13 +290,13 @@ div.modal-header h2 {
 
 .password-wrapper input {
     width: 100%;
-    padding: 10px;
+    padding-right: 40px;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 18px;
     box-sizing: border-box;
+    height: 40px;
 }
-
 .btn-toggle {
     position: absolute;
     right: 5px;
@@ -418,6 +418,8 @@ div.modal-header h2 {
 }
 
 .tasklist table th, .tasklist table td {
+    overflow: hidden;
+    text-overflow: ellipsis;
     padding: 8px;
     vertical-align: middle;
     text-align: center;

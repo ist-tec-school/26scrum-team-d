@@ -33,7 +33,7 @@
 
 <!--ユーザー情報モーダル-->
 <div id="userProfileModal" class="modal-overlay" style="display: none;">
-    <div class="task_form modal-content">
+    <div class="modal-content modal-content">
 
         <div id="profileView">
         <div class="modal-header">
@@ -65,13 +65,17 @@
             <div class="modal-header">
                 <h2>パスワード変更</h2>
             </div>
+
+            <form onsubmit="submitPasswordChange()">
             <div class="modal-body profile-body">
                 <div id="pwErrorArea" class="error-text"></div>
 
                 <div class="profile-item">
                     <span class="profile-label">現在のパスワード</span>
                     <div class="password-wrapper">
-                        <input type="password" id="currentPasswordInput">
+                        <input type="password" id="currentPasswordInput" required
+                               minlength="8"
+                               title="パスワードは8文字以上必要です">
                         <button type="button" class="btn-toggle toggle-password" data-target="currentPasswordInput">
                             <span class="material-symbols-outlined">visibility</span>
                         </button>
@@ -79,9 +83,12 @@
                 </div>
 
                 <div class="profile-item">
-                    <span class="profile-label">新しいパスワード（8文字以上）</span>
+                    <span class="profile-label">新しいパスワード</span>
                     <div class="password-wrapper">
-                        <input type="password" id="newPasswordInput">
+                        <input type="password" id="newPasswordInput" required
+                               minlength="8"
+                               title="パスワードは8文字以上必要です"
+                               placeholder="8文字以上で設定してください">
                         <button type="button" class="btn-toggle toggle-password" data-target="newPasswordInput">
                             <span class="material-symbols-outlined">visibility</span>
                         </button>
@@ -91,6 +98,7 @@
             <button type="button" class="btn-base btn-primary" onclick="submitPasswordChange()">更新</button>
             <button type="button" class="btn-base btn-cancel" onclick="hidePasswordChangeForm()">キャンセル</button>
         </div>
+            </form>
         </div>
     </div>
 </div>

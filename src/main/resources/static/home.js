@@ -514,19 +514,23 @@ function hidePasswordChangeForm() {
 
 // パスワード変更の実行（API通信）
 function submitPasswordChange() {
-    const currentPw = document.getElementById('currentPasswordInput').value;
-    const newPw = document.getElementById('newPasswordInput').value;
+    const currentPwInput = document.getElementById('currentPasswordInput');
+    const newPwInput = document.getElementById('newPasswordInput');
     const errorArea = document.getElementById('pwErrorArea');
 
-    if (!currentPw || !newPw) {
-        errorArea.innerText = "パスワードを入力してください";
+    if (!currentPwInput.reportValidity() || !newPwInput.reportValidity()) {
+        return;
+    }
+
+    if (newPwInput.value.length < 8) {
+        errorArea.innerText = "新しいパスワードは8文字以上必要です";
         errorArea.style.display = "block";
         return;
     }
 
     const params = new URLSearchParams();
-    params.append('currentPassword', currentPw);
-    params.append('newPassword', newPw);
+    params.append('currentPassword', currentPwInput.value);
+    params.append('newPassword', newPwInput.value);
 
     fetch('/api/user/update-password', {
         method: 'POST',

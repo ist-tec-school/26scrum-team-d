@@ -205,7 +205,7 @@ table {
     text-align: left;
     position: sticky;
     left: 0;
-    z-index: 130;
+    z-index: 115;
     background-color: #e8f6fc !important;
     white-space: nowrap;
 }
@@ -215,7 +215,7 @@ table {
 .gantt-table tbody tr.row-group td.sticky-group-summary {
     position: sticky !important;
     left: 400px;
-    z-index: 130;
+    z-index: 115;
     background-color: #e8f6fc !important;
     text-align: right;
     white-space: nowrap;
@@ -304,18 +304,18 @@ thead th {
 }
 
 th.sticky-col {
-    position: sticky !important;
-    top: 0 !important;
+    position: sticky ;
+    top: 0 ;
     background-color: #B0E0E6;
-    border-right: 1px solid #30575c !important;
-    border-bottom: 1px solid #30575c !important;
-    z-index: 1 !important;
+    border-right: 1px solid #30575c ;
+    border-bottom: 1px solid #30575c ;
+    z-index: 130;
 }
 td.sticky-col {
     background-color: #ffffff;
     border-right: 1px solid #30575c !important;
     border-bottom: 1px solid #30575c !important;
-    z-index: 100;
+    z-index: 110;
 }
 
 /*タスクのリンク*/
@@ -349,11 +349,11 @@ td.sticky-col {
     box-shadow: 4px 0 8px -4px rgba(0,0,0,0.15);
     text-align: center;
 }
-th.sticky-col-1 { z-index: 140 !important; }
-th.sticky-col-2 { z-index: 140 !important; }
-th.sticky-col-3 { z-index: 140 !important; }
-th.sticky-col-4 { z-index: 140 !important; }
-th.sticky-col-5 { z-index: 140 !important; }
+th.sticky-col-1 { z-index: 130 !important; }
+th.sticky-col-2 { z-index: 130 !important; }
+th.sticky-col-3 { z-index: 130 !important; }
+th.sticky-col-4 { z-index: 130 !important; }
+th.sticky-col-5 { z-index: 130 !important; }
 
 .gantt-table td {
     padding: 8px 12px;
@@ -362,21 +362,16 @@ th.sticky-col-5 { z-index: 140 !important; }
     vertical-align: middle;
     color: #333333;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .row-group {
     font-weight: bold;
     color: #30575c;
 }
-.row-group td {
-    border-top: 2px solid #30575c;
-    position: sticky;
-    left: 0;
-    background-color: #edfaff;
-    z-index: 110;
-}
+/*.gantt-table tbody tr.row-group td.group-title-cell,*/
+/*.gantt-table tbody tr.row-group td.sticky-group-summary {*/
+/*    border-top: 2px solid #30575c !important;*/
+/*}*/
 
 /* 進捗ステータスバッジ */
 .progress-cell {
@@ -396,6 +391,7 @@ th.sticky-col-5 { z-index: 140 !important; }
     position: relative;
     background-color: #ffffff;
     border-right: 1px solid #e8f6fc;
+    z-index: 1;
 }
 .chart-cell.weekend-sat,
 .chart-cell.weekend-sun {

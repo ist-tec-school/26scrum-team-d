@@ -15,8 +15,8 @@ window.addEventListener("load", function() {
     const wrapper = document.querySelector(".gantt-wrapper");
     const stickyCols = document.querySelectorAll("thead th.sticky-col");
     let stickyWidth = 0;
-    stickyCols.forEach(col => stickyWidth += col.offsetWidth);
-    const availableWidth = (wrapper ? wrapper.clientWidth : 1400) - 590 -1;
+    stickyCols.forEach(col => stickyWidth += col.getBoundingClientRect().width);
+    const availableWidth = (wrapper ? wrapper.clientWidth : 1400) - stickyWidth -1;
 
     let cellWidth = 40;
     if (timeScale === "day") {
@@ -327,8 +327,10 @@ window.addEventListener("resize", () => {
         const scaleAttr = activeBtn.getAttribute("data-scale");
         if (scaleAttr) timeScale = scaleAttr;
     }
-
-    const availableWidth = wrapper.clientWidth - 590 - 1;
+    const stickyCols = document.querySelectorAll("thead th.sticky-col");
+    let stickyWidth = 0;
+    stickyCols.forEach(col => stickyWidth += col.getBoundingClientRect().width);
+    const availableWidth = wrapper.clientWidth - stickyWidth - 1;
     let cellWidth = 40;
     if (timeScale === "day") {
         cellWidth = Math.max(35, Math.floor(availableWidth / 15));
