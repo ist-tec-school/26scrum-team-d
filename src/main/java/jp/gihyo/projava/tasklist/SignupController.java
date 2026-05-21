@@ -50,39 +50,29 @@ public class SignupController {
                          @RequestParam(required = false) String newSectionName,
                          RedirectAttributes redirectAttributes,
                          Model model) {
-        Integer targetDeptId = deptId;
-        if (Integer.valueOf(0).equals(deptId) && !newDepartmentName.isBlank()) {
-            String finalKana = convertToKana(newDepartmentKana);
-            if (finalKana.isBlank() || finalKana.equals(newDepartmentName)) {
-                finalKana = convertToKana(newDepartmentName);
-            }
-            List<String> existingKanas = dao.findAllDeptKanas();
-            if (isDuplicateDept(finalKana, existingKanas)) {
-                model.addAttribute("errorMessage", "既に登録されています。");
-                return displaySignup(model);
-            }
-            targetDeptId = dao.addDepartment(newDepartmentName, finalKana);
-        }
-
-        if (Integer.valueOf(0).equals(sectionId) && !newSectionName.isBlank()) {
-            if (dao.findSectionIdByName(newSectionName, targetDeptId) != null) {
-                model.addAttribute("errorMessage", "その課は指定された部署内に既に登録されています。");
-                return displaySignup(model);
-            }
-        }
-        Integer targetSectionId = sectionId;
-        if (Integer.valueOf(0).equals(sectionId) && !newSectionName.isBlank()) {
-            targetSectionId = dao.addSection(newSectionName, targetDeptId);
-        }
 
         boolean hasError = false;
 
+        // 1. 部署・課の入力チェック＆重複バリデーション
         if (deptId == null) {
             model.addAttribute("deptError", "部署を選択してください。");
             hasError = true;
-        } else if (deptId == 0 && (newDepartmentName == null || newDepartmentName.isBlank())) {
-            model.addAttribute("deptError", "新しい部署名を入力してください。");
-            hasError = true;
+        } else if (deptId == 0) {
+            if (newDepartmentName == null || newDepartmentName.isBlank()) {
+                model.addAttribute("deptError", "新しい部署名を入力してください。");
+                hasError = true;
+            } else {
+                // 💡 部署名の重複チェック
+                String finalKana = convertToKana(newDepartmentKana);
+                if (finalKana.isBlank() || finalKana.equals(newDepartmentName)) {
+                    finalKana = convertToKana(newDepartmentName);
+                }
+                List<String> existingKanas = dao.findAllDeptKanas();
+                if (isDuplicateDept(finalKana, existingKanas)) {
+                    model.addAttribute("errorMessage", "その部署は既に登録されています。");
+                    hasError = true;
+                }
+            }
         }
 
         if (sectionId == null) {
@@ -93,11 +83,11 @@ public class SignupController {
             hasError = true;
         }
 
+        // 2. ユーザー情報のバリデーション
         if (!email.endsWith("@example.com")) {
             model.addAttribute("emailError", "メールアドレスは @example.com である必要があります。");
             hasError = true;
         }
-
 
         if (dao.findUserByEmail(email) != null) {
             model.addAttribute("emailError", "すでに登録されているメールアドレスです。");
@@ -111,12 +101,12 @@ public class SignupController {
         if (password.isBlank()) {
             model.addAttribute("passwordError", "パスワードを入力してください。");
             hasError = true;
-        }else if (password.length() < 8) {
+        } else if (password.length() < 8) {
             model.addAttribute("passwordError", "パスワードは8文字以上で入力してください。");
             hasError = true;
         }
 
-        // エラーがあれば、再度リストを取得して画面に戻す
+        // エラーがあれば、データベース操作は一切行わずに画面に戻す
         if (hasError) {
             List<Map<String, Object>> departments = dao.findAllDepartments();
             List<Map<String, Object>> sections = dao.findAllSections();
@@ -124,9 +114,27 @@ public class SignupController {
             model.addAttribute("sections", sections);
             return "signup";
         }
+
+        // -------------------------------------------------------------
+        // 🎉 3. ここまで来たらエラーなし！安全に登録処理を実行します
+        // -------------------------------------------------------------
+        Integer targetDeptId = deptId;
+        if (Integer.valueOf(0).equals(deptId)) {
+            String finalKana = convertToKana(newDepartmentKana).isBlank() ? convertToKana(newDepartmentName) : convertToKana(newDepartmentKana);
+            // 「無ければ作る」メソッドで部署IDを取得
+            targetDeptId = dao.findOrCreateDepartment(newDepartmentName, finalKana);
+        }
+
+        Integer targetSectionId = sectionId;
+        if (Integer.valueOf(0).equals(sectionId)) {
+            // 「無ければ作る」メソッドで課IDを取得
+            targetSectionId = dao.findOrCreateSection(newSectionName, targetDeptId);
+        }
+
         // パスワードを暗号化
         String encodedPassword = passwordEncoder.encode(password);
-        // DBへ保存（TaskListDaoにこのメソッドがある前提です）
+
+        // ユーザーをDBへ保存
         dao.createUser(name, email, encodedPassword, targetSectionId);
 
         redirectAttributes.addFlashAttribute("signupSuccess", "新しいユーザーを作成しました");
