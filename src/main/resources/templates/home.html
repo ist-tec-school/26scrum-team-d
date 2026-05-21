@@ -24,6 +24,7 @@
         </form>
         <div class="login-name-container">
             <button type="button" class="login-name-btn" id="userProfileTrigger">
+                <span class="material-symbols-outlined">person</span>
                 ログイン中：<span th:text="${loginUserName}"></span> さん
             </button>
         </div>
@@ -60,27 +61,37 @@
         </div>
     </div>
 
-    <div id="passwordChangeForm" style="display: none;">
-        <div class="modal-header">
-            <h2>パスワード変更</h2>
-        </div>
-        <div class="modal-body profile-body"> <div id="pwErrorArea" class="error-text" style="display: none; margin-bottom: 10px; font-size: 0.8em;"></div>
-
-            <div class="profile-item" style="flex-direction: column; align-items: flex-start; gap: 5px;">
-                <span class="profile-label">現在のパスワード</span>
-                <input type="password" id="currentPasswordInput" style="width: 100%; box-sizing: border-box;">
+        <div id="passwordChangeForm">
+            <div class="modal-header">
+                <h2>パスワード変更</h2>
             </div>
+            <div class="modal-body profile-body">
+                <div id="pwErrorArea" class="error-text"></div>
 
-            <div class="profile-item" style="flex-direction: column; align-items: flex-start; gap: 5px;">
-                <span class="profile-label">新しいパスワード（8文字以上）</span>
-                <input type="password" id="newPasswordInput" style="width: 100%; box-sizing: border-box;">
-            </div>
-        </div>
-        <div class="dialog-buttons">
+                <div class="profile-item">
+                    <span class="profile-label">現在のパスワード</span>
+                    <div class="password-wrapper">
+                        <input type="password" id="currentPasswordInput">
+                        <button type="button" class="btn-toggle toggle-password" data-target="currentPasswordInput">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="profile-item">
+                    <span class="profile-label">新しいパスワード（8文字以上）</span>
+                    <div class="password-wrapper">
+                        <input type="password" id="newPasswordInput">
+                        <button type="button" class="btn-toggle toggle-password" data-target="newPasswordInput">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </button>
+                    </div>
+                </div>
+            </div> <div class="dialog-buttons">
             <button type="button" class="btn-base btn-primary" onclick="submitPasswordChange()">更新</button>
             <button type="button" class="btn-base btn-cancel" onclick="hidePasswordChangeForm()">キャンセル</button>
         </div>
-    　</div>
+        </div>
     </div>
 </div>
 
