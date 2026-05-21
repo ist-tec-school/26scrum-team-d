@@ -368,11 +368,6 @@ th.sticky-col-5 { z-index: 130 !important; }
     font-weight: bold;
     color: #30575c;
 }
-/*.gantt-table tbody tr.row-group td.group-title-cell,*/
-/*.gantt-table tbody tr.row-group td.sticky-group-summary {*/
-/*    border-top: 2px solid #30575c !important;*/
-/*}*/
-
 /* 進捗ステータスバッジ */
 .progress-cell {
     text-align: center;
@@ -403,6 +398,10 @@ td.chart-cell{
     text-align: center;
     vertical-align: middle;
 }
+td.group-empty-cell{
+    background-color: #e8f6fc;
+}
+
 th.timeline-header.weekend-sat {
     color: #abe0ff !important;
 }
