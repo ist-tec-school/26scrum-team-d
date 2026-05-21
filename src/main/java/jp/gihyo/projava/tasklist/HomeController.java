@@ -26,14 +26,14 @@ import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
+import java.time.LocalDate;
 
 
 @Controller
 public class HomeController {
     record TaskItem(
             String id,
-            @NotBlank @Size(max= 255) String task,
+            @NotBlank @Size(max= 200) String task,
             List<Integer> taskUserIds,
             Integer projectId,
             String projectName,
@@ -41,7 +41,53 @@ public class HomeController {
             @NotBlank String deadline,
             Integer done,
             @NotBlank String start_date
-    ) {}
+    ) {
+        // 1. タスクが完了しているか判定
+        public boolean isCompleted() {
+            return done != null && done == 3;
+        }
+
+        // 2. タスクが遅延しているか判定（外部呼び出し用）
+        public boolean isDelayed(LocalDate today) {
+            if (isCompleted()) return false;
+
+            LocalDate startDate = (start_date != null && !start_date.isBlank()) ? LocalDate.parse(start_date) : null;
+            LocalDate deadlineDate = (deadline != null && !deadline.isBlank()) ? LocalDate.parse(deadline) : null;
+
+            return checkDelayed(today, startDate, deadlineDate);
+        }
+
+        // 💡 重複パースを防ぐための内部共通ロジック
+        private boolean checkDelayed(LocalDate today, LocalDate startDate, LocalDate deadlineDate) {
+            // 開始日を過ぎているのに未着手(0)の場合
+            if (startDate != null && startDate.isBefore(today) && (done != null && done == 0)) {
+                return true;
+            }
+            // 期限を過ぎている場合
+            if (deadlineDate != null && deadlineDate.isBefore(today)) {
+                return true;
+            }
+            return false;
+        }
+
+        // 3. タスクが期限間近（3日以内）か判定
+        public boolean isUrgent(LocalDate today) {
+            if (isCompleted()) return false;
+
+            // 💡 ここで一度だけパースを実行
+            LocalDate startDate = (start_date != null && !start_date.isBlank()) ? LocalDate.parse(start_date) : null;
+            LocalDate deadlineDate = (deadline != null && !deadline.isBlank()) ? LocalDate.parse(deadline) : null;
+
+            // ★ パース済みのオブジェクトを渡して遅延チェック（重複パースを回避）
+            if (checkDelayed(today, startDate, deadlineDate)) return false;
+
+            if (deadlineDate != null) {
+                LocalDate threeDaysLater = today.plusDays(3);
+                return !deadlineDate.isBefore(today) && !deadlineDate.isAfter(threeDaysLater);
+            }
+            return false;
+        }
+    }
     private final TaskListDao dao;
     private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
     @Autowired
@@ -98,8 +144,8 @@ public class HomeController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("taskItem", new TaskItem("", "", List.of(), null, "", "", "", 0,""));
         // listItems メソッド内
-        String today = java.time.LocalDate.now().toString();
-        String twoDaysLater = java.time.LocalDate.now().plusDays(2).toString();
+        String today = LocalDate.now().toString();
+        String twoDaysLater = LocalDate.now().plusDays(2).toString();
 
         model.addAttribute("today", today);
         model.addAttribute("twoDaysLater", twoDaysLater);
@@ -118,8 +164,8 @@ public class HomeController {
         // 2. エラー判定を追加
         boolean isPastDate = false;
         if (item.deadline() != null && !item.deadline().isEmpty()) {
-            java.time.LocalDate deadlineDate = java.time.LocalDate.parse(item.deadline());
-            if (deadlineDate.isBefore(java.time.LocalDate.now())) {
+            LocalDate deadlineDate = LocalDate.parse(item.deadline());
+            if (deadlineDate.isBefore(LocalDate.now())) {
                 isPastDate = true;
             }
         }
@@ -130,8 +176,8 @@ public class HomeController {
         boolean isInvalidDateOrder = false;
         if (item.start_date() != null && !item.start_date().isEmpty() &&
                 item.deadline() != null && !item.deadline().isEmpty()) {
-            java.time.LocalDate start = java.time.LocalDate.parse(item.start_date());
-            java.time.LocalDate deadline = java.time.LocalDate.parse(item.deadline());
+            LocalDate start = LocalDate.parse(item.start_date());
+            LocalDate deadline = LocalDate.parse(item.deadline());
             if (deadline.isBefore(start)) {
                 isInvalidDateOrder = true;
             }
@@ -217,7 +263,7 @@ public class HomeController {
         // 4. バリデーションエラーの判定
         boolean isPastDate = false;
         if (item.deadline() != null && !item.deadline().isEmpty()) {
-            if (java.time.LocalDate.parse(item.deadline()).isBefore(java.time.LocalDate.now())){
+            if (LocalDate.parse(item.deadline()).isBefore(LocalDate.now())){
                 isPastDate = true;
             }
         }
@@ -228,8 +274,8 @@ public class HomeController {
         boolean isInvalidDateOrder = false;
         if (item.start_date() != null && !item.start_date().isEmpty() &&
                 item.deadline() != null && !item.deadline().isEmpty()) {
-            java.time.LocalDate start = java.time.LocalDate.parse(item.start_date());
-            java.time.LocalDate deadline = java.time.LocalDate.parse(item.deadline());
+            LocalDate start = LocalDate.parse(item.start_date());
+            LocalDate deadline = LocalDate.parse(item.deadline());
             if (deadline.isBefore(start)) {
                 isInvalidDateOrder = true;
             }
