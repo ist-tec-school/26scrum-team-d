@@ -554,3 +554,26 @@ function submitPasswordChange() {
             alert('システムエラーが発生しました');
         });
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    // パスワード表示切り替えボタンをすべて取得
+    const toggleButtons = document.querySelectorAll('.toggle-password');
+
+    toggleButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // data-target属性から対象のinput IDを取得
+            const targetId = this.getAttribute('data-target');
+            const passwordInput = document.getElementById(targetId);
+            const icon = this.querySelector('.material-symbols-outlined');
+
+            if (passwordInput && icon) {
+                // type属性を切り替える
+                const isPassword = passwordInput.getAttribute('type') === 'password';
+                passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+
+                // アイコンを切り替える
+                icon.textContent = isPassword ? 'visibility_off' : 'visibility';
+            }
+        });
+    });
+});
