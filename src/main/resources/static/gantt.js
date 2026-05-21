@@ -15,8 +15,8 @@ window.addEventListener("load", function() {
     const wrapper = document.querySelector(".gantt-wrapper");
     const stickyCols = document.querySelectorAll("thead th.sticky-col");
     let stickyWidth = 0;
-    stickyCols.forEach(col => stickyWidth += col.offsetWidth);
-    const availableWidth = (wrapper ? wrapper.clientWidth : 1400) - 590 -1;
+    stickyCols.forEach(col => stickyWidth += col.getBoundingClientRect().width);
+    const availableWidth = (wrapper ? wrapper.clientWidth : 1400) - stickyWidth -1;
 
     let cellWidth = 40;
     if (timeScale === "day") {
