@@ -221,38 +221,34 @@ window.addEventListener("load", function() {
     }
 
     const edateCells = document.querySelectorAll("td.col-edate");
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const oneDayMs = 1000 * 60 * 60 * 24;
 
     edateCells.forEach(td => {
         const container = td.querySelector(".edate-container");
         if (!container) return;
-        const oldBadge = container.querySelector(".days-badge");
-        if (oldBadge) oldBadge.remove();
 
         const deadlineStr = td.getAttribute("data-deadline");
         const doneStr = td.getAttribute("data-done");
 
-        if (!deadlineStr || doneStr === "3") return;
-
-        const deadlineDate = new Date(deadlineStr);
-        deadlineDate.setHours(0, 0, 0, 0);
-
-        const diffTime = deadlineDate.getTime() - today.getTime();
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-        const badge = document.createElement("div");
-        badge.classList.add("days-badge");
-
-        if (diffDays < 0) {
-            badge.innerHTML = `＋<span class="badge-num">${Math.abs(diffDays)}</span>日`;
-            badge.classList.add("badge-delay");
-            container.appendChild(badge);
-        } else if (diffDays <= 3) {
-            badge.innerHTML = `残<span class="badge-num">${diffDays}</span>日`;
-            badge.classList.add("badge-near");
-            container.appendChild(badge);
+        // 期限がない、または完了(3)の場合はバッジをクリアして終了
+        if (!deadlineStr || doneStr === "3") {
+            container.innerHTML = '';
+            return;
         }
+
+        // 💡 宣言済みの `todayTime` を使い、Dateオブジェクトを作らず文字列から直接タイムスタンプを高速計算
+        const diffTime = Date.parse(deadlineStr) - todayTime;
+        const diffDays = Math.ceil(diffTime / oneDayMs);
+
+        // 💡 createElementを使わず、文字列でHTMLを組み立てて一撃で反映
+        let badgeHtml = '';
+        if (diffDays < 0) {
+            badgeHtml = `<div class="days-badge badge-delay">＋<span class="badge-num">${Math.abs(diffDays)}</span>日</div>`;
+        } else if (diffDays <= 3) {
+            badgeHtml = `<div class="days-badge badge-near">残<span class="badge-num">${diffDays}</span>日</div>`;
+        }
+
+        container.innerHTML = badgeHtml;
     });
     // 担当者の折りたたみ状態を更新する関数
     const refreshUserRowStatus = (row) => {
