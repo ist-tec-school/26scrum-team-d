@@ -278,6 +278,7 @@ window.addEventListener("load", function() {
                 userCell.classList.toggle('is-expanded');
             }
         });
+        setTimeout(() => refreshUserRowStatus(row), 200);
     });
 
         // ローディング設定
