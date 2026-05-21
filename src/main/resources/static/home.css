@@ -418,6 +418,8 @@ div.modal-header h2 {
 }
 
 .tasklist table th, .tasklist table td {
+    overflow: hidden;
+    text-overflow: ellipsis;
     padding: 8px;
     vertical-align: middle;
     text-align: center;
