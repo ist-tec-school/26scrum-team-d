@@ -254,18 +254,6 @@ window.addEventListener("load", function() {
             container.appendChild(badge);
         }
     });
-    // 本日の日付までスクロールする処理
-    setTimeout(() => {
-        const wrapperEl = document.querySelector('.gantt-wrapper');
-        const lastStickyCol = document.querySelector('thead th.sticky-col-5');
-
-        if (targetHeaderEl && wrapperEl) {
-            const currentStickyWidth = lastStickyCol ? (lastStickyCol.offsetLeft + lastStickyCol.offsetWidth) : 590;
-            // 指定した開始日（または今日）が固定列のすぐ右隣にジャストで表示されます
-            wrapperEl.scrollLeft = targetHeaderEl.offsetLeft - currentStickyWidth;
-        }
-    }, 100);
-
     // 担当者の折りたたみ状態を更新する関数
     const refreshUserRowStatus = (row) => {
         const userCell = row.querySelector('.user-cell');
@@ -290,17 +278,36 @@ window.addEventListener("load", function() {
                 userCell.classList.toggle('is-expanded');
             }
         });
-
-        // 初期読み込み時に3人以上いるか判定をかける
-        setTimeout(() => refreshUserRowStatus(row), 200);
     });
-    const overlay = document.getElementById("gantt-loading-overlay");
-    if (overlay) {
-        overlay.classList.add("fade-out");
-        setTimeout(() => {
-            overlay.remove();
-        }, 200);
-    }
+
+        // ローディング設定
+    setTimeout(() => {
+        const wrapperEl = document.querySelector('.gantt-wrapper');
+        const lastStickyCol = document.querySelector('thead th.sticky-col-5');
+        const overlay = document.getElementById("gantt-loading-overlay");
+
+        // 💡 スクロールさせる前に、白幕の横幅をラッパーの「見えている幅」に強制固定してスクロールに追従させる
+        if (wrapperEl && overlay) {
+            overlay.style.width = `${wrapperEl.clientWidth}px`;
+        }
+
+        if (targetHeaderEl && wrapperEl) {
+            const currentStickyWidth = lastStickyCol ? (lastStickyCol.offsetLeft + lastStickyCol.offsetWidth) : 590;
+            wrapperEl.scrollLeft = targetHeaderEl.offsetLeft - currentStickyWidth;
+        }
+    }, 100);
+    setTimeout(() => {
+        const overlay = document.getElementById("gantt-loading-overlay");
+        if (overlay) {
+            // opacityを0にしてフワッと消す
+            overlay.classList.add("fade-out");
+
+            // アニメーション完了（0.2秒）後にDOMツリーから完全に削除
+            setTimeout(() => {
+                overlay.remove();
+            }, 200);
+        }
+    }, 350);
 });
 // 💡 リサイズ時の表示開始日のズレを防ぐ
 window.addEventListener("resize", () => {
