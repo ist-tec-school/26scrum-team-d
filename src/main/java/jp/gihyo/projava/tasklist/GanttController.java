@@ -49,17 +49,17 @@ public class GanttController {
         List<String> timeScaleHeaders = new ArrayList<>();
         if ("week".equals(timeScale)) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            for (int i = 0; i < 53; i++) {
+            for (int i = -10; i < 53; i++) {
                 timeScaleHeaders.add(baseDate.plusWeeks(i).format(formatter));
             }
         } else if ("month".equals(timeScale)) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
-            for (int i = 0; i < 12; i++) {
+            for (int i = -5; i < 12; i++) {
                 timeScaleHeaders.add(baseDate.plusMonths(i).format(formatter));
             }
         } else {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            for (int i = 0; i < 365; i++) {
+            for (int i = -15; i < 365; i++) {
                 timeScaleHeaders.add(baseDate.plusDays(i).format(formatter));
             }
         }

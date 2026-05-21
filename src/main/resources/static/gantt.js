@@ -33,6 +33,19 @@ window.addEventListener("load", function() {
     if (tableEl && timelineHeaders.length>0) {
         tableEl.style.width = `${590 + (timelineHeaders.length * cellWidth)}px`;
     }
+    const todayObj = new Date();
+    todayObj.setHours(0, 0, 0, 0);
+    const todayTime = todayObj.getTime();
+
+    const startDateInputTop = document.querySelector('input[name="startDate"]');
+    const baseDateStr = (startDateInputTop && startDateInputTop.value) ? startDateInputTop.value : `${todayObj.getFullYear()}-${String(todayObj.getMonth() + 1).padStart(2, '0')}-${String(todayObj.getDate()).padStart(2, '0')}`;
+
+    const baseDateObj = new Date(baseDateStr);
+    baseDateObj.setHours(0, 0, 0, 0);
+    const baseDateTime = baseDateObj.getTime();
+
+    let targetHeaderEl = null; // スクロール先となるターゲット要素
+
     timelineHeaders.forEach(th => {
         th.style.minWidth = `${cellWidth}px`;
         th.style.maxWidth = `${cellWidth}px`;
@@ -41,15 +54,27 @@ window.addEventListener("load", function() {
         const dateStr = th.getAttribute("data-date");
         if (!dateStr) return;
 
-
         const dateSpan = th.querySelector("span");
 
         if (timeScale === "month") {
             const parts = dateStr.split("-");
             if (parts.length >= 2) {
-
                 if (dateSpan) dateSpan.textContent = `${parseInt(parts[1], 10)}月`;
                 else th.textContent = `${parseInt(parts[1], 10)}月`;
+            }
+            const targetYearMonth = baseDateStr.substring(0, 7);
+            if (dateStr.substring(0, 7) === targetYearMonth) {
+                targetHeaderEl = th;
+            }
+            const realTodayYearMonth = `${todayObj.getFullYear()}-${String(todayObj.getMonth() + 1).padStart(2, '0')}`;
+            if (dateStr.substring(0, 7) === realTodayYearMonth) {
+                th.classList.add('today-header');
+                if (!th.querySelector('.today-label')) {
+                    const lbl = document.createElement('div');
+                    lbl.classList.add('today-label');
+                    lbl.textContent = '当月';
+                    th.appendChild(lbl);
+                }
             }
         } else if (timeScale === "week") {
             const startDate = new Date(dateStr);
@@ -62,20 +87,41 @@ window.addEventListener("load", function() {
                 const eMonth = endDate.getMonth() + 1;
                 const eDate = endDate.getDate();
 
-
                 if (dateSpan) dateSpan.textContent = `${sMonth}/${sDate}~${eMonth}/${eDate}`;
                 else th.textContent = `${sMonth}/${sDate}~${eMonth}/${eDate}`;
+
+                startDate.setHours(0, 0, 0, 0);
+                endDate.setHours(23, 59, 59, 999);
+
+                if (baseDateTime >= startDate.getTime() && baseDateTime <= endDate.getTime()) {
+                    targetHeaderEl = th;
+                }
+                if (todayTime >= startDate.getTime() && todayTime <= endDate.getTime()) {
+                    th.classList.add('today-header');
+                    if (!th.querySelector('.today-label')) {
+                        const lbl = document.createElement('div');
+                        lbl.classList.add('today-label');
+                        lbl.textContent = '当週';
+                        th.appendChild(lbl);
+                    }
+                }
             }
         } else {
             const date = new Date(dateStr);
             if (!isNaN(date.getTime())) {
-
                 if (dateSpan) dateSpan.textContent = `${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
                 else th.textContent = `${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
 
                 const day = date.getDay();
                 if (day === 6) th.classList.add("weekend-sat");
                 if (day === 0) th.classList.add("weekend-sun");
+
+                // 💡 日表示の判定：基準日と完全に一致するセルをスクロール対象にする
+                date.setHours(0, 0, 0, 0);
+                if (date.getTime() === baseDateTime) {
+                    th.classList.add('today-header');
+                    targetHeaderEl = th;
+                }
             }
         }
     });
@@ -208,6 +254,18 @@ window.addEventListener("load", function() {
             container.appendChild(badge);
         }
     });
+    // 本日の日付までスクロールする処理
+    setTimeout(() => {
+        const wrapperEl = document.querySelector('.gantt-wrapper');
+        const lastStickyCol = document.querySelector('thead th.sticky-col-5');
+
+        if (targetHeaderEl && wrapperEl) {
+            const currentStickyWidth = lastStickyCol ? (lastStickyCol.offsetLeft + lastStickyCol.offsetWidth) : 590;
+            // 指定した開始日（または今日）が固定列のすぐ右隣にジャストで表示されます
+            wrapperEl.scrollLeft = targetHeaderEl.offsetLeft - currentStickyWidth;
+        }
+    }, 100);
+
     // 担当者の折りたたみ状態を更新する関数
     const refreshUserRowStatus = (row) => {
         const userCell = row.querySelector('.user-cell');
@@ -221,8 +279,7 @@ window.addEventListener("load", function() {
             userCell.classList.remove('is-expanded');
         }
     };
-
-// 担当者セルにクリックイベントを登録する
+// 担当者セルのクリックイベント
     const userRows = document.querySelectorAll('tr'); // テーブルの全行を取得
     userRows.forEach(row => {
         const userCell = row.querySelector('.user-cell');
@@ -239,13 +296,53 @@ window.addEventListener("load", function() {
     });
     const overlay = document.getElementById("gantt-loading-overlay");
     if (overlay) {
-        // opacityを0にしてフワッと消す
         overlay.classList.add("fade-out");
-
-        // アニメーション完了後にDOMツリーから完全に削除（display: noneの代わり）
         setTimeout(() => {
             overlay.remove();
         }, 200);
     }
 });
-window.addEventListener("resize", () => window.dispatchEvent(new Event("load")));
+// 💡 リサイズ時の表示開始日のズレを防ぐ
+window.addEventListener("resize", () => {
+    const wrapper = document.querySelector(".gantt-wrapper");
+    const tableEl = document.querySelector(".gantt-table");
+    const timelineHeaders = document.querySelectorAll("th.timeline-header");
+    const chartCells = document.querySelectorAll("td.chart-cell");
+    const lastStickyCol = document.querySelector('thead th.sticky-col-5');
+    const targetHeaderEl = document.querySelector('.timeline-header.today-header'); // 基準日セルを取得
+
+    if (!wrapper || !tableEl || timelineHeaders.length === 0) return;
+
+    // 1. 横幅の再計算
+    const activeBtn = document.querySelector(".time-scale .btn.active");
+    let timeScale = "day";
+    if (activeBtn) {
+        const scaleAttr = activeBtn.getAttribute("data-scale");
+        if (scaleAttr) timeScale = scaleAttr;
+    }
+
+    const availableWidth = wrapper.clientWidth - 590 - 1;
+    let cellWidth = 40;
+    if (timeScale === "day") {
+        cellWidth = Math.max(35, Math.floor(availableWidth / 15));
+    } else if (timeScale === "week") {
+        cellWidth = Math.max(65, Math.floor(availableWidth / 10));
+    } else if (timeScale === "month") {
+        cellWidth = Math.max(120, Math.floor(availableWidth / 5));
+    }
+
+    // 2. テーブルと各セルの幅をリサイズに追従させる
+    tableEl.style.width = `${590 + (timelineHeaders.length * cellWidth)}px`;
+    timelineHeaders.forEach(th => {
+        th.style.minWidth = `${cellWidth}px`; th.style.maxWidth = `${cellWidth}px`; th.style.width = `${cellWidth}px`;
+    });
+    chartCells.forEach(td => {
+        td.style.minWidth = `${cellWidth}px`; td.style.maxWidth = `${cellWidth}px`; td.style.width = `${cellWidth}px`;
+    });
+
+    // 3. 💡 タイマーを使わず、新しい幅に合わせて「即時」スクロール位置をジャストに追従させる
+    if (targetHeaderEl) {
+        const currentStickyWidth = lastStickyCol ? (lastStickyCol.offsetLeft + lastStickyCol.offsetWidth) : 590;
+        wrapper.scrollLeft = targetHeaderEl.offsetLeft - currentStickyWidth;
+    }
+});

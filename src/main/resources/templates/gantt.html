@@ -127,10 +127,10 @@
 
                 <th:block th:each="headerLabel : ${timeScaleHeaders}">
                     <th class="timeline-header"
-                        th:classappend="${selectedTimeScale == 'month' ? (#strings.substring(headerLabel, 0, 7) == #strings.substring(today, 0, 7)) : (headerLabel == today)} ? 'today-header' : ''"
+                        th:classappend="${selectedTimeScale == 'month' ? (#strings.substring(headerLabel, 0, 7) == #strings.substring(today, 0, 7)) : ''}"
                         th:data-date="${headerLabel}">
                         <span th:text="${#strings.length(headerLabel) >= 10 ? #strings.replace(#strings.substring(headerLabel, 5, 10), '-', '/') : headerLabel}">2026-05-12</span>
-                        <div th:if="${selectedTimeScale == 'month' ? (#strings.substring(headerLabel, 0, 7) == #strings.substring(today, 0, 7)) : (headerLabel == today)}" class="today-label">本日</div>
+                        <div th:if="${selectedTimeScale == 'day' && headerLabel == today}" class="today-label">本日</div>
                     </th>
                 </th:block>
             </tr>
