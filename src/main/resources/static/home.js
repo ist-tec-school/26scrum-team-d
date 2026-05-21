@@ -426,15 +426,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.history.replaceState(null, '', newUrl);
                 }, 0);
             }
-        } else {
-            // B. 通常の読み込み時：既存のトップスクロール処理
-            const scrollTarget = document.getElementById("task-list-top");
-            if (scrollTarget) {
-                scrollTarget.scrollIntoView({
-                    behavior: "instant",
-                    block: "start"
-                });
-            }
         }
 
         setTimeout(() => {
