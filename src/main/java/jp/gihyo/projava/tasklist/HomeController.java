@@ -33,7 +33,7 @@ import java.time.LocalDate;
 public class HomeController {
     record TaskItem(
             String id,
-            @NotBlank @Size(max= 255) String task,
+            @NotBlank @Size(max= 200) String task,
             List<Integer> taskUserIds,
             Integer projectId,
             String projectName,
