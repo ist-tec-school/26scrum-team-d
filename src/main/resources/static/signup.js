@@ -109,7 +109,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
         const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
-        fetch(`/api/check-dept?name=${encodeURIComponent(value)}`)
+        fetch(`/api/check-dept?name=${encodeURIComponent(value)}`, {
+            method: 'GET',
+            headers: {
+                [header]: token
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 if (data.isDuplicate) {
