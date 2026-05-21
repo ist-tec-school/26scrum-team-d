@@ -98,7 +98,7 @@
                 </div>
 
                 <div class="search_area">
-                    <input type="text" name="keyword" th:value="${keyword}" placeholder="検索ワード タスクを検索できます。">
+                    <input type="text" name="keyword" th:value="${keyword}" placeholder="タスク・担当者を検索できます。">
                     <button type="submit" class="btn-base btn-primary search-button">検索</button>
 
                     <a th:href="@{/gantt(scope='all', status='all', projectId='all', deptId='all', sectionId='all', keyword='')}"
