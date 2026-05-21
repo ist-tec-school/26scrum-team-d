@@ -340,12 +340,7 @@ window.addEventListener("resize", () => {
 
     // 2. テーブルと各セルの幅をリサイズに追従させる
     tableEl.style.width = `${590 + (timelineHeaders.length * cellWidth)}px`;
-    timelineHeaders.forEach(th => {
-        th.style.minWidth = `${cellWidth}px`; th.style.maxWidth = `${cellWidth}px`; th.style.width = `${cellWidth}px`;
-    });
-    chartCells.forEach(td => {
-        td.style.minWidth = `${cellWidth}px`; td.style.maxWidth = `${cellWidth}px`; td.style.width = `${cellWidth}px`;
-    });
+    tableEl.style.setProperty('--cell-width', `${cellWidth}px`);
 
     // 3. 💡 タイマーを使わず、新しい幅に合わせて「即時」スクロール位置をジャストに追従させる
     if (targetHeaderEl) {

@@ -24,7 +24,7 @@ body {
 /* タイトルエリア（会社カラーをベースに変更） */
 h1 {
     font-size: 20pt;
-    color: #616161; /* 濃いグレー */
+    color: black;
     margin-top: 0;
     margin-bottom: 15px;
     border-bottom: 3px solid #B0E0E6; /* 会社カラー */
@@ -404,6 +404,7 @@ th.sticky-col-5 { z-index: 140 !important; }
 
 th.timeline-header,
 td.chart-cell{
+    --cell-width: 40px;
     text-align: center;
     vertical-align: middle;
 }
