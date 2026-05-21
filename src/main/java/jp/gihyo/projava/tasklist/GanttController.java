@@ -170,25 +170,13 @@ public class GanttController {
             this.totalCount = tasks.size();
 
             for (HomeController.TaskItem t : tasks) {
-                LocalDate startDate = (t.start_date() != null && !t.start_date().isBlank()) ? LocalDate.parse(t.start_date()) : null;
-                LocalDate deadline = (t.deadline() != null && !t.deadline().isBlank()) ? LocalDate.parse(t.deadline()) : null;
-                int done = t.done();
-
-                if (done == 3) {
+                // 💡 引数の today を渡して、TaskItem 側の共通メソッドでスッキリ判定
+                if (t.isCompleted()) {
                     this.completedCount++;
-                } else {
-                    boolean isDelayed = false;
-                    if (startDate != null && startDate.isBefore(today) && done == 0) {
-                        isDelayed = true;
-                    } else if (deadline != null && deadline.isBefore(today)) {
-                        isDelayed = true;
-                    }
-
-                    if (isDelayed) {
-                        this.delayedCount++;
-                    } else if (deadline != null && !deadline.isBefore(today) && !deadline.isAfter(threeDaysLater)) {
-                        this.urgentCount++;
-                    }
+                } else if (t.isDelayed(today)) {
+                    this.delayedCount++;
+                } else if (t.isUrgent(today)) {
+                    this.urgentCount++;
                 }
             }
         }
