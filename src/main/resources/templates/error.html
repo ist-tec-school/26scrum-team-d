@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>システムエラー - タスク管理アプリケーション</title>
+  <link th:href="@{/login.css}" rel="stylesheet">
+  <link th:href="@{/signup.css}" rel="stylesheet">
+</head>
+<body>
+<div class="login-container">
+  <h1>タスク管理アプリケーション</h1>
+
+  <div class="task_form">
+    <div class="form_header" style="background-color: #f2dede; border-bottom: 2px solid #d9534f;">
+      <h2 style="color: #a94442;">システムエラーが発生しました</h2>
+    </div>
+
+    <div class="form_body" style="text-align: center; padding: 40px 20px;">
+      <div class="error-text" th:text="${errorMessage}">
+        エラーが発生しました。
+      </div>
+
+      <p style="color: #666; font-size: 14px; margin-top: 20px;">
+        お手数ですが、一度トップ画面に戻るか、時間を置いて再度お試しください。
+      </p>
+
+      <div th:if="${#arrays.contains(@environment.getActiveProfiles(), 'dev')}"
+           style="margin-top: 30px; padding: 10px; background: #f5f5f5; border-radius: 4px; text-align: left;">
+        <p style="margin: 0 0 5px 0; font-size: 12px; color: #ff0000; font-weight: bold;">【開発者向けデバッグ情報】</p>
+        <code style="font-size: 12px; color: #333;" th:text="${detailMessage}">Error details</code>
+      </div>
+
+      <div class="footer-links" style="margin-top: 30px;">
+        <a th:href="@{/list}">← タスク一覧（マイページ）へ戻る</a>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

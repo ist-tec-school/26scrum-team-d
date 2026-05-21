@@ -128,12 +128,12 @@ table {
     border-spacing: 0;
 }
 .gantt-wrapper {
-    overflow: auto;
+    position: relative;
+    overflow-x: auto;
     max-height: 600px;
     border: 1px solid #30575c;
     border-radius: 6px;
     width: 100%;
-    position: relative;
 }
 
 /*ローディング*/

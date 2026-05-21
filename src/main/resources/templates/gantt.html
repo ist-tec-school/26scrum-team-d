@@ -98,7 +98,7 @@
                 </div>
 
                 <div class="search_area">
-                    <input type="text" name="keyword" th:value="${keyword}" placeholder="検索ワード タスクを検索できます。">
+                    <input type="text" name="keyword" th:value="${keyword}" placeholder="タスク・担当者を検索できます。">
                     <button type="submit" class="btn-base btn-primary search-button">検索</button>
 
                     <a th:href="@{/gantt(scope='all', status='all', projectId='all', deptId='all', sectionId='all', keyword='')}"
@@ -115,7 +115,6 @@
             <div class="gantt-spinner"></div>
             <p class="gantt-loading-text">データを読み込み中...</p>
         </div>
-
         <table class="gantt-table">
             <thead>
             <tr>
@@ -127,10 +126,10 @@
 
                 <th:block th:each="headerLabel : ${timeScaleHeaders}">
                     <th class="timeline-header"
-                        th:classappend="${selectedTimeScale == 'month' ? (#strings.substring(headerLabel, 0, 7) == #strings.substring(today, 0, 7)) : (headerLabel == today)} ? 'today-header' : ''"
+                        th:classappend="${selectedTimeScale == 'month' ? (#strings.substring(headerLabel, 0, 7) == #strings.substring(today, 0, 7)) : ''}"
                         th:data-date="${headerLabel}">
                         <span th:text="${#strings.length(headerLabel) >= 10 ? #strings.replace(#strings.substring(headerLabel, 5, 10), '-', '/') : headerLabel}">2026-05-12</span>
-                        <div th:if="${selectedTimeScale == 'month' ? (#strings.substring(headerLabel, 0, 7) == #strings.substring(today, 0, 7)) : (headerLabel == today)}" class="today-label">本日</div>
+                        <div th:if="${selectedTimeScale == 'day' && headerLabel == today}" class="today-label">本日</div>
                     </th>
                 </th:block>
             </tr>
