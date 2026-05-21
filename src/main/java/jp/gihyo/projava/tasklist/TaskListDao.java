@@ -239,4 +239,32 @@ public class TaskListDao {
         params.put("dept_kana", deptKana);
         return insert.executeAndReturnKey(params).intValue();
     }
+
+    // --- 💡 ここから追加：部署の存在チェック ＆ 無ければ自動登録してIDを返すメソッド ---
+    @Transactional
+    public Integer findOrCreateDepartment(String deptName, String deptKana) {
+        // 1. まず名前で既存の部署を探す
+        String sql = "SELECT dept_id FROM departments WHERE dept_name = ?";
+        List<Integer> ids = jdbcTemplate.queryForList(sql, Integer.class, deptName);
+
+        if (!ids.isEmpty()) {
+            return ids.get(0); // すでに存在すればそのIDを返す
+        }
+
+        // 2. 存在しなければ新規登録して、生成された新しいIDを返す
+        return addDepartment(deptName, deptKana);
+    }
+
+    // --- 💡 課の存在チェック ＆ 無ければ自動登録してIDを返すメソッド ---
+    @Transactional
+    public Integer findOrCreateSection(String sectionName, Integer deptId) {
+        // 1. まず名前と部署IDで既存の課を探す
+        Integer existingId = findSectionIdByName(sectionName, deptId);
+        if (existingId != null) {
+            return existingId; // すでに存在すればそのIDを返す
+        }
+
+        // 2. 存在しなければ新規登録して、生成された新しいIDを返す
+        return addSection(sectionName, deptId);
+    }
 }
