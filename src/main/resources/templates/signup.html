@@ -2,6 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta th:name="_csrf" th:content="${_csrf.token}"/>
+    <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>新規登録 - タスク管理アプリケーション</title>
     <link th:href="@{/login.css}" rel="stylesheet">
     <link th:href="@{/signup.css}" rel="stylesheet">
