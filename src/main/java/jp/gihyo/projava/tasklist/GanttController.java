@@ -149,7 +149,8 @@ public class GanttController {
         private final String displayTitle;
         private int totalCount = 0;
         private int completedCount = 0;
-        private int delayedCount = 0;
+        private int startDelayedCount = 0;
+        private int deadlineDelayedCount = 0;
         private int urgentCount = 0;
 
         // 通常タスク用のコンストラクタ
@@ -173,10 +174,22 @@ public class GanttController {
                 // 💡 引数の today を渡して、TaskItem 側の共通メソッドでスッキリ判定
                 if (t.isCompleted()) {
                     this.completedCount++;
-                } else if (t.isDelayed(today)) {
-                    this.delayedCount++;
-                } else if (t.isUrgent(today)) {
-                    this.urgentCount++;
+                } else {
+                    boolean isStartDelayed = false;
+                    boolean isDeadlineDelayed = false;
+                    if (startDate != null && startDate.isBefore(today) && done == 0) {
+                        isStartDelayed = true;
+                        this.startDelayedCount++;
+                    }
+
+                    if (deadline != null && deadline.isBefore(today)) {
+                        isDeadlineDelayed = true;
+                        this.deadlineDelayedCount++;
+                    }
+
+                    if (!isStartDelayed && !isDeadlineDelayed && deadline != null && !deadline.isBefore(today) && !deadline.isAfter(threeDaysLater)) {
+                        this.urgentCount++;
+                    }
                 }
             }
         }
@@ -188,7 +201,8 @@ public class GanttController {
 
         public int getTotalCount() { return totalCount; }
         public int getCompletedCount() { return completedCount; }
-        public int getDelayedCount() { return delayedCount; }
+        public int getStartDelayedCount() { return startDelayedCount; }
+        public int getDeadlineDelayedCount() { return deadlineDelayedCount; }
         public int getUrgentCount() { return urgentCount; }
     }
 }
