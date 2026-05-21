@@ -149,7 +149,8 @@ public class GanttController {
         private final String displayTitle;
         private int totalCount = 0;
         private int completedCount = 0;
-        private int delayedCount = 0;
+        private int startDelayedCount = 0;
+        private int deadlineDelayedCount = 0;
         private int urgentCount = 0;
 
         // 通常タスク用のコンストラクタ
@@ -177,16 +178,19 @@ public class GanttController {
                 if (done == 3) {
                     this.completedCount++;
                 } else {
-                    boolean isDelayed = false;
+                    boolean isStartDelayed = false;
+                    boolean isDeadlineDelayed = false;
                     if (startDate != null && startDate.isBefore(today) && done == 0) {
-                        isDelayed = true;
-                    } else if (deadline != null && deadline.isBefore(today)) {
-                        isDelayed = true;
+                        isStartDelayed = true;
+                        this.startDelayedCount++;
                     }
 
-                    if (isDelayed) {
-                        this.delayedCount++;
-                    } else if (deadline != null && !deadline.isBefore(today) && !deadline.isAfter(threeDaysLater)) {
+                    if (deadline != null && deadline.isBefore(today)) {
+                        isDeadlineDelayed = true;
+                        this.deadlineDelayedCount++;
+                    }
+
+                    if (!isStartDelayed && !isDeadlineDelayed && deadline != null && !deadline.isBefore(today) && !deadline.isAfter(threeDaysLater)) {
                         this.urgentCount++;
                     }
                 }
@@ -200,7 +204,8 @@ public class GanttController {
 
         public int getTotalCount() { return totalCount; }
         public int getCompletedCount() { return completedCount; }
-        public int getDelayedCount() { return delayedCount; }
+        public int getStartDelayedCount() { return startDelayedCount; }
+        public int getDeadlineDelayedCount() { return deadlineDelayedCount; }
         public int getUrgentCount() { return urgentCount; }
     }
 }
