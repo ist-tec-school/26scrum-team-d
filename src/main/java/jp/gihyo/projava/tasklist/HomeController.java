@@ -41,7 +41,41 @@ public class HomeController {
             @NotBlank String deadline,
             Integer done,
             @NotBlank String start_date
-    ) {}
+    ) {// 1. タスクが完了しているか判定
+        public boolean isCompleted() {
+            return done != null && done == 3;
+        }
+
+        // 2. タスクが遅延しているか判定
+        public boolean isDelayed(java.time.LocalDate today) {
+            if (isCompleted()) return false;
+
+            java.time.LocalDate startDate = (start_date != null && !start_date.isBlank()) ? java.time.LocalDate.parse(start_date) : null;
+            java.time.LocalDate deadlineDate = (deadline != null && !deadline.isBlank()) ? java.time.LocalDate.parse(deadline) : null;
+
+            // 開始日を過ぎているのに未着手(0)の場合
+            if (startDate != null && startDate.isBefore(today) && (done != null && done == 0)) {
+                return true;
+            }
+            // 期限を過ぎている場合
+            if (deadlineDate != null && deadlineDate.isBefore(today)) {
+                return true;
+            }
+            return false;
+        }
+
+        // 3. タスクが期限間近（3日以内）か判定
+        public boolean isUrgent(java.time.LocalDate today) {
+            if (isCompleted() || isDelayed(today)) return false;
+
+            java.time.LocalDate deadlineDate = (deadline != null && !deadline.isBlank()) ? java.time.LocalDate.parse(deadline) : null;
+            if (deadlineDate != null) {
+                java.time.LocalDate threeDaysLater = today.plusDays(3);
+                return !deadlineDate.isBefore(today) && !deadlineDate.isAfter(threeDaysLater);
+            }
+            return false;
+        }
+    }
     private final TaskListDao dao;
     private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
     @Autowired
