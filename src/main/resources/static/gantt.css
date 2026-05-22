@@ -215,13 +215,14 @@ table {
 .gantt-table tbody tr.row-group td.sticky-group-summary {
     position: sticky !important;
     left: 400px;
-    z-index: 115;
+    z-index: 10;
     background-color: #e8f6fc !important;
     text-align: right;
     white-space: nowrap;
     padding-right: 15px;
     font-size: 0.9em;
     border-right: 1px solid #dee2e6;
+    border-left:none;
 }
 .group-status-summary-cell .summary-main-text {
     font-weight: bold;

@@ -137,25 +137,28 @@
             <tbody>
             <th:block th:each="item : ${taskList}">
                 <tr th:if="${item.isGroup}" class="row-group">
-                    <td colspan="3" class="group-title-cell">
+                    <td colspan="5" class="group-title-cell">
                         <span th:text="${item.displayTitle}">プロジェクト名</span>
                     </td>
-                    <td colspan="2" class="sticky-col sticky-group-summary group-status-summary-cell">
-                        <span class="summary-main-text">
-                            全タスク <span class="summary-count count-total" th:text="${item.totalCount}">0</span>
-                            完了 <span class="summary-count count-completed" th:text="${item.completedCount}">0</span>
-                            開始遅延 <span class="summary-count count-delayed"
-                                           th:classappend="${item.startDelayedCount > 0} ? 'has-items' : ''"
-                                           th:text="${item.startDelayedCount}">0</span>
-                            期限遅延 <span class="summary-count count-delayed"
-                                           th:classappend="${item.deadlineDelayedCount > 0} ? 'has-items' : ''"
-                                           th:text="${item.deadlineDelayedCount}">0</span>
-                            警告 <span class="summary-count count-urgent"
-                                       th:classappend="${item.urgentCount > 0} ? 'has-items' : ''"
-                                       th:text="${item.urgentCount}">0</span>
-                        </span>
+
+                    <td th:colspan="${#lists.size(timeScaleHeaders)}" class="group-summary-cell">
+                        <div class="group-summary-sticky-wrapper">
+                            <span class="summary-main-text">
+                                全タスク <span class="summary-count count-total" th:text="${item.totalCount}">0</span>
+                                完了 <span class="summary-count count-completed" th:text="${item.completedCount}">0</span>
+                                開始遅延 <span class="summary-count count-delayed"
+                                               th:classappend="${item.startDelayedCount > 0} ? 'has-items' : ''"
+                                               th:text="${item.startDelayedCount}">0</span>
+                                期限遅延 <span class="summary-count count-delayed"
+                                               th:classappend="${item.deadlineDelayedCount > 0} ? 'has-items' : ''"
+                                               th:text="${item.deadlineDelayedCount}">0</span>
+                                警告 <span class="summary-count count-urgent"
+                                           th:classappend="${item.urgentCount > 0} ? 'has-items' : ''"
+                                           th:text="${item.urgentCount}">0</span>
+                            </span>
+                        </div>
                     </td>
-                    <td th:colspan="${5 + #lists.size(timeScaleHeaders)}" class="group-empty-cell"></td>
+
                 </tr>
 
                 <tr th:unless="${item.isGroup}"
