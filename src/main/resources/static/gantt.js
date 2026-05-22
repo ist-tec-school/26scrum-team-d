@@ -281,6 +281,60 @@ window.addEventListener("load", function() {
         setTimeout(() => refreshUserRowStatus(row), 200);
     });
 
+    if (timeScale === "day") {
+        cellWidth = Math.max(35, Math.floor(availableWidth / 15));
+    } else if (timeScale === "week") {
+        cellWidth = Math.max(65, Math.floor(availableWidth / 10));
+    } else if (timeScale === "month") {
+        cellWidth = Math.max(120, Math.floor(availableWidth / 5));
+    }
+
+    // 💡 テーブル幅・セル幅を設定し、サマリーの位置を補正するメイン関数
+    function resizeTable() {
+        if (!tableEl || timelineHeaders.length === 0) return;
+
+        // 1. 各セルの幅を設定
+        tableEl.style.width = `${590 + (timelineHeaders.length * cellWidth)}px`;
+        timelineHeaders.forEach(th => {
+            th.style.minWidth = `${cellWidth}px`; th.style.maxWidth = `${cellWidth}px`; th.style.width = `${cellWidth}px`;
+        });
+        chartCells.forEach(td => {
+            td.style.minWidth = `${cellWidth}px`; td.style.maxWidth = `${cellWidth}px`; td.style.width = `${cellWidth}px`;
+        });
+
+        // 2. サマリーの位置と幅をリアルタイム同期
+        syncSummaryPosition();
+    }
+
+    // 💡【超重要】スクロール量に合わせてサマリーを逆方向に「押し戻す」関数
+    function syncSummaryPosition() {
+        const summaryWrappers = document.querySelectorAll(".group-summary-sticky-wrapper");
+        if (!wrapper || summaryWrappers.length === 0) return;
+
+        const fixedColumnsWidth = 590; // 固定列の幅
+        const wrapperVisibleWidth = wrapper.clientWidth; // 可視領域の幅
+        const scrollLeft = wrapper.scrollLeft; // 💡 現在の横スクロール量
+
+        // 画面上に見えているタイムライン領域の幅を計算
+        let targetWidth = wrapperVisibleWidth - fixedColumnsWidth - 15;
+        if (targetWidth < 0) targetWidth = 0;
+
+        summaryWrappers.forEach(div => {
+            // 見えている範囲の幅に固定
+            div.style.width = `${targetWidth}px`;
+            // 💡 スクロールで左に流れた分だけ、translateXで右に引き戻して完全固定
+            div.style.transform = `translateX(${scrollLeft}px)`;
+        });
+    }
+
+    // 初期実行
+    resizeTable();
+
+    // 💡 スクロールイベントを監視（スクロールするたびに位置を強制固定）
+    if (wrapper) {
+        wrapper.addEventListener("scroll", syncSummaryPosition);
+    }
+
         // ローディング設定
     setTimeout(() => {
         const wrapperEl = document.querySelector('.gantt-wrapper');
@@ -350,9 +404,24 @@ window.addEventListener("resize", () => {
         td.style.minWidth = `${cellWidth}px`; td.style.maxWidth = `${cellWidth}px`; td.style.width = `${cellWidth}px`;
     });
 
+
+    // リサイズ時にも再計算するように既存ロジックに紐付け
+    window.addEventListener("resize", function() {
+        // 先に元のリサイズロジックを通す（cellWidthなどを再計算するため）
+        resizeTable();
+        // その後、サマリーの位置を修正
+        updateSummaryPosition();
+    });
+
     // 3. 💡 タイマーを使わず、新しい幅に合わせて「即時」スクロール位置をジャストに追従させる
     if (targetHeaderEl) {
         const currentStickyWidth = lastStickyCol ? (lastStickyCol.offsetLeft + lastStickyCol.offsetWidth) : 590;
         wrapper.scrollLeft = targetHeaderEl.offsetLeft - currentStickyWidth;
     }
 });
+
+const statusEl = document.querySelector(".col-status");
+const rectWidth = statusEl.getBoundingClientRect().width;
+const computedWidth = window.getComputedStyle(statusEl).width;
+console.log(computedWidth);
+console.log(rectWidth);

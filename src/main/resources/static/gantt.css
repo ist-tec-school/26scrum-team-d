@@ -212,45 +212,52 @@ table {
 /* =================================================================
    プロジェクトヘッダー（グループ行）のステータス集計スタイル
    ================================================================= */
-.gantt-table tbody tr.row-group td.sticky-group-summary {
-    position: sticky !important;
-    left: 400px;
-    z-index: 10;
+.gantt-table .group-summary-cell {
+    position: relative;
     background-color: #e8f6fc !important;
-    text-align: right;
-    white-space: nowrap;
-    padding-right: 15px;
-    font-size: 0.9em;
-    border-right: 1px solid #dee2e6;
-    border-left:none;
+    padding: 0 !important;
+    border-bottom: 1px solid #30575c !important;
 }
-.group-status-summary-cell .summary-main-text {
+.summary-main-text {
     font-weight: bold;
     color: #333333;
+    z-index: 120;
 }
-.group-status-summary-cell .summary-count {
+.summary-main-text .summary-count {
     margin-right: 12px;
 }
-.group-status-summary-cell .summary-count.count-urgent {
+.summary-main-text .summary-count.count-urgent {
     margin-right: 0;
 }
-.group-status-summary-cell .count-total {
+.summary-main-text .count-total {
     color: #333333;
 }
-.group-status-summary-cell .count-completed {
+.summary-main-text .count-completed {
     color: #28a745;
 }
-.group-status-summary-cell .count-delayed,
-.group-status-summary-cell .count-urgent {
+.summary-main-text .count-delayed,
+.summary-main-text .count-urgent {
     color: #666666;
 }
-.group-status-summary-cell .count-delayed.has-items {
+.summary-main-text .count-delayed.has-items {
     color: #dc3545;
     font-weight: bold;
 }
-.group-status-summary-cell .count-urgent.has-items {
+.summary-main-text .count-urgent.has-items {
     color: #ffc107;
     font-weight: bold;
+}
+
+.group-summary-sticky-wrapper {
+    display: flex;
+    justify-content: flex-end; /* 右寄せにする場合 */
+    align-items: center;
+    height: 100%;
+    min-height: 20px;
+    white-space: nowrap; /* 文字が縦に潰れるのを防ぐ */
+    overflow: hidden;    /* 横スクロールバーを出さない */
+    box-sizing: border-box;
+    will-change: transform, width;
 }
 
 thead th {
