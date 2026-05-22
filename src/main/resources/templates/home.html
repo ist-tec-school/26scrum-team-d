@@ -110,7 +110,7 @@
        th:if="${errorMessage}"
        th:text="${errorMessage}"></p>
 
-    <form action="/add" method="post">
+    <form th:action="@{/add}" method="post">
         <label>プロジェクト</label>
         <select name="projectId" id="add_project"
                 onchange="handleProjectChange(this, 'add_newProjectName_hidden')">
@@ -344,7 +344,7 @@
         <p class="error-text"
            th:if="${updateErrorMessage}"
            th:text="${updateErrorMessage}"></p>
-        <form action="/update" method="post">
+        <form th:action="@{/update}" method="post">
             <input id="update_id" name="id" type="hidden"/>
 
             <input type="hidden" name="scope" th:value="${selectedScope}">
